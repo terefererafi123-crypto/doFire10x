@@ -17,3 +17,10 @@ alwaysApply: false
 - Implement hybrid rendering with server-side rendering where needed
 - Use Astro.cookies for server-side cookie management
 - Leverage import.meta.env for environment variables
+- Use Astro components (.astro) for static content and layout
+- Implement framework components in {{framework_name}} only when interactivity is needed
+- Use content collections with type safety for blog posts, documentation, etc.
+
+ 
+ 
+ 

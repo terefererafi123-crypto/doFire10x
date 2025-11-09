@@ -168,43 +168,31 @@ Widok agregujący sumy i udziały procentowe dla każdego typu aktywa w portfelu
 CREATE VIEW v_investments_agg AS
 SELECT
   user_id,
-  COALESCE(SUM(amount), 0) AS total_amount,
-  COALESCE(SUM(CASE WHEN type = 'stock' THEN amount ELSE 0 END), 0) AS sum_stock,
-  COALESCE(SUM(CASE WHEN type = 'etf' THEN amount ELSE 0 END), 0) AS sum_etf,
-  COALESCE(SUM(CASE WHEN type = 'bond' THEN amount ELSE 0 END), 0) AS sum_bond,
-  COALESCE(SUM(CASE WHEN type = 'cash' THEN amount ELSE 0 END), 0) AS sum_cash,
-  COALESCE(
-    CASE
-      WHEN SUM(amount) > 0 THEN
-        (SUM(CASE WHEN type = 'stock' THEN amount ELSE 0 END) * 100.0 / NULLIF(SUM(amount), 0))
-      ELSE 0
-    END,
-    0
-  ) AS share_stock,
-  COALESCE(
-    CASE
-      WHEN SUM(amount) > 0 THEN
-        (SUM(CASE WHEN type = 'etf' THEN amount ELSE 0 END) * 100.0 / NULLIF(SUM(amount), 0))
-      ELSE 0
-    END,
-    0
-  ) AS share_etf,
-  COALESCE(
-    CASE
-      WHEN SUM(amount) > 0 THEN
-        (SUM(CASE WHEN type = 'bond' THEN amount ELSE 0 END) * 100.0 / NULLIF(SUM(amount), 0))
-      ELSE 0
-    END,
-    0
-  ) AS share_bond,
-  COALESCE(
-    CASE
-      WHEN SUM(amount) > 0 THEN
-        (SUM(CASE WHEN type = 'cash' THEN amount ELSE 0 END) * 100.0 / NULLIF(SUM(amount), 0))
-      ELSE 0
-    END,
-    0
-  ) AS share_cash
+  SUM(amount) AS total_amount,
+  SUM(CASE WHEN type = 'stock' THEN amount ELSE 0 END) AS sum_stock,
+  SUM(CASE WHEN type = 'etf' THEN amount ELSE 0 END) AS sum_etf,
+  SUM(CASE WHEN type = 'bond' THEN amount ELSE 0 END) AS sum_bond,
+  SUM(CASE WHEN type = 'cash' THEN amount ELSE 0 END) AS sum_cash,
+  CASE
+    WHEN SUM(amount) > 0 THEN
+      (SUM(CASE WHEN type = 'stock' THEN amount ELSE 0 END) * 100.0 / SUM(amount))
+    ELSE 0
+  END AS share_stock,
+  CASE
+    WHEN SUM(amount) > 0 THEN
+      (SUM(CASE WHEN type = 'etf' THEN amount ELSE 0 END) * 100.0 / SUM(amount))
+    ELSE 0
+  END AS share_etf,
+  CASE
+    WHEN SUM(amount) > 0 THEN
+      (SUM(CASE WHEN type = 'bond' THEN amount ELSE 0 END) * 100.0 / SUM(amount))
+    ELSE 0
+  END AS share_bond,
+  CASE
+    WHEN SUM(amount) > 0 THEN
+      (SUM(CASE WHEN type = 'cash' THEN amount ELSE 0 END) * 100.0 / SUM(amount))
+    ELSE 0
+  END AS share_cash
 FROM investments
 GROUP BY user_id;
 ```
@@ -214,10 +202,21 @@ GROUP BY user_id;
 - Użytkownik może zobaczyć tylko swoje własne agregacje
 
 **Uwagi:**
-- Wszystkie wartości sum są domyślnie 0 (COALESCE) dla użytkowników bez inwestycji
-- Udziały procentowe są obliczane z użyciem NULLIF, aby uniknąć dzielenia przez zero
-- Udziały są zaokrąglane do 2 miejsc po przecinku
+- Jeśli użytkownik nie ma żadnych inwestycji, widok nie zwróci wiersza dla tego użytkownika (GROUP BY nie tworzy wierszy dla brakujących danych)
+- W aplikacji należy obsłużyć przypadek, gdy widok nie zwraca danych (total_amount będzie NULL w zapytaniu z LEFT JOIN, lub brak wiersza w zapytaniu bez JOIN)
+- Udziały procentowe są obliczane z użyciem CASE WHEN, aby uniknąć dzielenia przez zero
+- Udziały są zaokrąglane do 2 miejsc po przecinku (numeric(5,2))
 - Widok jest zoptymalizowany do szybkich zapytań agregujących
+- Aby uzyskać dane dla użytkowników bez inwestycji, można użyć LEFT JOIN z tabelą profiles:
+  ```sql
+  SELECT 
+    p.user_id,
+    COALESCE(v.total_amount, 0) AS total_amount,
+    COALESCE(v.share_stock, 0) AS share_stock,
+    -- ... pozostałe kolumny
+  FROM profiles p
+  LEFT JOIN v_investments_agg v ON p.user_id = v.user_id;
+  ```
 
 ---
 
@@ -324,15 +323,13 @@ CREATE POLICY "<table>_delete_policy" ON <table>
 ### 7.1. Diagram relacji
 
 ```
-auth.users (Supabase)
+auth.users (Supabase - już istnieje)
     │
-    │ 1:1 (ON DELETE CASCADE)
-    ├──► profiles
+    ├──► profiles (1:1, ON DELETE CASCADE)
+    │
+    ├──► investments (1:N, ON DELETE CASCADE)
     │       │
-    │       │ 1:N (ON DELETE CASCADE)
-    │       └──► investments
-    │
-    └──► v_investments_agg (VIEW)
+    │       └──► v_investments_agg (VIEW - agreguje investments)
 ```
 
 ### 7.2. Opis relacji
@@ -346,10 +343,12 @@ auth.users (Supabase)
    - Każdy użytkownik może mieć wiele inwestycji
    - Klucz obcy: `investments.user_id` → `auth.users.id`
    - `ON DELETE CASCADE` - usunięcie użytkownika usuwa wszystkie jego inwestycje
+   - **Uwaga:** `investments` nie zależy od `profiles` - obie tabele są niezależne i zależą tylko od `auth.users`
 
 3. **investments → v_investments_agg (agregacja)**
    - Widok agreguje dane z tabeli `investments` dla każdego użytkownika
    - Nie ma bezpośredniej relacji klucza obcego (widok)
+   - Widok zwraca wiersze tylko dla użytkowników, którzy mają przynajmniej jedną inwestycję
 
 ---
 
@@ -422,18 +421,16 @@ Migracje są rozdzielone na trzy etapy dla lepszej kontroli i zgodności z CI/CD
 4. **Tworzenie indeksów:**
    - Indeksy na kolumnach używanych w zapytaniach
 
-**Uwaga:** W tym etapie tabele są tworzone bez CHECK constraints i bez domyślnych wartości (oprócz `DEFAULT now()` dla timestampów).
+**Uwaga:** W tym etapie tabele są tworzone z domyślnymi wartościami dla kolumn NOT NULL (np. `DEFAULT 0.00`, `DEFAULT 4.00`, `DEFAULT now()`), ale bez CHECK constraints. Domyślne wartości są konieczne, ponieważ kolumny są NOT NULL.
 
-**Etap B: CHECK-i i domyślne wartości**
+**Etap B: CHECK constraints i triggery**
 
 1. **Dodawanie CHECK constraints:**
    - Ograniczenia dla `profiles` (monthly_expense, withdrawal_rate_pct, expected_return_pct, birth_date)
    - Ograniczenia dla `investments` (amount, acquired_at, notes)
+   - **Uwaga:** CHECK constraints są dodawane po utworzeniu tabel, aby umożliwić wstawienie danych, które mogą nie spełniać wszystkich ograniczeń podczas migracji
 
-2. **Ustawianie domyślnych wartości:**
-   - Domyślne wartości dla kolumn (monthly_expense, withdrawal_rate_pct, expected_return_pct)
-
-3. **Tworzenie funkcji i triggerów:**
+2. **Tworzenie funkcji i triggerów:**
    - Funkcja `set_updated_at()`
    - Trigger `profiles_updated_at_trigger`
    - Trigger `investments_updated_at_trigger`
@@ -463,7 +460,7 @@ Migracje są rozdzielone na trzy etapy dla lepszej kontroli i zgodności z CI/CD
    - ENUM → profiles → investments → klucze → indeksy
 
 2. Migracja B: `002_add_constraints_and_defaults.sql`
-   - CHECK constraints → domyślne wartości → funkcje → triggery
+   - CHECK constraints → funkcje → triggery
 
 3. Migracja C: `003_enable_rls_and_grants.sql`
    - RLS → polityki → GRANT-y → REVOKE-y → widoki
@@ -488,7 +485,7 @@ auth.users (już istnieje w Supabase)
 2. **`profiles` tabela** - zależy tylko od `auth.users` (już istnieje)
 3. **`investments` tabela** - zależy od `auth.users` (już istnieje) i `asset_type` ENUM (utworzony w kroku 1)
 4. **Klucze i indeksy** - po utworzeniu wszystkich tabel
-5. **CHECK constraints i domyślne wartości** - po utworzeniu struktury
+5. **CHECK constraints** - po utworzeniu struktury (dodawane w etapie B)
 6. **Funkcje i triggery** - po utworzeniu tabel i constraints
 7. **RLS i polityki** - po utworzeniu wszystkich tabel
 8. **Widoki** - na końcu (zależą od tabeli `investments`)

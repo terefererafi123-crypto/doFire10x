@@ -10,7 +10,7 @@ import type {
   TablesInsert,
   TablesUpdate,
   Enums,
-} from "./database_models"
+} from "./db/database.types"
 
 /* ------------------------------------------------------------
  * Common primitives

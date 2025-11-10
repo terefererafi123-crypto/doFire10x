@@ -8,7 +8,7 @@ Baza danych dla aplikacji DoFIRE została zaprojektowana pod Supabase (PostgreSQ
 - Nazwy tabel i kolumn w konwencji `snake_case`
 - Wszystkie kwoty w PLN przechowywane jako `numeric(16,2)`
 - Procenty przechowywane jako `numeric(5,2)`
-- Wszystkie tabele posiadają pola `created_at` i `updated_at` z automatyczną aktualizacją
+- Wszystkie tabele pos  iadają pola `created_at` i `updated_at` z automatyczną aktualizacją
 - Wszystkie relacje z `auth.users` wykorzystują `ON DELETE CASCADE`
 
 ---

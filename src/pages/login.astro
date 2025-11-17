@@ -1,0 +1,42 @@
+---
+import Layout from "../layouts/Layout.astro";
+import LoginForm from "../components/LoginForm";
+
+// Check if user is already logged in and redirect to dashboard
+if (import.meta.env.SSR) {
+  // Server-side: check session via middleware/context if needed
+  // For now, we'll handle redirect client-side
+}
+---
+
+<Layout title="Logowanie - DoFIRE">
+  <main class="flex min-h-screen items-center justify-center bg-background px-4 py-12">
+    <div class="w-full max-w-md space-y-8">
+      <div class="text-center">
+        <h1 class="text-3xl font-bold tracking-tight">DoFIRE</h1>
+        <p class="mt-2 text-muted-foreground">Zaloguj się do swojego konta</p>
+      </div>
+      <LoginForm client:load />
+    </div>
+  </main>
+</Layout>
+
+<script>
+  // Client-side redirect check for already logged-in users
+  import { supabaseClient } from "../db/supabase.client";
+
+  async function checkSession() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    
+    if (session) {
+      // User is already logged in, redirect to dashboard
+      window.location.href = "/dashboard";
+    }
+  }
+
+  // Check session on page load
+  if (typeof window !== "undefined") {
+    checkSession();
+  }
+</script>
+

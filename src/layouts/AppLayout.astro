@@ -1,0 +1,18 @@
+---
+import Layout from "./Layout.astro";
+import TopNav from "../components/TopNav";
+
+interface Props {
+  title?: string;
+}
+
+const { title = "Dashboard - DoFIRE" } = Astro.props;
+---
+
+<Layout title={title}>
+  <TopNav client:load />
+  <main role="main">
+    <slot />
+  </main>
+</Layout>
+

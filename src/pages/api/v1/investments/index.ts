@@ -2,10 +2,18 @@
 // GET /v1/investments - Get investments list endpoint
 
 import type { APIRoute } from "astro";
-import { getInvestments } from "../../../../lib/services/investment.service";
-import { validateInvestmentListQuery } from "../../../../lib/validators/investment.validator";
+import {
+  getInvestments,
+  createInvestment,
+  ConstraintViolationError,
+  DatabaseError,
+} from "../../../../lib/services/investment.service";
+import {
+  validateInvestmentListQuery,
+  validateCreateInvestment,
+} from "../../../../lib/validators/investment.validator";
 import { jsonResponse, errorResponse } from "../../../../lib/api/response";
-import type { InvestmentListResponseDto } from "../../../../types";
+import type { InvestmentListResponseDto, InvestmentDto } from "../../../../types";
 
 export const prerender = false;
 
@@ -157,6 +165,230 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // Inne błędy to błędy serwera
     console.error(
       `Error fetching investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
+      error
+    );
+    return errorResponse(
+      { code: "internal", message: "An unexpected error occurred" },
+      500
+    );
+  }
+};
+
+/**
+ * POST /v1/investments
+ *
+ * Creates a new investment for the authenticated user.
+ * Requires authentication via Supabase JWT token.
+ * Uses RLS to ensure users can only create investments for themselves.
+ *
+ * Request body (CreateInvestmentCommand):
+ * - type: required enum (etf, bond, stock, cash)
+ * - amount: required positive number, max 999999999999.99
+ * - acquired_at: required ISO date string (YYYY-MM-DD), cannot be future date
+ * - notes: optional string (1-1000 chars) or null (empty/whitespace treated as null)
+ *
+ * @returns 201 Created with InvestmentDto on success
+ * @returns 400 Bad Request if validation fails (invalid fields, constraint violations, etc.)
+ * @returns 401 Unauthorized if authentication fails
+ * @returns 500 Internal Server Error on unexpected errors
+ *
+ * Response headers:
+ * - Content-Type: application/json
+ * - Location: /v1/investments/{id} (optional)
+ * - Idempotency-Key: echo of request header if provided
+ * - X-Request-Id: echo of request header if provided
+ *
+ * Request headers:
+ * - Authorization: Bearer <Supabase-JWT> (required)
+ * - Content-Type: application/json (required)
+ * - Idempotency-Key: <string> (optional, for future idempotency support)
+ * - X-Request-Id: <uuid> (optional, for log correlation)
+ */
+export const POST: APIRoute = async ({ request, locals }) => {
+  const requestId = request.headers.get("X-Request-Id");
+  const idempotencyKey = request.headers.get("Idempotency-Key");
+
+  // 1. Weryfikacja autoryzacji - early return guard clause
+  const supabase = locals.supabase;
+  if (!supabase) {
+    console.error(
+      `Supabase client not available in context.locals${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+    );
+    return errorResponse(
+      { code: "internal", message: "Internal server error" },
+      500
+    );
+  }
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    console.warn(
+      `Authentication failed in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+    );
+    return errorResponse(
+      { code: "unauthorized", message: "Missing or invalid authentication token" },
+      401
+    );
+  }
+
+  // 2. Parsowanie request body - early return guard clause
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch (error) {
+    console.warn(
+      `Invalid JSON in request body for POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+    );
+    return errorResponse(
+      {
+        code: "bad_request",
+        message: "Invalid JSON in request body",
+      },
+      400
+    );
+  }
+
+  // 3. Walidacja request body - early return guard clause
+  const validationResult = validateCreateInvestment(body);
+  if (!validationResult.success) {
+    // Map Zod errors to field-wise error messages
+    const fields: Record<string, string> = {};
+    validationResult.error.errors.forEach((err) => {
+      const path = err.path.join(".");
+      if (err.code === "invalid_type") {
+        fields[path] = "invalid_type";
+      } else if (err.code === "too_small") {
+        if (path === "amount") {
+          fields[path] = "amount_must_be_positive";
+        } else if (path === "notes") {
+          fields[path] = "notes_cannot_be_empty";
+        } else {
+          fields[path] = "too_small";
+        }
+      } else if (err.code === "too_big") {
+        if (path === "amount") {
+          fields[path] = "exceeds_maximum_value";
+        } else if (path === "notes") {
+          fields[path] = "must_not_exceed_1000_characters";
+        } else {
+          fields[path] = "too_big";
+        }
+      } else if (err.code === "invalid_string") {
+        if (path.includes("acquired_at")) {
+          fields[path] = "invalid_date_format";
+        } else {
+          fields[path] = "invalid_format";
+        }
+      } else if (err.code === "invalid_enum_value") {
+        if (path === "type") {
+          fields[path] = "must_be_one_of_etf_bond_stock_cash";
+        } else {
+          fields[path] = "invalid_value";
+        }
+      } else if (err.code === "custom") {
+        // Handle custom refine errors
+        if (err.message === "acquired_at_cannot_be_future") {
+          fields[path] = "acquired_at_cannot_be_future";
+        } else if (err.message === "invalid_date") {
+          fields[path] = "invalid_date";
+        } else {
+          fields[path] = err.message;
+        }
+      } else if (err.code === "unrecognized_keys") {
+        // Handle unknown fields (from .strict() mode)
+        const unknownKeys = (err as any).keys || [];
+        unknownKeys.forEach((key: string) => {
+          fields[key] = "unknown_field";
+        });
+      } else {
+        fields[path] = err.message || "invalid_value";
+      }
+    });
+
+    return errorResponse(
+      {
+        code: "bad_request",
+        message: "Validation failed",
+        fields,
+      },
+      400
+    );
+  }
+
+  const createCommand = validationResult.data;
+
+  // 4. Tworzenie inwestycji - happy path last
+  try {
+    const createdInvestment: InvestmentDto = await createInvestment(
+      supabase,
+      user.id,
+      createCommand
+    );
+
+    // 5. Sukces - zwrócenie 201 Created z InvestmentDto
+    const response = jsonResponse(createdInvestment, 201);
+    
+    // Add Location header
+    response.headers.set("Location", `/v1/investments/${createdInvestment.id}`);
+    
+    // Echo Idempotency-Key header if provided (for future idempotency support)
+    if (idempotencyKey) {
+      response.headers.set("Idempotency-Key", idempotencyKey);
+    }
+    
+    // Echo X-Request-Id header if provided
+    if (requestId) {
+      response.headers.set("X-Request-Id", requestId);
+    }
+    
+    return response;
+  } catch (error) {
+    // 6. Obsługa błędów - sprawdzenie typu błędu
+    if (error instanceof ConstraintViolationError) {
+      // Map constraint violations to 400 with field-specific errors
+      const fields: Record<string, string> = {};
+      if (error.field) {
+        if (error.field === "amount") {
+          fields[error.field] = "amount_must_be_positive";
+        } else if (error.field === "acquired_at") {
+          fields[error.field] = "acquired_at_cannot_be_future";
+        } else {
+          fields[error.field] = "constraint_violation";
+        }
+      }
+      
+      console.warn(
+        `Constraint violation in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
+        error.message
+      );
+      return errorResponse(
+        {
+          code: "bad_request",
+          message: "Validation failed",
+          fields: Object.keys(fields).length > 0 ? fields : undefined,
+        },
+        400
+      );
+    }
+
+    if (error instanceof DatabaseError) {
+      console.error(
+        `Database error in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
+        error.originalError || error.message
+      );
+      return errorResponse(
+        { code: "internal", message: "An unexpected error occurred" },
+        500
+      );
+    }
+
+    // Unexpected error
+    console.error(
+      `Unexpected error in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
       error
     );
     return errorResponse(

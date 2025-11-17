@@ -8,10 +8,11 @@ import type {
   InvestmentListResponseDto,
   InvestmentListQuery,
   UpdateInvestmentCommand,
+  CreateInvestmentCommand,
   Cursor,
 } from "../../types";
 import { toInvestmentDto } from "../../types";
-import type { TablesUpdate } from "../../db/database.types";
+import type { TablesUpdate, TablesInsert } from "../../db/database.types";
 
 /**
  * Custom error thrown when an investment is not found or access is denied.
@@ -30,6 +31,16 @@ export class DatabaseError extends Error {
   constructor(message: string, public originalError?: unknown) {
     super(message);
     this.name = "DatabaseError";
+  }
+}
+
+/**
+ * Custom error thrown when a database constraint is violated.
+ */
+export class ConstraintViolationError extends Error {
+  constructor(message: string, public field?: string, public originalError?: unknown) {
+    super(message);
+    this.name = "ConstraintViolationError";
   }
 }
 
@@ -421,6 +432,123 @@ export async function updateInvestment(
 
   if (!data) {
     throw new InvestmentNotFoundError(investmentId);
+  }
+
+  // 4. Convert DB row to DTO (removes user_id)
+  return toInvestmentDto(data);
+}
+
+/**
+ * Builds a database insert payload from a CreateInvestmentCommand.
+ * Adds user_id and ensures amount is formatted to 2 decimal places.
+ *
+ * @param command - Create command with investment data
+ * @param userId - ID of the authenticated user
+ * @returns Database insert payload
+ */
+function buildInvestmentInsertPayload(
+  command: CreateInvestmentCommand,
+  userId: string
+): TablesInsert<"investments"> {
+  return {
+    type: command.type,
+    amount: Number(command.amount.toFixed(2)), // Ensure 2 decimal places
+    acquired_at: command.acquired_at,
+    notes: command.notes ?? null, // Convert undefined to null
+    user_id: userId,
+  };
+}
+
+/**
+ * Maps Supabase/Postgres error codes to appropriate error types.
+ * Handles constraint violations and other database errors.
+ *
+ * @param error - Supabase error object
+ * @returns Appropriate error instance or null if error cannot be mapped
+ */
+function mapSupabaseError(error: any): Error | null {
+  // Postgres error codes
+  // 23514 = CHECK constraint violation
+  // 22P02 = invalid input syntax (e.g., invalid date format)
+  // 42501 = insufficient privilege (shouldn't happen with RLS, but handle it)
+  
+  if (error.code === "23514") {
+    // CHECK constraint violation - could be amount <= 0 or acquired_at > current_date
+    const message = error.message || "Constraint violation";
+    // Try to determine which field caused the violation
+    let field: string | undefined;
+    if (message.includes("amount") || message.includes("positive")) {
+      field = "amount";
+    } else if (message.includes("acquired_at") || message.includes("future") || message.includes("date")) {
+      field = "acquired_at";
+    }
+    return new ConstraintViolationError(message, field, error);
+  }
+  
+  if (error.code === "22P02") {
+    // Invalid input syntax
+    return new ConstraintViolationError("Invalid input format", undefined, error);
+  }
+  
+  if (error.code === "42501") {
+    // Insufficient privilege
+    return new DatabaseError("Access denied", error);
+  }
+  
+  // Other errors are not mapped here - let them bubble up as DatabaseError
+  return null;
+}
+
+/**
+ * Creates a new investment for the authenticated user.
+ * Uses RLS (Row Level Security) to ensure users can only create investments for themselves.
+ *
+ * @param supabase - Supabase client instance with authenticated user context
+ * @param userId - ID of the authenticated user
+ * @param command - Create command with investment data
+ * @returns Promise resolving to created InvestmentDto
+ * @throws ConstraintViolationError if database constraints are violated
+ * @throws DatabaseError if database operation fails unexpectedly
+ *
+ * @example
+ * ```typescript
+ * const investment = await createInvestment(supabase, userId, {
+ *   type: "bond",
+ *   amount: 5000.00,
+ *   acquired_at: "2025-01-10",
+ *   notes: "COI 4-letnie"
+ * });
+ * ```
+ */
+export async function createInvestment(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  command: CreateInvestmentCommand
+): Promise<InvestmentDto> {
+  // 1. Build insert payload with user_id
+  const insertPayload = buildInvestmentInsertPayload(command, userId);
+
+  // 2. Execute INSERT with select to return created row
+  // RLS ensures user can only create investments for themselves
+  const { data, error } = await supabase
+    .from("investments")
+    .insert(insertPayload)
+    .select()
+    .single();
+
+  if (error) {
+    // 3. Map known Supabase errors to controlled exceptions
+    const mappedError = mapSupabaseError(error);
+    if (mappedError) {
+      throw mappedError;
+    }
+    
+    // Other errors are unexpected
+    throw new DatabaseError("Failed to create investment", error);
+  }
+
+  if (!data) {
+    throw new DatabaseError("Investment was not created (no data returned)");
   }
 
   // 4. Convert DB row to DTO (removes user_id)

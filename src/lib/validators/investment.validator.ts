@@ -2,7 +2,7 @@
 // Zod schema for validating investment-related parameters
 
 import { z } from "zod";
-import type { InvestmentListQuery, UpdateInvestmentCommand } from "../../types";
+import type { InvestmentListQuery, UpdateInvestmentCommand, CreateInvestmentCommand } from "../../types";
 
 /**
  * Zod schema for validating the investment ID path parameter.
@@ -168,6 +168,95 @@ export function validateUpdateInvestment(body: unknown) {
   return updateInvestmentSchema.safeParse(body) as z.SafeParseReturnType<
     unknown,
     UpdateInvestmentCommand
+  >;
+}
+
+/**
+ * Zod schema for validating request body for POST /v1/investments endpoint.
+ *
+ * Validation rules:
+ * - type: required enum value (etf, bond, stock, cash)
+ * - amount: required positive number, finite, max 999999999999.99
+ * - acquired_at: required ISO date string (YYYY-MM-DD), cannot be a future date
+ * - notes: optional string (1-1000 chars after trim), empty/whitespace treated as null
+ *
+ * @example
+ * ```typescript
+ * const result = createInvestmentSchema.safeParse({
+ *   type: "bond",
+ *   amount: 5000.00,
+ *   acquired_at: "2025-01-10",
+ *   notes: "COI 4-letnie"
+ * });
+ * ```
+ */
+export const createInvestmentSchema = z.object({
+  type: z.enum(["etf", "bond", "stock", "cash"]),
+  amount: z.number().positive("Amount must be greater than zero").finite().max(999999999999.99, "Amount exceeds maximum value"),
+  acquired_at: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD")
+    .transform((value) => ({ value, date: new Date(value + "T00:00:00Z") }))
+    .superRefine(({ date }, ctx) => {
+      const today = new Date();
+      today.setUTCHours(0, 0, 0, 0);
+      const dateMidnight = new Date(date);
+      dateMidnight.setUTCHours(0, 0, 0, 0);
+      
+      if (Number.isNaN(date.getTime())) {
+        ctx.addIssue({ code: "custom", message: "invalid_date" });
+        return;
+      }
+      if (dateMidnight > today) {
+        ctx.addIssue({ code: "custom", message: "acquired_at_cannot_be_future" });
+      }
+    })
+    .transform(({ value }) => value),
+  notes: z
+    .preprocess(
+      (val) => {
+        // If string is provided and empty after trim, treat as null
+        if (typeof val === "string") {
+          const trimmed = val.trim();
+          return trimmed.length > 0 ? trimmed : null;
+        }
+        return val;
+      },
+      z
+        .union([
+          z.string().min(1).max(1000, "Notes must not exceed 1000 characters"),
+          z.null(),
+        ])
+        .optional()
+    ),
+}).strict(); // Reject unknown fields
+
+/**
+ * TypeScript type inferred from the Zod schema.
+ * Represents the validated create command for investment endpoints.
+ */
+export type CreateInvestmentSchemaType = z.infer<typeof createInvestmentSchema>;
+
+/**
+ * Validates request body for POST /v1/investments endpoint.
+ *
+ * @param body - Raw request body (unknown type, typically from JSON.parse)
+ * @returns Validation result with validated CreateInvestmentCommand or errors
+ *
+ * @example
+ * ```typescript
+ * const result = validateCreateInvestment(body);
+ * if (result.success) {
+ *   // Use result.data as CreateInvestmentCommand
+ * } else {
+ *   // Handle result.error
+ * }
+ * ```
+ */
+export function validateCreateInvestment(body: unknown) {
+  return createInvestmentSchema.safeParse(body) as z.SafeParseReturnType<
+    unknown,
+    CreateInvestmentCommand
   >;
 }
 

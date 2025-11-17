@@ -8,7 +8,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { cn } from "@/lib/utils";
+import { FormField } from "@/components/FormField";
+import { FormErrorSummary } from "@/components/FormErrorSummary";
 import type { CreateInvestmentCommand, AssetType } from "@/types";
 
 export type InvestmentFormData = CreateInvestmentCommand;
@@ -19,6 +20,7 @@ interface InvestmentFormProps {
   errors: InvestmentFormErrors;
   onChange: (field: keyof InvestmentFormData, value: unknown) => void;
   onBlur?: (field: keyof InvestmentFormData) => void;
+  showErrorSummary?: boolean;
 }
 
 const ASSET_TYPE_OPTIONS: Array<{ value: AssetType; label: string }> = [
@@ -33,6 +35,7 @@ export function InvestmentForm({
   errors,
   onChange,
   onBlur,
+  showErrorSummary = false,
 }: InvestmentFormProps) {
   const handleChange = (
     field: keyof InvestmentFormData,
@@ -68,24 +71,19 @@ export function InvestmentForm({
 
   return (
     <div className="space-y-6">
-      <div className="space-y-2">
-        <label
-          htmlFor="type"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Typ inwestycji
-          <span className="text-destructive ml-1">*</span>
-        </label>
+      {showErrorSummary && <FormErrorSummary errors={errors} />}
+
+      <FormField
+        label="Typ inwestycji"
+        name="type"
+        required
+        error={errors.type}
+      >
         <Select
           value={data.type || ""}
           onValueChange={(value) => handleChange("type", value)}
         >
-          <SelectTrigger
-            id="type"
-            className={cn("w-full", errors.type && "border-destructive")}
-            aria-invalid={!!errors.type}
-            aria-describedby={errors.type ? "type-error" : undefined}
-          >
+          <SelectTrigger className="w-full">
             <SelectValue placeholder="Wybierz typ inwestycji" />
           </SelectTrigger>
           <SelectContent>
@@ -96,23 +94,15 @@ export function InvestmentForm({
             ))}
           </SelectContent>
         </Select>
-        {errors.type && (
-          <p id="type-error" className="text-sm text-destructive" role="alert">
-            {errors.type}
-          </p>
-        )}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="amount"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Kwota (PLN)
-          <span className="text-destructive ml-1">*</span>
-        </label>
+      <FormField
+        label="Kwota (PLN)"
+        name="amount"
+        required
+        error={errors.amount}
+      >
         <Input
-          id="amount"
           type="number"
           min="0.01"
           max="999999999999.99"
@@ -121,84 +111,39 @@ export function InvestmentForm({
           onChange={(e) => handleChange("amount", e.target.value)}
           onBlur={() => handleBlur("amount")}
           placeholder="0.00"
-          className={cn(errors.amount && "border-destructive")}
-          aria-invalid={!!errors.amount}
-          aria-describedby={errors.amount ? "amount-error" : undefined}
         />
-        {errors.amount && (
-          <p
-            id="amount-error"
-            className="text-sm text-destructive"
-            role="alert"
-          >
-            {errors.amount}
-          </p>
-        )}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="acquired_at"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Data nabycia
-          <span className="text-destructive ml-1">*</span>
-        </label>
+      <FormField
+        label="Data nabycia"
+        name="acquired_at"
+        required
+        error={errors.acquired_at}
+      >
         <Input
-          id="acquired_at"
           type="date"
           value={data.acquired_at || ""}
           onChange={(e) => handleChange("acquired_at", e.target.value)}
           onBlur={() => handleBlur("acquired_at")}
           max={maxDate}
-          className={cn(errors.acquired_at && "border-destructive")}
-          aria-invalid={!!errors.acquired_at}
-          aria-describedby={
-            errors.acquired_at ? "acquired_at-error" : undefined
-          }
         />
-        {errors.acquired_at && (
-          <p
-            id="acquired_at-error"
-            className="text-sm text-destructive"
-            role="alert"
-          >
-            {errors.acquired_at}
-          </p>
-        )}
-      </div>
+      </FormField>
 
-      <div className="space-y-2">
-        <label
-          htmlFor="notes"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Notatki
-          <span className="text-muted-foreground ml-1 text-xs">(opcjonalne)</span>
-        </label>
+      <FormField
+        label="Notatki"
+        name="notes"
+        error={errors.notes}
+        helperText="Maksymalnie 1000 znaków"
+      >
         <Textarea
-          id="notes"
           value={data.notes || ""}
-          onChange={(e) =>
-            handleChange("notes", e.target.value || null)
-          }
+          onChange={(e) => handleChange("notes", e.target.value || null)}
           onBlur={() => handleBlur("notes")}
           placeholder="Dodatkowe informacje o inwestycji..."
           maxLength={1000}
           rows={3}
-          className={cn(errors.notes && "border-destructive")}
-          aria-invalid={!!errors.notes}
-          aria-describedby={errors.notes ? "notes-error" : undefined}
         />
-        {errors.notes && (
-          <p id="notes-error" className="text-sm text-destructive" role="alert">
-            {errors.notes}
-          </p>
-        )}
-        <p className="text-xs text-muted-foreground">
-          Maksymalnie 1000 znaków
-        </p>
-      </div>
+      </FormField>
     </div>
   );
 }

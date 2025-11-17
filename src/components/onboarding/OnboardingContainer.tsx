@@ -7,7 +7,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOnboardingForm } from "@/lib/hooks/useOnboardingForm";
 import { useOnboardingApi } from "@/lib/hooks/useOnboardingApi";
-import { mapApiErrorsToFormErrors } from "@/lib/utils/error-mapper";
+import { useApiErrorHandler } from "@/lib/hooks/useApiErrorHandler";
+import { mapApiErrorsToFormErrors, investmentErrorMessages } from "@/lib/utils/error-mapper";
 import type {
   CreateProfileCommand,
   CreateInvestmentCommand,
@@ -32,6 +33,7 @@ interface OnboardingState {
 export function OnboardingContainer() {
   const { validateProfileForm, validateInvestmentForm } = useOnboardingForm();
   const { createProfile, createInvestment } = useOnboardingApi();
+  const investmentErrorHandler = useApiErrorHandler(investmentErrorMessages);
 
   const [state, setState] = React.useState<OnboardingState>({
     currentStep: 1,
@@ -75,13 +77,14 @@ export function OnboardingContainer() {
   const handleInvestmentChange = React.useCallback(
     (field: keyof InvestmentFormData, value: unknown) => {
       clearApiError();
+      investmentErrorHandler.clearFieldError(field);
       setState((prev) => ({
         ...prev,
         investmentData: { ...prev.investmentData, [field]: value },
         investmentErrors: { ...prev.investmentErrors, [field]: undefined },
       }));
     },
-    [clearApiError]
+    [clearApiError, investmentErrorHandler]
   );
 
   // Handle profile form field blur (validation)
@@ -178,16 +181,14 @@ export function OnboardingContainer() {
             isLoading: false,
             apiError: "Popraw błędy w formularzu",
           }));
-        } else if (apiError.error?.code === "unauthorized") {
-          // Unauthorized - redirect to login
+        } else if (apiError.error?.code === "unauthorized" || apiError.error?.code === "forbidden") {
+          // Unauthorized/Forbidden - handled by GlobalErrorBanner
           setState((prev) => ({
             ...prev,
             isLoading: false,
-            apiError: "Zaloguj ponownie",
+            apiError: null, // Don't show local error, GlobalErrorBanner will handle it
           }));
-          setTimeout(() => {
-            window.location.href = "/login";
-          }, 2000);
+          // GlobalErrorBanner will handle redirect
         } else if (apiError.error?.code === "conflict") {
           // Profile already exists - redirect to dashboard
           setState((prev) => ({
@@ -237,27 +238,27 @@ export function OnboardingContainer() {
 
         const apiError = error as ApiError;
 
+        // Use useApiErrorHandler for investment form errors
+        investmentErrorHandler.handleApiError(apiError);
+        
         if (apiError.error?.code === "bad_request" && apiError.error?.fields) {
-          // Validation errors from API
-          const formErrors = mapApiErrorsToFormErrors(apiError.error.fields);
+          // Validation errors are handled by useApiErrorHandler
           setState((prev) => ({
             ...prev,
-            investmentErrors: formErrors,
+            investmentErrors: investmentErrorHandler.fieldErrors,
             isLoading: false,
             apiError: "Popraw błędy w formularzu",
           }));
-        } else if (apiError.error?.code === "unauthorized") {
-          // Unauthorized - redirect to login
+        } else if (apiError.error?.code === "unauthorized" || apiError.error?.code === "forbidden") {
+          // Unauthorized/Forbidden - handled by GlobalErrorBanner
           setState((prev) => ({
             ...prev,
             isLoading: false,
-            apiError: "Zaloguj ponownie",
+            apiError: null, // Don't show local error, GlobalErrorBanner will handle it
           }));
-          setTimeout(() => {
-            window.location.href = "/login";
-          }, 2000);
+          // GlobalErrorBanner will handle redirect
         } else {
-          // Other errors
+          // Other errors (5xx, 429, etc.)
           setState((prev) => ({
             ...prev,
             isLoading: false,
@@ -276,6 +277,7 @@ export function OnboardingContainer() {
     validateInvestmentForm,
     createProfile,
     createInvestment,
+    investmentErrorHandler,
   ]);
 
 
@@ -315,9 +317,10 @@ export function OnboardingContainer() {
                 <CardTitle className="mb-4">Krok 2: Pierwsza inwestycja</CardTitle>
                 <InvestmentForm
                   data={state.investmentData}
-                  errors={state.investmentErrors}
+                  errors={investmentErrorHandler.fieldErrors}
                   onChange={handleInvestmentChange}
                   onBlur={handleInvestmentBlur}
+                  showErrorSummary={Object.keys(investmentErrorHandler.fieldErrors).length > 0}
                 />
               </div>
             )}

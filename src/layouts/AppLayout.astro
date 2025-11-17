@@ -1,6 +1,7 @@
 ---
 import Layout from "./Layout.astro";
 import { TopNav } from "../components/TopNav";
+import { GlobalErrorProviderWrapper } from "../components/GlobalErrorProviderWrapper";
 
 interface Props {
   title?: string;
@@ -10,9 +11,11 @@ const { title = "Dashboard - DoFIRE" } = Astro.props;
 ---
 
 <Layout title={title}>
-  <TopNav client:load />
-  <main role="main">
-    <slot />
-  </main>
+  <GlobalErrorProviderWrapper client:load>
+    <TopNav client:load />
+    <main role="main">
+      <slot />
+    </main>
+  </GlobalErrorProviderWrapper>
 </Layout>
 

@@ -2,6 +2,8 @@ import { useState } from "react";
 import type { DashboardState } from "./types";
 import type { MetricsDto, AiHintDto, ApiError } from "@/types";
 import { getAuthToken } from "@/lib/auth/client-helpers";
+import { useGlobalError } from "@/lib/contexts/GlobalErrorContext";
+import { shouldHandleGlobally } from "@/lib/utils/api-error-handler";
 
 const REQUEST_TIMEOUT_MS = 30000; // 30 seconds
 
@@ -9,6 +11,7 @@ const REQUEST_TIMEOUT_MS = 30000; // 30 seconds
  * Custom hook for managing Dashboard state and API calls
  */
 export function useDashboard() {
+  const { setError: setGlobalError } = useGlobalError();
   const [state, setState] = useState<DashboardState>({
     metrics: null,
     aiHint: null,
@@ -59,12 +62,6 @@ export function useDashboard() {
 
       // Handle metrics response
       if (!metricsResponse.ok) {
-        if (metricsResponse.status === 401) {
-          // Unauthorized - redirect to login
-          window.location.href = "/login";
-          return;
-        }
-
         if (metricsResponse.status === 404) {
           const error = await metricsResponse.json();
           if (error.error?.message === "profile_not_found") {
@@ -75,18 +72,32 @@ export function useDashboard() {
         }
 
         const error: ApiError = await metricsResponse.json();
+        
+        // Handle global errors (401/403/5xx/429)
+        if (shouldHandleGlobally(error)) {
+          setGlobalError(error);
+          // For auth errors, don't throw - let GlobalErrorBanner handle redirect
+          if (error.error.code === "unauthorized" || error.error.code === "forbidden") {
+            return;
+          }
+        }
+        
         throw new Error(error.error?.message || "Błąd pobierania metryk");
       }
 
       // Handle AI hint response
       if (!aiHintResponse.ok) {
-        if (aiHintResponse.status === 401) {
-          // Unauthorized - redirect to login
-          window.location.href = "/login";
-          return;
-        }
-
         const error: ApiError = await aiHintResponse.json();
+        
+        // Handle global errors (401/403/5xx/429)
+        if (shouldHandleGlobally(error)) {
+          setGlobalError(error);
+          // For auth errors, don't throw - let GlobalErrorBanner handle redirect
+          if (error.error.code === "unauthorized" || error.error.code === "forbidden") {
+            return;
+          }
+        }
+        
         throw new Error(error.error?.message || "Błąd pobierania AI hint");
       }
 

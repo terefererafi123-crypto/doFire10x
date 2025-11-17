@@ -42,10 +42,14 @@ export const EmailField = React.forwardRef<HTMLInputElement, EmailFieldProps>(
       <div className="space-y-2">
         <label
           htmlFor={fieldId}
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+          className="text-sm font-medium leading-none text-foreground peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
         >
           {label}
-          {required && <span className="text-destructive ml-1">*</span>}
+          {required && (
+            <span className="text-destructive ml-1" aria-label="wymagane">
+              *
+            </span>
+          )}
         </label>
         <Input
           ref={ref}
@@ -62,13 +66,17 @@ export const EmailField = React.forwardRef<HTMLInputElement, EmailFieldProps>(
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? errorId : undefined}
           aria-required={required}
-          className={cn(error && "border-destructive focus-visible:ring-destructive")}
+          aria-label={label}
+          className={cn(
+            error && "border-destructive focus-visible:ring-destructive focus-visible:ring-2",
+            "transition-colors"
+          )}
         />
         {error && (
           <p
             id={errorId}
             role="alert"
-            className="text-sm text-destructive"
+            className="text-sm font-medium text-destructive"
             aria-live="polite"
           >
             {error}

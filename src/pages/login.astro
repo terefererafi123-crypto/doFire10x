@@ -10,13 +10,15 @@ if (import.meta.env.SSR) {
 ---
 
 <Layout title="Logowanie - DoFIRE">
-  <main class="flex min-h-screen items-center justify-center bg-background px-4 py-12">
+  <main class="flex min-h-screen items-center justify-center bg-background px-4 py-12" role="main">
     <div class="w-full max-w-md space-y-8">
       <div class="text-center">
-        <h1 class="text-3xl font-bold tracking-tight">DoFIRE</h1>
-        <p class="mt-2 text-muted-foreground">Zaloguj się do swojego konta</p>
+        <h1 class="text-3xl font-bold tracking-tight text-foreground">DoFIRE</h1>
+        <p class="mt-2 text-sm text-muted-foreground">Zaloguj się do swojego konta</p>
       </div>
-      <LoginForm client:load />
+      <div class="rounded-lg border border-border bg-card p-6 shadow-sm">
+        <LoginForm client:load />
+      </div>
     </div>
   </main>
 </Layout>

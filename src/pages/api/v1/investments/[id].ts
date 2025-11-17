@@ -3,8 +3,8 @@
 
 import type { APIRoute } from "astro";
 import { z } from "zod";
-import { deleteInvestmentById } from "../../../lib/services/investment.service";
-import type { ApiError } from "../../../types";
+import { deleteInvestmentById } from "../../../../lib/services/investment.service";
+import type { ApiError } from "../../../../types";
 
 export const prerender = false;
 

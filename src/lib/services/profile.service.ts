@@ -3,7 +3,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../db/database.types.ts";
-import type { ProfileDto, UpdateProfileCommand } from "../../types.ts";
+import type { CreateProfileCommand, ProfileDto, UpdateProfileCommand } from "../../types.ts";
 import type { Tables, TablesUpdate } from "../../db/database.types.ts";
 
 type DbProfileRow = Tables<"profiles">;
@@ -69,6 +69,81 @@ export async function getProfileByUserId(
   }
 
   // Map DB row to DTO (they have the same structure, but this ensures type safety)
+  const profile: ProfileDto = {
+    id: data.id,
+    user_id: data.user_id,
+    monthly_expense: data.monthly_expense,
+    withdrawal_rate_pct: data.withdrawal_rate_pct,
+    expected_return_pct: data.expected_return_pct,
+    birth_date: data.birth_date,
+    created_at: data.created_at,
+    updated_at: data.updated_at,
+  };
+
+  return profile;
+}
+
+/**
+ * Creates a new user profile.
+ * Uses RLS (Row Level Security) to ensure users can only create their own profile.
+ * The user_id is automatically set from auth.uid() by RLS.
+ *
+ * @param supabase - Supabase client instance with authenticated user context
+ * @param userId - ID of the authenticated user
+ * @param command - Profile creation command
+ * @returns Promise resolving to created ProfileDto
+ * @throws Error with code '23505' if profile already exists (unique constraint violation)
+ * @throws Error with code '23514' if data violates CHECK constraints
+ * @throws DatabaseError if database operation fails unexpectedly
+ *
+ * @example
+ * ```typescript
+ * try {
+ *   const profile = await createProfile(supabase, user.id, {
+ *     monthly_expense: 4500.00,
+ *     withdrawal_rate_pct: 4.00,
+ *     expected_return_pct: 7.00,
+ *     birth_date: "1992-05-12"
+ *   });
+ * } catch (error) {
+ *   if (error.code === '23505') {
+ *     // Handle unique constraint violation (profile already exists)
+ *   }
+ *   throw error;
+ * }
+ * ```
+ */
+export async function createProfile(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  command: CreateProfileCommand
+): Promise<ProfileDto> {
+  // RLS automatically ensures user_id = auth.uid()
+  // Additional safety: explicitly set user_id (defense in depth)
+  const { data, error } = await supabase
+    .from("profiles")
+    .insert({
+      user_id: userId,
+      monthly_expense: command.monthly_expense,
+      withdrawal_rate_pct: command.withdrawal_rate_pct,
+      expected_return_pct: command.expected_return_pct,
+      birth_date: command.birth_date || null,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    // Re-throw error with code for proper handling in endpoint
+    // 23505 = unique constraint violation (profile already exists)
+    // 23514 = check constraint violation (data validation failed)
+    throw error;
+  }
+
+  if (!data) {
+    throw new DatabaseError("Failed to create profile: no data returned");
+  }
+
+  // Map DB row to DTO
   const profile: ProfileDto = {
     id: data.id,
     user_id: data.user_id,

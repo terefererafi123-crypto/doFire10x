@@ -189,27 +189,23 @@ export async function getInvestments(
     // However, for better performance, we'll use a two-part filter approach.
     
     if (sortDirection) {
-      // ASC: We want records where sort_column > last_sort_value
-      // OR (sort_column = last_sort_value AND id > last_id)
-      // Simplified: filter by sort_column >= last_sort_value, then filter by id > last_id if sort_column = last_sort_value
+      // ASC: We want records where (sort_column, id) > (last_sort_value, last_id)
+      // This means: sort_column > last_sort_value OR (sort_column = last_sort_value AND id > last_id)
+      // Since PostgREST doesn't support compound tuple comparisons, we use >= and filter in post-processing
       if (sortColumn === "acquired_at") {
         queryBuilder = queryBuilder.gte("acquired_at", cursorData.last_sort_value as string);
       } else {
         queryBuilder = queryBuilder.gte("amount", cursorData.last_sort_value as number);
       }
-      // Additional filter for tie-breaking: if sort_column equals, id must be greater
-      // We'll handle this in post-processing for simplicity
     } else {
-      // DESC: We want records where sort_column < last_sort_value
-      // OR (sort_column = last_sort_value AND id > last_id)
-      // Simplified: filter by sort_column <= last_sort_value, then filter by id > last_id if sort_column = last_sort_value
+      // DESC: We want records where (sort_column, id) < (last_sort_value, last_id)
+      // This means: sort_column < last_sort_value OR (sort_column = last_sort_value AND id > last_id)
+      // Since PostgREST doesn't support compound tuple comparisons, we use <= and filter in post-processing
       if (sortColumn === "acquired_at") {
         queryBuilder = queryBuilder.lte("acquired_at", cursorData.last_sort_value as string);
       } else {
         queryBuilder = queryBuilder.lte("amount", cursorData.last_sort_value as number);
       }
-      // Additional filter for tie-breaking: if sort_column equals, id must be greater
-      // We'll handle this in post-processing for simplicity
     }
   }
 
@@ -233,24 +229,35 @@ export async function getInvestments(
   if (query.cursor) {
     const cursorData = decodeCursor(query.cursor);
     if (cursorData) {
-      // Filter out records that match the cursor exactly (tie-breaking)
+      // Filter out records that should be excluded based on cursor (tie-breaking)
+      // For stable pagination: exclude records where (sort_column, id) <= (last_sort_value, last_id)
       filteredData = filteredData.filter((item) => {
         const sortValue = sortColumn === "acquired_at" ? item.acquired_at : item.amount;
         
+        // Compare sort values (handle both string dates and numbers)
+        const sortValueNum = typeof sortValue === "string" ? new Date(sortValue).getTime() : sortValue;
+        const cursorValueNum = typeof cursorData.last_sort_value === "string" 
+          ? new Date(cursorData.last_sort_value).getTime() 
+          : cursorData.last_sort_value;
+        
         if (sortDirection) {
-          // ASC: exclude if (sort_column = last_sort_value AND id <= last_id)
-          if (sortValue === cursorData.last_sort_value) {
+          // ASC: include if sort_column > last_sort_value OR (sort_column = last_sort_value AND id > last_id)
+          if (sortValueNum > cursorValueNum) {
+            return true;
+          }
+          if (sortValueNum === cursorValueNum) {
             return item.id > cursorData.last_id;
           }
-          // Include if sort_column > last_sort_value
-          return true;
+          return false;
         } else {
-          // DESC: exclude if (sort_column = last_sort_value AND id <= last_id)
-          if (sortValue === cursorData.last_sort_value) {
+          // DESC: include if sort_column < last_sort_value OR (sort_column = last_sort_value AND id > last_id)
+          if (sortValueNum < cursorValueNum) {
+            return true;
+          }
+          if (sortValueNum === cursorValueNum) {
             return item.id > cursorData.last_id;
           }
-          // Include if sort_column < last_sort_value
-          return true;
+          return false;
         }
       });
     }

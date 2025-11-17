@@ -25,14 +25,18 @@ export const prerender = false;
  * - sort: enum (optional) - Sort order: acquired_at_desc (default), acquired_at_asc, amount_desc, amount_asc
  *
  * @returns 200 OK with InvestmentListResponseDto on success
- * @returns 400 Bad Request if query parameters are invalid
+ * @returns 400 Bad Request if query parameters are invalid or cursor format is invalid
  * @returns 401 Unauthorized if authentication fails
  * @returns 500 Internal Server Error on unexpected errors
  *
- * Headers:
+ * Response headers:
+ * - Content-Type: application/json
+ * - Cache-Control: private, max-age=60 (for queries without cursor)
+ * - Cache-Control: private, no-cache, no-store, must-revalidate (for queries with cursor)
+ *
+ * Request headers:
  * - Authorization: Bearer <Supabase-JWT> (required)
  * - X-Request-Id: <uuid> (optional, for log correlation)
- * - Accept-Language: <locale> (optional, for error message localization)
  */
 export const GET: APIRoute = async ({ request, locals }) => {
   // 1. Weryfikacja autoryzacji - early return guard clause
@@ -121,8 +125,16 @@ export const GET: APIRoute = async ({ request, locals }) => {
   try {
     const result: InvestmentListResponseDto = await getInvestments(supabase, validatedQuery);
 
-    // 4. Sukces - zwrócenie InvestmentListResponseDto
-    return jsonResponse(result, 200);
+    // 4. Sukces - zwrócenie InvestmentListResponseDto z nagłówkami cache
+    // Cache-Control: private, max-age=60 dla zapytań z filtrami (cache tylko dla tego użytkownika)
+    // Zapytania z kursorem nie powinny być cache'owane (dynamiczne wyniki)
+    const cacheControl = validatedQuery.cursor 
+      ? "private, no-cache, no-store, must-revalidate"
+      : "private, max-age=60";
+    
+    const response = jsonResponse(result, 200);
+    response.headers.set("Cache-Control", cacheControl);
+    return response;
   } catch (error) {
     // 5. Obsługa błędów - sprawdzenie typu błędu
     const requestId = request.headers.get("X-Request-Id");

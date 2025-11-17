@@ -3,8 +3,35 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../db/database.types";
-import type { InvestmentDto, InvestmentListResponseDto, InvestmentListQuery, Cursor } from "../../types";
+import type {
+  InvestmentDto,
+  InvestmentListResponseDto,
+  InvestmentListQuery,
+  UpdateInvestmentCommand,
+  Cursor,
+} from "../../types";
 import { toInvestmentDto } from "../../types";
+import type { TablesUpdate } from "../../db/database.types";
+
+/**
+ * Custom error thrown when an investment is not found or access is denied.
+ */
+export class InvestmentNotFoundError extends Error {
+  constructor(investmentId: string) {
+    super(`Investment not found: ${investmentId}`);
+    this.name = "InvestmentNotFoundError";
+  }
+}
+
+/**
+ * Custom error thrown when a database operation fails unexpectedly.
+ */
+export class DatabaseError extends Error {
+  constructor(message: string, public originalError?: unknown) {
+    super(message);
+    this.name = "DatabaseError";
+  }
+}
 
 /**
  * Retrieves an investment by ID for the authenticated user.
@@ -286,5 +313,117 @@ export async function getInvestments(
     items: investmentDtos,
     next_cursor: nextCursor,
   };
+}
+
+/**
+ * Builds a database update payload from an UpdateInvestmentCommand.
+ * Only includes fields that are present in the command (whitelist approach).
+ * Handles null values for notes (to allow deletion of notes).
+ *
+ * @param command - Update command with optional fields
+ * @returns Database update payload with only provided fields
+ */
+function buildInvestmentUpdatePayload(
+  command: UpdateInvestmentCommand
+): TablesUpdate<"investments"> {
+  const payload: TablesUpdate<"investments"> = {};
+
+  if (command.type !== undefined) {
+    payload.type = command.type;
+  }
+
+  if (command.amount !== undefined) {
+    // Ensure amount is formatted to 2 decimal places
+    payload.amount = Number(command.amount.toFixed(2));
+  }
+
+  if (command.acquired_at !== undefined) {
+    payload.acquired_at = command.acquired_at;
+  }
+
+  if (command.notes !== undefined) {
+    // Allow null to delete notes, or string to update
+    payload.notes = command.notes;
+  }
+
+  return payload;
+}
+
+/**
+ * Updates an investment by ID for the authenticated user.
+ * Uses RLS (Row Level Security) to ensure users can only update their own investments.
+ *
+ * @param supabase - Supabase client instance with authenticated user context
+ * @param userId - ID of the authenticated user (for verification)
+ * @param investmentId - UUID of the investment to update
+ * @param command - Update command with fields to update (partial)
+ * @returns Promise resolving to updated InvestmentDto
+ * @throws InvestmentNotFoundError if investment doesn't exist or user doesn't have access
+ * @throws DatabaseError if database operation fails unexpectedly
+ *
+ * @example
+ * ```typescript
+ * const updated = await updateInvestment(supabase, userId, investmentId, {
+ *   amount: 15000.00,
+ *   notes: "Updated notes"
+ * });
+ * ```
+ */
+export async function updateInvestment(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  investmentId: string,
+  command: UpdateInvestmentCommand
+): Promise<InvestmentDto> {
+  // 1. Verify investment exists and belongs to user (early return guard clause)
+  const { data: existing, error: fetchError } = await supabase
+    .from("investments")
+    .select("id")
+    .eq("id", investmentId)
+    .eq("user_id", userId)
+    .single();
+
+  if (fetchError) {
+    // PGRST116 means no rows returned (not found or access denied)
+    if (fetchError.code === "PGRST116") {
+      throw new InvestmentNotFoundError(investmentId);
+    }
+    // Other errors are unexpected
+    throw new DatabaseError("Failed to verify investment existence", fetchError);
+  }
+
+  if (!existing) {
+    throw new InvestmentNotFoundError(investmentId);
+  }
+
+  // 2. Build update payload (whitelist approach - only provided fields)
+  const updatePayload = buildInvestmentUpdatePayload(command);
+
+  // 3. Execute UPDATE with select to return updated row
+  // RLS ensures user can only update their own investments
+  // Additional safety: filter by both id and user_id (defense in depth)
+  const { data, error } = await supabase
+    .from("investments")
+    .update(updatePayload)
+    .eq("id", investmentId)
+    .eq("user_id", userId)
+    .select()
+    .single();
+
+  if (error) {
+    // PGRST116 means no rows returned (shouldn't happen after verification, but handle it)
+    if (error.code === "PGRST116") {
+      throw new InvestmentNotFoundError(investmentId);
+    }
+    // Other errors are unexpected
+    throw new DatabaseError("Failed to update investment", error);
+  }
+
+  if (!data) {
+    throw new InvestmentNotFoundError(investmentId);
+  }
+
+  // 4. Convert DB row to DTO (removes user_id)
+  return toInvestmentDto(data);
 }
 

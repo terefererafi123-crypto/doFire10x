@@ -2,7 +2,7 @@
 // Zod schema for validating investment-related parameters
 
 import { z } from "zod";
-import type { InvestmentListQuery } from "../../types";
+import type { InvestmentListQuery, UpdateInvestmentCommand } from "../../types";
 
 /**
  * Zod schema for validating the investment ID path parameter.
@@ -85,5 +85,89 @@ export type { InvestmentListQuery };
  */
 export function validateInvestmentListQuery(query: Record<string, string | undefined>) {
   return investmentListQuerySchema.safeParse(query);
+}
+
+/**
+ * Zod schema for validating request body for PATCH /v1/investments/{id} endpoint.
+ *
+ * Validation rules:
+ * - type: optional enum value (etf, bond, stock, cash)
+ * - amount: optional positive number, max 999999999999999.99
+ * - acquired_at: optional ISO date string (YYYY-MM-DD), cannot be a future date
+ * - notes: optional string (1-1000 chars after trim) or null
+ * - At least one field must be provided (enforced by refine)
+ *
+ * @example
+ * ```typescript
+ * const result = updateInvestmentSchema.safeParse({
+ *   amount: 15000.00,
+ *   notes: "Updated notes"
+ * });
+ * ```
+ */
+export const updateInvestmentSchema = z
+  .object({
+    type: z.enum(["etf", "bond", "stock", "cash"]).optional(),
+    amount: z
+      .number()
+      .positive("Amount must be greater than zero")
+      .max(999999999999999.99, "Amount exceeds maximum value")
+      .optional(),
+    acquired_at: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD")
+      .refine(
+        (date) => {
+          const dateObj = new Date(date);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
+          return dateObj <= today;
+        },
+        { message: "acquired_at cannot be a future date" }
+      )
+      .optional(),
+    notes: z
+      .union([
+        z.string().trim().min(1, "Notes must be at least 1 character after trimming").max(1000, "Notes must not exceed 1000 characters"),
+        z.null(),
+      ])
+      .optional(),
+  })
+  .strict() // Reject unknown fields (causes 400 bad_request)
+  .refine(
+    (data) => {
+      // Check if at least one field is provided (excluding undefined values)
+      return Object.keys(data).some((key) => data[key as keyof typeof data] !== undefined);
+    },
+    { message: "At least one field must be provided for update" }
+  );
+
+/**
+ * TypeScript type inferred from the Zod schema.
+ * Represents the validated update command for investment endpoints.
+ */
+export type UpdateInvestmentSchemaType = z.infer<typeof updateInvestmentSchema>;
+
+/**
+ * Validates request body for PATCH /v1/investments/{id} endpoint.
+ *
+ * @param body - Raw request body (unknown type, typically from JSON.parse)
+ * @returns Validation result with validated UpdateInvestmentCommand or errors
+ *
+ * @example
+ * ```typescript
+ * const result = validateUpdateInvestment(body);
+ * if (result.success) {
+ *   // Use result.data as UpdateInvestmentCommand
+ * } else {
+ *   // Handle result.error
+ * }
+ * ```
+ */
+export function validateUpdateInvestment(body: unknown) {
+  return updateInvestmentSchema.safeParse(body) as z.SafeParseReturnType<
+    unknown,
+    UpdateInvestmentCommand
+  >;
 }
 

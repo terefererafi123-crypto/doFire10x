@@ -1,0 +1,52 @@
+---
+import AppLayout from "../layouts/AppLayout.astro";
+import { OnboardingContainer } from "../components/onboarding/OnboardingContainer";
+---
+
+<AppLayout title="Onboarding - DoFIRE">
+  <OnboardingContainer client:load />
+</AppLayout>
+
+<script>
+  // Client-side redirect check for users who already have a profile
+  import { supabaseClient } from "../db/supabase.client";
+
+  async function checkProfile() {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    
+    if (!session) {
+      // No session - redirect to login
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/v1/me/profile", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Profile exists - redirect to dashboard
+        window.location.href = "/dashboard";
+      } else if (response.status === 404) {
+        // No profile - stay on onboarding (this is expected)
+        return;
+      } else if (response.status === 401) {
+        // Unauthorized - redirect to login
+        await supabaseClient.auth.signOut();
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      // Network error - allow user to continue (they might be offline)
+      console.error("Error checking profile:", error);
+    }
+  }
+
+  // Check profile on page load
+  if (typeof window !== "undefined") {
+    checkProfile();
+  }
+</script>
+

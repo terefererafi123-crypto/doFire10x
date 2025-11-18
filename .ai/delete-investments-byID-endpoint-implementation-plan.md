@@ -517,3 +517,4 @@ export async function deleteInvestmentById(
 - ✅ Hard delete: Brak soft delete, zgodnie z DB plan
 - ✅ Indeksy: Wykorzystanie `investments_pkey` i `investments_user_id_idx`
 
+

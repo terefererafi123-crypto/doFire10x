@@ -524,3 +524,4 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
    - [ ] Lint bez błędów
    - [ ] Zgodność z regułami implementacji (backend.mdc, astro.mdc)
 
+

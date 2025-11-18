@@ -630,3 +630,4 @@ if (response.ok) {
     - Dodanie komentarzy w kodzie dla złożonych fragmentów
     - Aktualizacja dokumentacji projektu (jeśli istnieje)
 
+

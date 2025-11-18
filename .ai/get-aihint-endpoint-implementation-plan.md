@@ -552,3 +552,4 @@ GET /v1/me/ai-hint
 - Lokalizacje są łatwe do rozszerzenia - dodaj nowy język do mapy lokalizacji
 - Struktura odpowiedzi jest zgodna z typem `AiHintDto` z `src/types.ts`
 
+

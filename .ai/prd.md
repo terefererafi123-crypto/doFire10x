@@ -100,6 +100,8 @@ Aplikacja DoFIRE rozwiązuje ten problem, oferując proste, dynamiczne narzędzi
 **Opis:**  
 Jako użytkownik chcę móc zalogować się przez link magiczny, aby uzyskać dostęp do mojego profilu finansowego.
 
+**Wymaga logowania:** Nie
+
 **Kryteria akceptacji:**
 - Użytkownik wprowadza e-mail i otrzymuje link logujący.
 - Po kliknięciu linku zostaje zalogowany.
@@ -112,6 +114,8 @@ Jako użytkownik chcę móc zalogować się przez link magiczny, aby uzyskać do
 **Opis:**  
 Jako użytkownik chcę dodać inwestycję (ETF, obligacje, akcje, gotówka), aby aplikacja mogła obliczyć mój postęp do FIRE.
 
+**Wymaga logowania:** Tak
+
 **Kryteria akceptacji:**
 - Formularz wymaga wypełnienia pól: type, amount, acquired_at.
 - Kwota > 0, data ≤ dziś.
@@ -123,6 +127,8 @@ Jako użytkownik chcę dodać inwestycję (ETF, obligacje, akcje, gotówka), aby
 **Opis:**  
 Jako użytkownik chcę móc edytować lub usuwać inwestycje, aby zaktualizować dane portfela.
 
+**Wymaga logowania:** Tak
+
 **Kryteria akceptacji:**
 - Użytkownik może zaktualizować amount i datę.
 - Usunięcie inwestycji wymaga potwierdzenia (modal).
@@ -133,6 +139,8 @@ Jako użytkownik chcę móc edytować lub usuwać inwestycje, aby zaktualizować
 ### US-004: Przeliczenie wskaźników FIRE
 **Opis:**  
 Jako użytkownik chcę kliknąć przycisk „Przelicz wskaźniki”, aby zobaczyć swoją liczbę FIRE i wiek, w którym ją osiągnę.
+
+**Wymaga logowania:** Tak
 
 **Kryteria akceptacji:**
 - Obliczenia wykonywane w runtime.
@@ -147,6 +155,8 @@ Jako użytkownik chcę kliknąć przycisk „Przelicz wskaźniki”, aby zobaczy
 **Opis:**  
 Jako użytkownik chcę otrzymać krótką analizę mojego portfela, aby zrozumieć jego strukturę i poziom ryzyka.
 
+**Wymaga logowania:** Tak
+
 **Kryteria akceptacji:**
 - System oblicza procentowy udział każdego typu aktywów.
 - Wyświetla 1–2 zdania (≤160 znaków) opisujące strukturę.
@@ -157,6 +167,8 @@ Jako użytkownik chcę otrzymać krótką analizę mojego portfela, aby zrozumie
 ### US-006: Walidacje i błędy
 **Opis:**  
 Jako użytkownik chcę być informowany o błędach przy wprowadzaniu danych lub problemach z autoryzacją.
+
+**Wymaga logowania:** Częściowo (walidacje formularzy wymagają logowania; błędy autoryzacji mogą wystąpić bez logowania)
 
 **Kryteria akceptacji:**
 - Kwota ≤ 0 → komunikat „Kwota musi być większa od zera”.

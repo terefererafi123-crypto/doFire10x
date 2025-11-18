@@ -1,8 +1,5 @@
 ---
-import Welcome from "../components/Welcome.astro";
-import Layout from "../layouts/Layout.astro";
+// Server-side redirect to login page
+// Login page will check session and redirect to dashboard if user is logged in
+return Astro.redirect("/login", 302);
 ---
-
-<Layout>
-  <Welcome />
-</Layout>

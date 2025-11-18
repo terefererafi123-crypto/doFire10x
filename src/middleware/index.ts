@@ -9,6 +9,14 @@ export const onRequest = defineMiddleware((context, next) => {
   const supabaseUrl = import.meta.env.SUPABASE_URL;
   const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
   
+  if (!supabaseUrl) {
+    throw new Error('SUPABASE_URL is required. Please set it in your .env file.');
+  }
+  
+  if (!supabaseAnonKey) {
+    throw new Error('SUPABASE_KEY is required. Please set it in your .env file.');
+  }
+  
   const authHeader = context.request.headers.get('Authorization');
   
   // Create client with token in headers if Authorization header is present

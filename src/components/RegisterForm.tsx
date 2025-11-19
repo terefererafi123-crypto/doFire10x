@@ -217,36 +217,91 @@ export default function RegisterForm() {
         setTimeout(() => reject(new Error("TIMEOUT")), REQUEST_TIMEOUT_MS);
       });
 
-      // TODO: Implement actual registration with Supabase
-      // const signUpPromise = supabaseClient.auth.signUp({
-      //   email: state.email,
-      //   password: state.password,
-      // });
+      // Call register API endpoint
+      const registerPromise = fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: state.email,
+          password: state.password,
+        }),
+      });
 
-      // const { error } = await Promise.race([signUpPromise, timeoutPromise]);
+      const response = await Promise.race([registerPromise, timeoutPromise]);
 
-      // For now, simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        let errorMessage = "Nie udało się utworzyć konta. Spróbuj ponownie.";
+        let rateLimitCooldown: number | undefined;
 
-      // Simulate error for demonstration
-      // In real implementation, handle Supabase errors:
-      // - 'User already registered' → "Użytkownik o tym adresie email już istnieje"
-      // - 'Password too weak' → "Hasło jest zbyt słabe. Minimum 6 znaków"
-      // - 'Invalid email' → "Nieprawidłowy format adresu email"
-      // - 'Too many requests' → "Zbyt wiele prób. Spróbuj ponownie za kilka minut"
+        // Handle specific error cases
+        if (response.status === 429) {
+          errorMessage = "Zbyt wiele prób. Spróbuj ponownie za kilka minut.";
+          rateLimitCooldown = RATE_LIMIT_COOLDOWN_MS / 1000;
+        } else if (response.status === 409) {
+          errorMessage = "Użytkownik o tym adresie e-mail już istnieje.";
+        } else if (data.error) {
+          // Use error message from API if available
+          const apiError = data.error.toLowerCase();
+          if (apiError.includes("already registered") || apiError.includes("user already")) {
+            errorMessage = "Użytkownik o tym adresie e-mail już istnieje.";
+          } else if (apiError.includes("password") && apiError.includes("weak")) {
+            errorMessage = "Hasło jest zbyt słabe. Minimum 6 znaków.";
+          } else if (apiError.includes("invalid email") || apiError.includes("email")) {
+            errorMessage = "Nieprawidłowy format adresu e-mail.";
+          } else if (apiError.includes("rate limit") || apiError.includes("too many")) {
+            errorMessage = "Zbyt wiele prób. Spróbuj ponownie za kilka minut.";
+            rateLimitCooldown = RATE_LIMIT_COOLDOWN_MS / 1000;
+          } else {
+            errorMessage = data.error;
+          }
+        }
 
-      // Success
+        setState((prev) => ({
+          ...prev,
+          isLoading: false,
+          errors: {
+            submit: errorMessage,
+          },
+          rateLimitCooldown,
+        }));
+
+        // Start countdown if rate limited
+        if (rateLimitCooldown) {
+          if (rateLimitIntervalRef.current) {
+            clearInterval(rateLimitIntervalRef.current);
+          }
+          
+          rateLimitIntervalRef.current = setInterval(() => {
+            setState((prev) => {
+              if (!prev.rateLimitCooldown || prev.rateLimitCooldown <= 1) {
+                if (rateLimitIntervalRef.current) {
+                  clearInterval(rateLimitIntervalRef.current);
+                  rateLimitIntervalRef.current = null;
+                }
+                const { rateLimitCooldown: _, ...rest } = prev;
+                return rest;
+              }
+              return {
+                ...prev,
+                rateLimitCooldown: prev.rateLimitCooldown - 1,
+              };
+            });
+          }, 1000);
+        }
+
+        return;
+      }
+
+      // Success - inform user about confirmation email
       setState((prev) => ({
         ...prev,
         isLoading: false,
         isSuccess: true,
-        successMessage: "Konto zostało utworzone. Zostaniesz przekierowany...",
+        successMessage: "Konto zostało utworzone. Sprawdź swoją skrzynkę e-mail i kliknij w link potwierdzający, aby aktywować konto.",
       }));
-
-      // TODO: After successful registration, check profile and redirect
-      // - Check if user has a profile
-      // - If no profile → redirect to /onboarding
-      // - If profile exists → redirect to /dashboard
     } catch (error) {
       // Handle timeout or network errors
       let errorMessage = "Nie udało się utworzyć konta. Sprawdź połączenie z internetem i spróbuj ponownie.";

@@ -65,11 +65,16 @@ export function TopNav() {
     // Check immediately
     checkAuth();
 
-    // Also check again after a short delay (in case session is still syncing)
-    const timeoutId = setTimeout(() => {
-      console.log("TopNav: Rechecking auth after delay...");
+    // Also check again after delays (in case session is still syncing)
+    const timeoutId1 = setTimeout(() => {
+      console.log("TopNav: Rechecking auth after 300ms...");
       checkAuth();
-    }, 500);
+    }, 300);
+    
+    const timeoutId2 = setTimeout(() => {
+      console.log("TopNav: Rechecking auth after 1000ms...");
+      checkAuth();
+    }, 1000);
 
     // Listen for auth state changes
     const {
@@ -81,7 +86,8 @@ export function TopNav() {
     });
 
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(timeoutId1);
+      clearTimeout(timeoutId2);
       subscription.unsubscribe();
     };
   }, []);

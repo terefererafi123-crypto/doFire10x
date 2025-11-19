@@ -89,6 +89,16 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
       session = retrySession;
     }
 
+    // Check if user is trying to add investment (step=2) - if so, skip profile check
+    const urlParams = new URLSearchParams(window.location.search);
+    const stepParam = urlParams.get("step");
+    if (stepParam === "2") {
+      // User wants to add investment - allow them to stay on onboarding step 2
+      // Don't check profile, just let them add investment
+      console.log("Onboarding: step=2 detected, allowing to add investment");
+      return;
+    }
+
     try {
       const response = await fetch("/api/v1/me/profile", {
         headers: {
@@ -97,15 +107,7 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
       });
 
       if (response.ok) {
-        // Profile exists - check if user is trying to add investment (step=2)
-        const urlParams = new URLSearchParams(window.location.search);
-        const stepParam = urlParams.get("step");
-        if (stepParam === "2") {
-          // User wants to add investment - allow them to stay on onboarding step 2
-          console.log("Onboarding: Profile exists but step=2, allowing to add investment");
-          return;
-        }
-        // Otherwise redirect to dashboard
+        // Profile exists - redirect to dashboard (only if not step=2, which we already checked)
         console.log("Onboarding: Profile exists, redirecting to /dashboard");
         window.location.href = "/dashboard";
       } else if (response.status === 404) {

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import type {
   CreateProfileCommand,
   CreateInvestmentCommand,
@@ -16,7 +16,20 @@ const REQUEST_TIMEOUT_MS = 30000; // 30 seconds
  * Custom hook for onboarding API calls
  */
 export function useOnboardingApi() {
-  const { setError: setGlobalError } = useGlobalError();
+  const [isMounted, setIsMounted] = useState(false);
+  const globalErrorContext = useGlobalError();
+  
+  // Wait for component to mount before using context to avoid hydration issues
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  // Use setGlobalError only after component has mounted
+  const setGlobalError = useCallback((error: ApiError | null) => {
+    if (isMounted) {
+      globalErrorContext.setError(error);
+    }
+  }, [isMounted, globalErrorContext.setError]);
   const createProfile = useCallback(
     async (data: CreateProfileCommand): Promise<ProfileDto> => {
       const authToken = await getAuthToken();
@@ -63,7 +76,7 @@ export function useOnboardingApi() {
         throw error;
       }
     },
-    []
+    [setGlobalError]
   );
 
   const createInvestment = useCallback(
@@ -112,7 +125,7 @@ export function useOnboardingApi() {
         throw error;
       }
     },
-    []
+    [setGlobalError]
   );
 
   return {

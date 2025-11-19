@@ -66,30 +66,39 @@ export function EditInvestmentModal({
     setSubmitError(null);
   };
 
-  const validateForm = (): boolean => {
+  const validateForm = (updateCommand: UpdateInvestmentCommand): boolean => {
     const newErrors: InvestmentFormErrors = {};
 
-    if (!formData.type) {
-      newErrors.type = "Typ inwestycji jest wymagany";
-    }
-
-    if (!formData.amount || formData.amount <= 0) {
-      newErrors.amount = "Kwota musi być większa od zera";
-    }
-
-    if (!formData.acquired_at) {
-      newErrors.acquired_at = "Data nabycia jest wymagana";
-    } else {
-      const acquiredDate = new Date(formData.acquired_at);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      if (acquiredDate > today) {
-        newErrors.acquired_at = "Data nabycia nie może być w przyszłości";
+    // Only validate fields that are being updated
+    if (updateCommand.type !== undefined) {
+      if (!updateCommand.type) {
+        newErrors.type = "Typ inwestycji jest wymagany";
       }
     }
 
-    if (formData.notes && formData.notes.length > 1000) {
-      newErrors.notes = "Notatki nie mogą przekraczać 1000 znaków";
+    if (updateCommand.amount !== undefined) {
+      if (!updateCommand.amount || updateCommand.amount <= 0) {
+        newErrors.amount = "Kwota musi być większa od zera";
+      }
+    }
+
+    if (updateCommand.acquired_at !== undefined) {
+      if (!updateCommand.acquired_at) {
+        newErrors.acquired_at = "Data nabycia jest wymagana";
+      } else {
+        const acquiredDate = new Date(updateCommand.acquired_at);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        if (acquiredDate > today) {
+          newErrors.acquired_at = "Data nabycia nie może być w przyszłości";
+        }
+      }
+    }
+
+    if (updateCommand.notes !== undefined && updateCommand.notes !== null) {
+      if (updateCommand.notes.length > 1000) {
+        newErrors.notes = "Notatki nie mogą przekraczać 1000 znaków";
+      }
     }
 
     setErrors(newErrors);
@@ -99,10 +108,6 @@ export function EditInvestmentModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitError(null);
-
-    if (!validateForm()) {
-      return;
-    }
 
     if (!investment) {
       return;
@@ -119,23 +124,43 @@ export function EditInvestmentModal({
       }
 
       // Build update command with only changed fields
+      // Compare values carefully - handle number/string conversions
       const updateCommand: UpdateInvestmentCommand = {};
+      
       if (formData.type !== investment.type) {
         updateCommand.type = formData.type;
       }
-      if (formData.amount !== investment.amount) {
-        updateCommand.amount = formData.amount;
+      
+      // Compare amounts as numbers (handle potential string/number issues)
+      const formAmount = typeof formData.amount === 'string' ? parseFloat(formData.amount) : formData.amount;
+      const investmentAmount = typeof investment.amount === 'string' ? parseFloat(String(investment.amount)) : investment.amount;
+      if (formAmount !== investmentAmount) {
+        updateCommand.amount = formAmount;
       }
-      if (formData.acquired_at !== investment.acquired_at) {
-        updateCommand.acquired_at = formData.acquired_at;
+      
+      // Compare dates (normalize format)
+      const formDate = formData.acquired_at;
+      const investmentDate = investment.acquired_at;
+      if (formDate !== investmentDate) {
+        updateCommand.acquired_at = formDate;
       }
-      if (formData.notes !== (investment.notes || undefined)) {
-        updateCommand.notes = formData.notes || null;
+      
+      // Compare notes (handle null/undefined)
+      const formNotes = formData.notes || null;
+      const investmentNotes = investment.notes || null;
+      if (formNotes !== investmentNotes) {
+        updateCommand.notes = formNotes;
       }
 
       // Check if there are any changes
       if (Object.keys(updateCommand).length === 0) {
         setSubmitError("Nie wprowadzono żadnych zmian");
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Validate only the fields being updated
+      if (!validateForm(updateCommand)) {
         setIsSubmitting(false);
         return;
       }
@@ -151,6 +176,7 @@ export function EditInvestmentModal({
 
       if (!response.ok) {
         const error: ApiError = await response.json();
+        console.error("EditInvestmentModal: API error:", error);
         
         // Handle field-specific validation errors
         if (error.error.fields) {
@@ -167,8 +193,16 @@ export function EditInvestmentModal({
         return;
       }
 
-      // Success - close modal and refresh list
+      // Parse response to verify success
+      const updatedInvestment: InvestmentDto = await response.json();
+      console.log("EditInvestmentModal: Investment updated successfully:", updatedInvestment);
+
+      // Success - close modal first, then refresh list
+      // Closing modal immediately provides better UX
+      setIsSubmitting(false);
       onOpenChange(false);
+      
+      // Refresh list after modal closes
       onSuccess();
     } catch (err) {
       setSubmitError("Wystąpił błąd podczas aktualizacji inwestycji");

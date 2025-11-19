@@ -16,6 +16,7 @@ export function InvestmentsList() {
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   const fetchInvestments = React.useCallback(async () => {
+    console.log("InvestmentsList: fetchInvestments called");
     setIsLoading(true);
     setError(null);
 
@@ -37,6 +38,7 @@ export function InvestmentsList() {
           Authorization: `Bearer ${authToken}`,
         },
         signal: controller.signal,
+        cache: "no-store", // Prevent browser cache to ensure fresh data
       });
 
       clearTimeout(timeoutId);
@@ -52,6 +54,7 @@ export function InvestmentsList() {
       }
 
       const data = await response.json();
+      console.log("InvestmentsList: Fetched investments:", data.items);
       setInvestments(data.items || []);
     } catch (err) {
       if (err instanceof Error && err.name === "AbortError") {
@@ -206,6 +209,7 @@ export function InvestmentsList() {
         open={isEditModalOpen}
         onOpenChange={setIsEditModalOpen}
         onSuccess={() => {
+          console.log("InvestmentsList: onSuccess called, refreshing investments list");
           fetchInvestments();
           setEditingInvestment(null);
         }}

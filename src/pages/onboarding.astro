@@ -17,14 +17,15 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
 
   async function checkProfile() {
     // Wait a bit for session to be available (especially after client-side login)
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    // This gives time for setSession() in LoginForm to complete
+    await new Promise((resolve) => setTimeout(resolve, 500));
     
     const { data: { session } } = await supabaseClient.auth.getSession();
     
     if (!session) {
       // No session - wait a bit more and retry (session might still be syncing)
       console.log("Onboarding: No session found, waiting and retrying...");
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       const { data: { session: retrySession } } = await supabaseClient.auth.getSession();
       
       if (!retrySession) {

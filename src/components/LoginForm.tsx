@@ -272,7 +272,6 @@ export default function LoginForm() {
       }
 
       // Success - session is returned directly from signInWithPassword
-      // Session is also stored in localStorage by Supabase (persistSession: true)
       console.log("Login successful, data:", {
         hasSession: !!data?.session,
         hasUser: !!data?.user,
@@ -293,12 +292,7 @@ export default function LoginForm() {
         });
         
         if (!fallbackSession) {
-          console.log("Session still not available, checking localStorage...");
-          // Check localStorage directly
-          const localStorageKeys = Object.keys(localStorage).filter(key => key.includes('supabase'));
-          console.log("Supabase localStorage keys:", localStorageKeys);
-          
-          console.log("Redirecting to /onboarding anyway - session will be checked there");
+          console.log("Session still not available, redirecting to /onboarding anyway");
           window.location.replace("/onboarding");
           return;
         }
@@ -306,6 +300,29 @@ export default function LoginForm() {
         const authToken = fallbackSession.access_token;
         await checkProfileAndRedirect(authToken);
         return;
+      }
+
+      // CRITICAL: Explicitly set session to ensure it's stored in localStorage
+      // createBrowserClient from @supabase/ssr may not automatically persist
+      // the session from signInWithPassword response to localStorage
+      console.log("Setting session explicitly to ensure localStorage persistence...");
+      const { error: setSessionError } = await supabase.auth.setSession({
+        access_token: session.access_token,
+        refresh_token: session.refresh_token,
+      });
+      
+      if (setSessionError) {
+        console.error("Error setting session:", setSessionError.message);
+        // Continue anyway - try to use session from response
+      } else {
+        console.log("Session set successfully in localStorage");
+        // Verify session is now available
+        const { data: { session: verifiedSession } } = await supabase.auth.getSession();
+        if (!verifiedSession) {
+          console.warn("Warning: Session set but getSession() still returns null");
+        } else {
+          console.log("Session verified in localStorage");
+        }
       }
 
       const authToken = session.access_token;

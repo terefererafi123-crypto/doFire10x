@@ -50,7 +50,9 @@ function DashboardContentInner() {
   const { metrics, aiHint, isLoading, error, recalculateMetrics } = useDashboard();
 
   const shares = aiHint?.shares ?? null;
-  const isRecalculateDisabled = !metrics && !isLoading;
+  // Disable button if no metrics, or if there are no investments (invested_total is 0 or null)
+  const hasInvestments = metrics?.inputs.invested_total && metrics.inputs.invested_total > 0;
+  const isRecalculateDisabled = !metrics || !hasInvestments || isLoading;
 
   return (
     <div className="container mx-auto px-4 py-8">

@@ -41,43 +41,57 @@ const PUBLIC_PATHS = [
 
 export const onRequest = defineMiddleware(
   async ({ locals, cookies, url, request, redirect }, next) => {
-    // Skip auth check for public paths
-    if (PUBLIC_PATHS.includes(url.pathname)) {
+    try {
+      // Skip auth check for public paths
+      if (PUBLIC_PATHS.includes(url.pathname)) {
+        const supabase = createSupabaseServerInstance({
+          cookies,
+          headers: request.headers,
+        });
+        locals.supabase = supabase;
+        return next();
+      }
+
+      // For protected paths, verify user authentication
       const supabase = createSupabaseServerInstance({
         cookies,
         headers: request.headers,
       });
+
+      // IMPORTANT: Always get user session first before any other operations
+      // This verifies the JWT token and retrieves user data
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        // User is authenticated - set user data in locals for use in pages
+        locals.user = {
+          email: user.email,
+          id: user.id,
+        };
+      } else {
+        // User is not authenticated - redirect to login with error message
+        // This handles both expired sessions and unauthorized access attempts
+        // Note: /dashboard and other protected routes are NOT in PUBLIC_PATHS,
+        // so they will be caught here and redirected
+        return redirect('/login?error=session_expired');
+      }
+
       locals.supabase = supabase;
       return next();
-    }
-
-    // For protected paths, verify user authentication
-    const supabase = createSupabaseServerInstance({
-      cookies,
-      headers: request.headers,
-    });
-
-    // IMPORTANT: Always get user session first before any other operations
-    // This verifies the JWT token and retrieves user data
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user) {
-      // User is authenticated - set user data in locals for use in pages
-      locals.user = {
-        email: user.email,
-        id: user.id,
-      };
-    } else {
-      // User is not authenticated - redirect to login with error message
-      // This handles both expired sessions and unauthorized access attempts
-      // Note: /dashboard and other protected routes are NOT in PUBLIC_PATHS,
-      // so they will be caught here and redirected
+    } catch (error) {
+      // Handle errors in middleware (e.g., missing environment variables)
+      console.error('Middleware error:', error);
+      
+      // If it's a configuration error, allow public paths to continue
+      // but redirect protected paths to login
+      if (PUBLIC_PATHS.includes(url.pathname)) {
+        return next();
+      }
+      
+      // For protected paths, redirect to login on error
       return redirect('/login?error=session_expired');
     }
-
-    locals.supabase = supabase;
-    return next();
   },
 );

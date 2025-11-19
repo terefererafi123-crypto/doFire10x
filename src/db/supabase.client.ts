@@ -26,41 +26,48 @@ export const createSupabaseServerInstance = (context: {
   headers: Headers;
   cookies: AstroCookies;
 }) => {
-  const supabaseUrl = import.meta.env.SUPABASE_URL;
-  const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
+  try {
+    const supabaseUrl = import.meta.env.SUPABASE_URL;
+    const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
 
-  if (!supabaseUrl) {
-    throw new Error('SUPABASE_URL is required. Please set it in your .env file.');
-  }
+    if (!supabaseUrl) {
+      throw new Error('SUPABASE_URL is required. Please set it in your .env file.');
+    }
 
-  if (!supabaseAnonKey) {
-    throw new Error('SUPABASE_KEY is required. Please set it in your .env file.');
-  }
+    if (!supabaseAnonKey) {
+      throw new Error('SUPABASE_KEY is required. Please set it in your .env file.');
+    }
 
-  const supabase = createServerClient<Database>(
-    supabaseUrl,
-    supabaseAnonKey,
-    {
-      cookieOptions,
-      cookies: {
-        getAll() {
-          return parseCookieHeader(context.headers.get('Cookie') ?? '');
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            context.cookies.set(name, value, options),
-          );
+    const supabase = createServerClient<Database>(
+      supabaseUrl,
+      supabaseAnonKey,
+      {
+        cookieOptions,
+        cookies: {
+          getAll() {
+            return parseCookieHeader(context.headers.get('Cookie') ?? '');
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              context.cookies.set(name, value, options),
+            );
+          },
         },
       },
-    },
-  );
+    );
 
-  return supabase;
+    return supabase;
+  } catch (error) {
+    // Log the error for debugging
+    console.error('Error creating Supabase server instance:', error);
+    throw error;
+  }
 };
 
 // Client-side Supabase client (for React components)
 // Uses PUBLIC_ prefixed env vars for client-side access
-export const supabaseClient = (() => {
+// Lazy initialization to avoid errors during server-side module loading
+export function getSupabaseClient() {
   if (import.meta.env.SSR) {
     // Server-side: return a dummy client (should not be used)
     // Components should use context.locals.supabase instead
@@ -85,4 +92,17 @@ export const supabaseClient = (() => {
   }
 
   return createBrowserClient<Database>(supabaseUrl, supabaseAnonKey);
-})();
+}
+
+// Export a lazy-initialized client for backward compatibility
+// This is only initialized when accessed, not during module import
+let _supabaseClient: ReturnType<typeof createBrowserClient<Database>> | null = null;
+
+export const supabaseClient = new Proxy({} as ReturnType<typeof createBrowserClient<Database>>, {
+  get(_target, prop) {
+    if (!_supabaseClient) {
+      _supabaseClient = getSupabaseClient();
+    }
+    return _supabaseClient[prop as keyof typeof _supabaseClient];
+  },
+});

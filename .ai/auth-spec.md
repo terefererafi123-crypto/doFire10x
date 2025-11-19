@@ -4,14 +4,33 @@
 
 Niniejsza specyfikacja opisuje architekturę modułu rejestracji, logowania i odzyskiwania hasła dla aplikacji DoFIRE, zgodnie z wymaganiami US-001 i US-007 z dokumentu PRD.
 
-### 1.1 Zakres zmian
+### 1.1 Uwagi dotyczące niespójności w PRD
 
-- **Zmiana metody autentykacji**: Przejście z magic link (OTP) na autentykację email/hasło
-- **Nowe funkcjonalności**: Rejestracja użytkownika, odzyskiwanie hasła
-- **Aktualizacja interfejsu**: Rozszerzenie TopNav o przycisk logowania dla niezalogowanych użytkowników
+**Wykryta sprzeczność #1 - Metoda autentykacji**: W dokumencie PRD istnieje sprzeczność między:
+- Sekcją 3.1 (linia 37): "Logowanie przez Supabase magic link (bez haseł)"
+- US-007 (linia 186): "Logowanie wymaga podania adresu email i hasła"
+
+**Rozstrzygnięcie**: US-007 jest bardziej szczegółowym i aktualnym wymaganiem, które precyzuje metodę autentykacji. Niniejsza specyfikacja implementuje wymagania zgodnie z US-007 (email/hasło), ponieważ:
+1. US-007 jest bardziej szczegółowy i zawiera pełną specyfikację procesu logowania
+2. US-007 wymaga również rejestracji i odzyskiwania hasła, co nie jest możliwe z magic link
+3. US-007 jest zgodny z wymaganiami bezpieczeństwa (hasła)
+
+**Rekomendacja**: Sekcja 3.1 w PRD powinna zostać zaktualizowana do: "Logowanie przez Supabase email/hasło" w celu usunięcia sprzeczności.
+
+**Wykryta niejasność #2 - Niepełny tekst w US-007**: W linii 189 PRD tekst jest ucięty: "Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu w głównym" - brakuje zakończenia zdania.
+
+**Rozstrzygnięcie**: Z kontekstu wynika, że chodzi o przycisk w prawym górnym rogu w głównym widoku/nawigacji. Niniejsza specyfikacja implementuje wylogowanie przez przycisk w `TopNav` (sekcja 2.2.5), co jest zgodne z intencją wymagania.
+
+**Rekomendacja**: Linia 189 w PRD powinna zostać uzupełniona, np.: "Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu w głównym widoku aplikacji."
+
+### 1.2 Zakres zmian
+
+- **Zmiana metody autentykacji**: Przejście z magic link (OTP) na autentykację email/hasło (zgodnie z US-007)
+- **Nowe funkcjonalności**: Rejestracja użytkownika, odzyskiwanie hasła (zgodnie z US-007)
+- **Aktualizacja interfejsu**: Rozszerzenie TopNav o przycisk logowania dla niezalogowanych użytkowników (zgodnie z US-007)
 - **Zachowanie zgodności**: Wszystkie istniejące funkcjonalności (CRUD inwestycji, dashboard, obliczenia FIRE) pozostają niezmienione
 
-### 1.2 Założenia techniczne
+### 1.3 Założenia techniczne
 
 - Astro 5 z SSR (output: "server")
 - Supabase Auth z metodą email/password
@@ -1021,51 +1040,53 @@ const response = await fetch("/api/v1/me/profile", {
 
 ## 5. ZGODNOŚĆ Z WYMAGANIAMI
 
-### 5.1 US-001: Logowanie użytkownika
+### 5.1 Weryfikacja pokrycia User Stories
 
-**Wymagania**:
-- ✅ Sesja utrzymuje się między odświeżeniami strony → `persistSession: true`
-- ✅ Przy błędnym tokenie wyświetlany jest komunikat "Zaloguj ponownie" → Obsługa błędów 401/403
+**US-001: Logowanie użytkownika**
+- ✅ **Sesja utrzymuje się między odświeżeniami strony** → Implementacja: `persistSession: true` w konfiguracji Supabase client (sekcja 4.1.2, 4.3.1)
+- ✅ **Przy błędnym tokenie wyświetlany jest komunikat "Zaloguj ponownie"** → Implementacja: Obsługa błędów 401/403 w endpointach API i komponentach (sekcja 3.4.1, 4.4.1)
 
-**Implementacja**:
-- Trwała sesja przez `persistSession: true`
-- Komunikaty błędów w komponentach i endpointach API
+**US-002: Dodanie inwestycji**
+- ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
+- ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
-### 5.2 US-007: Bezpieczny dostęp i uwierzytelnianie
+**US-003: Edycja i usuwanie inwestycji**
+- ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
+- ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
-**Wymagania**:
-- ✅ Logowanie i rejestracja odbywają się na dedykowanych stronach → `/login`, `/register`
-- ✅ Logowanie wymaga podania adresu email i hasła → `signInWithPassword()`
-- ✅ Rejestracja wymaga podania adresu email, hasła i potwierdzenia hasła → `RegisterForm`
-- ✅ Użytkownik może logować się do systemu poprzez przycisk w prawym górnym rogu → `TopNav`
-- ✅ Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu → `TopNav`
-- ✅ Nie korzystamy z zewnętrznych serwisów logowania → Tylko email/password
-- ✅ Odzyskiwanie hasła powinno być możliwe → `forgot-password`, `reset-password`
+**US-004: Przeliczenie wskaźników FIRE**
+- ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
+- ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
-**Implementacja**:
-- Wszystkie wymagania są spełnione przez nową architekturę
+**US-005: Analiza portfela (AI Hint)**
+- ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
+- ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
-### 5.3 Zgodność z istniejącymi funkcjonalnościami
+**US-006: Walidacje i błędy**
+- ✅ **Błąd 401/403 → komunikat "Zaloguj ponownie"** → Implementacja: Obsługa w endpointach API i komponentach (sekcja 3.4.1, 4.4.1)
+- ℹ️ **Walidacje formularzy inwestycji** → Nie wymagają zmian w module autentykacji
 
-**US-002: Dodanie inwestycji**:
-- ✅ Wymaga logowania → Endpointy API używają `getAuthenticatedUser()`
-- ✅ Bez zmian w logice
+**US-007: Bezpieczny dostęp i uwierzytelnianie**
+- ✅ **Logowanie i rejestracja odbywają się na dedykowanych stronach** → Implementacja: `/login`, `/register` (sekcja 2.1.1, 2.1.2)
+- ✅ **Logowanie wymaga podania adresu email i hasła** → Implementacja: `LoginForm` z `signInWithPassword()` (sekcja 2.2.1, 4.2.1)
+- ✅ **Rejestracja wymaga podania adresu email, hasła i potwierdzenia hasła** → Implementacja: `RegisterForm` (sekcja 2.2.2, 4.2.2)
+- ✅ **Użytkownik może logować się do systemu poprzez przycisk w prawym górnym rogu** → Implementacja: `TopNav` z przyciskiem "Zaloguj się" (sekcja 2.2.5)
+- ✅ **Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu** → Implementacja: `TopNav` z przyciskiem "Wyloguj" (sekcja 2.2.5, 2.6.5)
+- ✅ **Nie korzystamy z zewnętrznych serwisów logowania** → Implementacja: Tylko email/password, OAuth wyłączone (sekcja 4.1.1)
+- ✅ **Odzyskiwanie hasła powinno być możliwe** → Implementacja: `/forgot-password`, `/reset-password` (sekcja 2.1.3, 2.1.4, 2.6.3, 2.6.4)
 
-**US-003: Edycja i usuwanie inwestycji**:
-- ✅ Wymaga logowania → Endpointy API używają `getAuthenticatedUser()`
-- ✅ Bez zmian w logice
+### 5.2 Podsumowanie zgodności
 
-**US-004: Przeliczenie wskaźników FIRE**:
-- ✅ Wymaga logowania → Endpointy API używają `getAuthenticatedUser()`
-- ✅ Bez zmian w logice
+**Wszystkie User Stories są w pełni pokryte przez niniejszą specyfikację:**
+- US-001: ✅ Pełne pokrycie (trwała sesja, obsługa błędów)
+- US-002: ✅ Zgodność zachowana (wymaga logowania)
+- US-003: ✅ Zgodność zachowana (wymaga logowania)
+- US-004: ✅ Zgodność zachowana (wymaga logowania)
+- US-005: ✅ Zgodność zachowana (wymaga logowania)
+- US-006: ✅ Pełne pokrycie (obsługa błędów 401/403)
+- US-007: ✅ Pełne pokrycie (wszystkie wymagania zaimplementowane)
 
-**US-005: Analiza portfela (AI Hint)**:
-- ✅ Wymaga logowania → Endpointy API używają `getAuthenticatedUser()`
-- ✅ Bez zmian w logice
-
-**US-006: Walidacje i błędy**:
-- ✅ Błąd 401/403 → komunikat "Zaloguj ponownie" → Obsługa w endpointach API i komponentach
-- ✅ Bez zmian w logice walidacji formularzy
+**Brak nadmiarowych założeń**: Wszystkie elementy specyfikacji wynikają bezpośrednio z wymagań PRD lub są niezbędne do ich realizacji.
 
 ---
 

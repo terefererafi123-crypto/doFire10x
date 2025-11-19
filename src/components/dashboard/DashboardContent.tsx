@@ -3,8 +3,50 @@ import { DashboardHeader } from "./DashboardHeader";
 import { DashboardGrid } from "./DashboardGrid";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Component, type ReactNode } from "react";
 
-export function DashboardContent() {
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class DashboardErrorBoundary extends Component<
+  { children: ReactNode },
+  ErrorBoundaryState
+> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: unknown) {
+    console.error("Dashboard error:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="container mx-auto px-4 py-8">
+          <DashboardHeader />
+          <Alert variant="destructive" className="mb-6">
+            <AlertDescription>
+              {this.state.error?.message ||
+                "Wystąpił błąd podczas ładowania dashboardu. Odśwież stronę."}
+            </AlertDescription>
+          </Alert>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
+function DashboardContentInner() {
   const { metrics, aiHint, isLoading, error, recalculateMetrics } = useDashboard();
 
   const shares = aiHint?.shares ?? null;
@@ -33,5 +75,13 @@ export function DashboardContent() {
         />
       )}
     </div>
+  );
+}
+
+export function DashboardContent() {
+  return (
+    <DashboardErrorBoundary>
+      <DashboardContentInner />
+    </DashboardErrorBoundary>
   );
 }

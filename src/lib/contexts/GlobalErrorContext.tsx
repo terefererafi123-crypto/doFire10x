@@ -40,11 +40,25 @@ export function GlobalErrorProvider({ children }: { children: React.ReactNode })
 
 /**
  * Hook to access global error context
+ * Returns a safe default if context is not available (for graceful degradation)
  */
 export function useGlobalError() {
   const context = React.useContext(GlobalErrorContext);
   if (context === undefined) {
-    throw new Error("useGlobalError must be used within a GlobalErrorProvider");
+    // Return a safe default instead of throwing to prevent component crashes
+    // This can happen during SSR or if the provider hasn't mounted yet
+    console.warn(
+      "useGlobalError called outside GlobalErrorProvider, using default no-op implementation"
+    );
+    return {
+      error: null,
+      setError: () => {
+        // No-op
+      },
+      clearError: () => {
+        // No-op
+      },
+    };
   }
   return context;
 }

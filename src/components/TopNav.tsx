@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 
 export function TopNav() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean | null>(null);
+  const [userEmail, setUserEmail] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     // Check session on mount - try getSession() first, then fallback to sessionStorage
@@ -12,6 +13,7 @@ export function TopNav() {
       
       if (session) {
         setIsAuthenticated(true);
+        setUserEmail(session.user.email || null);
         return;
       }
 
@@ -23,6 +25,11 @@ export function TopNav() {
             const parsedSession = JSON.parse(sessionStorageData);
             if (parsedSession.access_token) {
               setIsAuthenticated(true);
+              // Try to get user email from Supabase
+              const { data: { user } } = await supabaseClient.auth.getUser();
+              if (user?.email) {
+                setUserEmail(user.email);
+              }
               return;
             }
           } catch (e) {
@@ -32,6 +39,7 @@ export function TopNav() {
       }
 
       setIsAuthenticated(false);
+      setUserEmail(null);
     };
 
     checkAuth();
@@ -41,6 +49,7 @@ export function TopNav() {
       data: { subscription },
     } = supabaseClient.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
+      setUserEmail(session?.user?.email || null);
     });
 
     return () => {
@@ -107,9 +116,14 @@ export function TopNav() {
             )}
           </div>
           {shouldShowNav && (
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              Wyloguj
-            </Button>
+            <div className="flex items-center gap-4">
+              <span className="text-sm text-muted-foreground hidden sm:inline">
+                {/* Email will be loaded after session check */}
+              </span>
+              <Button variant="outline" size="sm" onClick={handleSignOut}>
+                Wyloguj
+              </Button>
+            </div>
           )}
         </div>
       </nav>
@@ -161,9 +175,16 @@ export function TopNav() {
           )}
         </div>
         {isAuthenticated ? (
-          <Button variant="outline" size="sm" onClick={handleSignOut}>
-            Wyloguj
-          </Button>
+          <div className="flex items-center gap-4">
+            {userEmail && (
+              <span className="text-sm text-muted-foreground hidden sm:inline">
+                {userEmail}
+              </span>
+            )}
+            <Button variant="outline" size="sm" onClick={handleSignOut}>
+              Wyloguj
+            </Button>
+          </div>
         ) : (
           <Button variant="outline" size="sm" asChild>
             <a href="/login">Zaloguj się</a>

@@ -23,37 +23,6 @@ const isAuthenticated = !!user;
     <title>{title}</title>
   </head>
   <body>
-    {isAuthenticated && (
-      <nav 
-        class="border-b bg-background" 
-        role="navigation" 
-        aria-label="Główne menu"
-      >
-        <div class="container mx-auto flex h-16 items-center justify-between px-4">
-          <div class="flex items-center gap-6">
-            <a href="/dashboard" class="text-lg font-bold">
-              DoFIRE
-            </a>
-            <div class="hidden md:flex gap-4">
-              <a
-                href="/dashboard"
-                class="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                Dashboard
-              </a>
-            </div>
-          </div>
-          <div class="flex items-center gap-4">
-            {user?.email && (
-              <span class="text-sm text-muted-foreground hidden sm:inline">
-                {user.email}
-              </span>
-            )}
-            <LogoutButton client:load />
-          </div>
-        </div>
-      </nav>
-    )}
     <slot />
   </body>
 </html>

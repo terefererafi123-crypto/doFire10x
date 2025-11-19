@@ -11,8 +11,8 @@ const { title = "Dashboard - DoFIRE" } = Astro.props;
 ---
 
 <Layout title={title}>
-  <GlobalErrorProviderWrapper client:load>
-    <TopNav client:load />
+  <GlobalErrorProviderWrapper client:only="react">
+    <TopNav client:only="react" />
     <main role="main">
       <slot />
     </main>

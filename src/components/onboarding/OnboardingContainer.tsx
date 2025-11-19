@@ -35,8 +35,20 @@ export function OnboardingContainer() {
   const { createProfile, createInvestment } = useOnboardingApi();
   const investmentErrorHandler = useApiErrorHandler(investmentErrorMessages);
 
+  // Get initial step from URL parameter
+  const getInitialStep = (): OnboardingStep => {
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const stepParam = urlParams.get("step");
+      if (stepParam === "2") {
+        return 2;
+      }
+    }
+    return 1;
+  };
+
   const [state, setState] = React.useState<OnboardingState>({
-    currentStep: 1,
+    currentStep: getInitialStep(),
     profileData: {
       monthly_expense: 0,
       withdrawal_rate_pct: 4,

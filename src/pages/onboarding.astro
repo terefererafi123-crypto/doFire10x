@@ -97,7 +97,15 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
       });
 
       if (response.ok) {
-        // Profile exists - redirect to dashboard
+        // Profile exists - check if user is trying to add investment (step=2)
+        const urlParams = new URLSearchParams(window.location.search);
+        const stepParam = urlParams.get("step");
+        if (stepParam === "2") {
+          // User wants to add investment - allow them to stay on onboarding step 2
+          console.log("Onboarding: Profile exists but step=2, allowing to add investment");
+          return;
+        }
+        // Otherwise redirect to dashboard
         console.log("Onboarding: Profile exists, redirecting to /dashboard");
         window.location.href = "/dashboard";
       } else if (response.status === 404) {

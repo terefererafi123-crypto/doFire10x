@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import type { InvestmentDto, ApiError } from "@/types";
 import { getAuthToken } from "@/lib/auth/client-helpers";
-import { useGlobalError } from "@/lib/contexts/GlobalErrorContext";
+import { EditInvestmentModal } from "./EditInvestmentModal";
 
 const REQUEST_TIMEOUT_MS = 30000;
 
@@ -12,7 +12,8 @@ export function InvestmentsList() {
   const [investments, setInvestments] = React.useState<InvestmentDto[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<string | null>(null);
-  const { setError: setGlobalError } = useGlobalError();
+  const [editingInvestment, setEditingInvestment] = React.useState<InvestmentDto | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
 
   const fetchInvestments = React.useCallback(async () => {
     setIsLoading(true);
@@ -43,7 +44,9 @@ export function InvestmentsList() {
       if (!response.ok) {
         const error: ApiError = await response.json();
         if (error.error.code === "unauthorized" || error.error.code === "forbidden") {
-          setGlobalError(error);
+          // Redirect to login for auth errors
+          window.location.href = "/login?error=session_expired";
+          return;
         }
         throw error;
       }
@@ -62,7 +65,7 @@ export function InvestmentsList() {
     } finally {
       setIsLoading(false);
     }
-  }, [setGlobalError]);
+  }, []);
 
   React.useEffect(() => {
     fetchInvestments();
@@ -150,8 +153,8 @@ export function InvestmentsList() {
                       variant="outline"
                       size="sm"
                       onClick={() => {
-                        // TODO: Implement edit functionality
-                        alert("Funkcja edycji będzie dostępna wkrótce. Na razie możesz usunąć i dodać ponownie.");
+                        setEditingInvestment(investment);
+                        setIsEditModalOpen(true);
                       }}
                     >
                       Edytuj
@@ -198,6 +201,15 @@ export function InvestmentsList() {
           )}
         </CardContent>
       </Card>
+      <EditInvestmentModal
+        investment={editingInvestment}
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        onSuccess={() => {
+          fetchInvestments();
+          setEditingInvestment(null);
+        }}
+      />
     </div>
   );
 }

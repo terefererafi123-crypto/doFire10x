@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { DashboardState } from "./types";
 import type { MetricsDto, AiHintDto, ApiError } from "@/types";
 import { getAuthToken } from "@/lib/auth/client-helpers";
@@ -11,7 +11,20 @@ const REQUEST_TIMEOUT_MS = 30000; // 30 seconds
  * Custom hook for managing Dashboard state and API calls
  */
 export function useDashboard() {
-  const { setError: setGlobalError } = useGlobalError();
+  const [isMounted, setIsMounted] = useState(false);
+  const globalErrorContext = useGlobalError();
+  
+  // Wait for component to mount before using context to avoid hydration issues
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+  
+  // Use setGlobalError only after component has mounted
+  const setGlobalError = useCallback((error: ApiError | null) => {
+    if (isMounted) {
+      globalErrorContext.setError(error);
+    }
+  }, [isMounted, globalErrorContext.setError]);
   const [state, setState] = useState<DashboardState>({
     metrics: null,
     aiHint: null,

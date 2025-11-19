@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatAge } from "@/lib/utils/formatting";
+import { formatYearsAndMonths } from "@/lib/utils/formatting";
 import type { FireAgeCardProps } from "./types";
 
 export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
-  const { years_to_fire, fire_age, birth_date } = timeToFire;
+  const { years_to_fire, fire_age, birth_date, current_age } = timeToFire;
 
   // If years_to_fire is null, show note message
   if (years_to_fire === null) {
@@ -21,15 +21,36 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
     );
   }
 
+  // Check if FIRE has been achieved (years_to_fire <= 0 or fire_age <= current_age)
+  const isFireAchieved = years_to_fire <= 0 || (fire_age !== null && current_age !== null && fire_age <= current_age);
+
   // If fire_age is null but years_to_fire is not, show only years
   if (fire_age === null) {
+    if (isFireAchieved) {
+      return (
+        <Card>
+          <CardHeader>
+            <CardTitle>Wiek FIRE</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-2xl font-bold text-green-600">🎉 Gratulacje! Osiągnąłeś FIRE!</p>
+            {!birth_date && (
+              <p className="mt-2 text-sm text-muted-foreground">
+                Uzupełnij datę urodzenia, aby zobaczyć wiek FIRE
+              </p>
+            )}
+          </CardContent>
+        </Card>
+      );
+    }
+    
     return (
       <Card>
         <CardHeader>
           <CardTitle>Wiek FIRE</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-2xl font-bold">Za {years_to_fire} lat</p>
+          <p className="text-2xl font-bold">Za {formatYearsAndMonths(years_to_fire)}</p>
           {!birth_date && (
             <p className="mt-2 text-sm text-muted-foreground">
               Uzupełnij datę urodzenia, aby zobaczyć wiek FIRE
@@ -41,15 +62,31 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
   }
 
   // Both values available
+  if (isFireAchieved) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Wiek FIRE</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-2xl font-bold text-green-600">🎉 Gratulacje! Osiągnąłeś FIRE!</p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            Osiągnąłeś FIRE w wieku {formatYearsAndMonths(fire_age)}
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle>Wiek FIRE</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-2xl font-bold">Osiągniesz FIRE w wieku {formatAge(fire_age)}</p>
+        <p className="text-2xl font-bold">Osiągniesz FIRE w wieku {formatYearsAndMonths(fire_age)}</p>
         <p className="mt-2 text-sm text-muted-foreground">
-          Za {years_to_fire} lat
+          Za {formatYearsAndMonths(years_to_fire)}
         </p>
       </CardContent>
     </Card>

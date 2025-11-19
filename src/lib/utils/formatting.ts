@@ -43,3 +43,30 @@ export function formatAge(age: number): string {
   return `${formatted} lat`;
 }
 
+/**
+ * Formats years as "X lat i Y miesięcy"
+ * @param years - The number of years (can be fractional)
+ * @returns Formatted string (e.g., "22 lat i 4 miesiące")
+ */
+export function formatYearsAndMonths(years: number): string {
+  const fullYears = Math.floor(years);
+  const months = Math.round((years - fullYears) * 12);
+  
+  if (fullYears === 0 && months === 0) {
+    return "0 lat";
+  }
+  
+  if (fullYears === 0) {
+    return `${months} ${months === 1 ? "miesiąc" : months < 5 ? "miesiące" : "miesięcy"}`;
+  }
+  
+  if (months === 0) {
+    return `${fullYears} ${fullYears === 1 ? "rok" : fullYears < 5 ? "lata" : "lat"}`;
+  }
+  
+  const yearsText = fullYears === 1 ? "rok" : fullYears < 5 ? "lata" : "lat";
+  const monthsText = months === 1 ? "miesiąc" : months < 5 ? "miesiące" : "miesięcy";
+  
+  return `${fullYears} ${yearsText} i ${months} ${monthsText}`;
+}
+

@@ -2,11 +2,9 @@
 import AppLayout from "../layouts/AppLayout.astro";
 import { OnboardingContainer } from "../components/onboarding/OnboardingContainer";
 
-const { user } = Astro.locals;
-
-if (!user) {
-  return Astro.redirect('/login');
-}
+// Don't check user on server-side - allow page to render
+// Client-side script will check session and redirect if needed
+// This allows client-side logged-in users (with localStorage session) to access onboarding
 ---
 
 <AppLayout title="Onboarding - DoFIRE">
@@ -18,11 +16,43 @@ if (!user) {
   import { supabaseClient } from "../db/supabase.client";
 
   async function checkProfile() {
+    // Wait a bit for session to be available (especially after client-side login)
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    
     const { data: { session } } = await supabaseClient.auth.getSession();
     
     if (!session) {
-      // No session - redirect to login
+      // No session - wait a bit more and retry (session might still be syncing)
+      console.log("Onboarding: No session found, waiting and retrying...");
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      const { data: { session: retrySession } } = await supabaseClient.auth.getSession();
+      
+      if (!retrySession) {
+        // Still no session - redirect to login
+        console.log("Onboarding: Still no session, redirecting to /login");
+        window.location.href = "/login";
+        return;
+      }
+      
+      // Session found on retry - continue with profile check
+      const response = await fetch("/api/v1/me/profile", {
+        headers: {
+          Authorization: `Bearer ${retrySession.access_token}`,
+        },
+      });
+
+      if (response.ok) {
+        // Profile exists - redirect to dashboard
+        window.location.href = "/dashboard";
+      } else if (response.status === 404) {
+        // No profile - stay on onboarding (this is expected)
+        console.log("Onboarding: No profile found (expected), staying on onboarding");
+        return;
+      } else if (response.status === 401) {
+        // Unauthorized - redirect to login
+        await supabaseClient.auth.signOut();
       window.location.href = "/login";
+      }
       return;
     }
 
@@ -35,18 +65,21 @@ if (!user) {
 
       if (response.ok) {
         // Profile exists - redirect to dashboard
+        console.log("Onboarding: Profile exists, redirecting to /dashboard");
         window.location.href = "/dashboard";
       } else if (response.status === 404) {
         // No profile - stay on onboarding (this is expected)
+        console.log("Onboarding: No profile found (expected), staying on onboarding");
         return;
       } else if (response.status === 401) {
         // Unauthorized - redirect to login
+        console.log("Onboarding: Unauthorized, redirecting to /login");
         await supabaseClient.auth.signOut();
         window.location.href = "/login";
       }
     } catch (error) {
       // Network error - allow user to continue (they might be offline)
-      console.error("Error checking profile:", error);
+      console.error("Onboarding: Error checking profile:", error);
     }
   }
 

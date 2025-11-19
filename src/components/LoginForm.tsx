@@ -28,6 +28,42 @@ export default function LoginForm() {
   
   const rateLimitIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Helper function to check profile and redirect
+  const checkProfileAndRedirect = async (authToken: string | null) => {
+    console.log("Checking profile with token:", authToken ? "available" : "not available");
+
+    // Check profile (matches diagram auth.md line 208)
+    const profileResponse = await fetch("/api/v1/me/profile", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      },
+      credentials: "include",
+    });
+
+    console.log("Profile response status:", profileResponse.status);
+
+    if (profileResponse.ok) {
+      // Profile exists - redirect to dashboard (matches diagram auth.md line 217-218)
+      console.log("Profile exists, redirecting to /dashboard");
+      window.location.replace("/dashboard");
+    } else if (profileResponse.status === 404) {
+      // No profile - redirect to onboarding (matches diagram auth.md line 189)
+      // This is expected for new users
+      console.log("No profile found (expected for new users), redirecting to /onboarding");
+      window.location.replace("/onboarding");
+    } else if (profileResponse.status === 401 || profileResponse.status === 403) {
+      // Auth error - token might not be ready yet, try onboarding anyway
+      console.log("Auth error checking profile, redirecting to /onboarding");
+      window.location.replace("/onboarding");
+    } else {
+      // Other error - default to onboarding (will handle error there)
+      console.log("Error checking profile (status:", profileResponse.status, "), redirecting to /onboarding");
+      window.location.replace("/onboarding");
+    }
+  };
+
   // Check for error in query params on mount (from middleware redirect)
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -155,45 +191,48 @@ export default function LoginForm() {
     }));
 
     try {
+      // Import Supabase client dynamically to avoid SSR issues
+      const { getSupabaseClient } = await import("@/db/supabase.client");
+      const supabase = getSupabaseClient();
+
       // Create timeout promise
       const timeoutPromise = new Promise<never>((_, reject) => {
         setTimeout(() => reject(new Error("TIMEOUT")), REQUEST_TIMEOUT_MS);
       });
 
-      // Call login API endpoint
-      const loginPromise = fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: state.email,
-          password: state.password,
-        }),
+      // Call signInWithPassword directly from Supabase client (client-side)
+      // This matches the diagram in auth.md (lines 201-225)
+      const loginPromise = supabase.auth.signInWithPassword({
+        email: state.email,
+        password: state.password,
       });
 
-      const response = await Promise.race([loginPromise, timeoutPromise]);
+      const { data, error } = await Promise.race([loginPromise, timeoutPromise]);
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => ({}));
+      console.log("Login response:", { 
+        hasData: !!data, 
+        hasSession: !!data?.session, 
+        hasUser: !!data?.user,
+        error: error?.message 
+      });
+
+      if (error) {
         let errorMessage = "Nieprawidłowy adres e-mail lub hasło.";
         let rateLimitCooldown: number | undefined;
 
         // Handle specific error cases
-        if (response.status === 429) {
+        if (error.status === 429) {
           errorMessage = "Zbyt wiele prób. Spróbuj ponownie za kilka minut.";
           rateLimitCooldown = RATE_LIMIT_COOLDOWN_MS / 1000;
-        } else if (data.error) {
-          // Use error message from API if available
-          const apiError = data.error.toLowerCase();
-          if (apiError.includes("invalid") || apiError.includes("credentials")) {
-            errorMessage = "Nieprawidłowy adres e-mail lub hasło.";
-          } else if (apiError.includes("rate limit") || apiError.includes("too many")) {
-            errorMessage = "Zbyt wiele prób. Spróbuj ponownie za kilka minut.";
-            rateLimitCooldown = RATE_LIMIT_COOLDOWN_MS / 1000;
-          } else {
-            errorMessage = data.error;
-          }
+        } else if (error.message?.toLowerCase().includes("invalid") || 
+                   error.message?.toLowerCase().includes("credentials")) {
+          errorMessage = "Nieprawidłowy adres e-mail lub hasło.";
+        } else if (error.message?.toLowerCase().includes("rate limit") || 
+                   error.message?.toLowerCase().includes("too many")) {
+          errorMessage = "Zbyt wiele prób. Spróbuj ponownie za kilka minut.";
+          rateLimitCooldown = RATE_LIMIT_COOLDOWN_MS / 1000;
+        } else {
+          errorMessage = error.message || "Nie udało się zalogować.";
         }
 
         setState((prev) => ({
@@ -232,10 +271,48 @@ export default function LoginForm() {
         return;
       }
 
-      // Success - always redirect to onboarding
-      // Onboarding page will check if profile exists and redirect to dashboard if needed
-      // This avoids cookie synchronization issues when checking profile immediately after login
-      window.location.replace("/onboarding");
+      // Success - session is returned directly from signInWithPassword
+      // Session is also stored in localStorage by Supabase (persistSession: true)
+      console.log("Login successful, data:", {
+        hasSession: !!data?.session,
+        hasUser: !!data?.user,
+        sessionAccessToken: data?.session?.access_token ? "present" : "missing",
+      });
+      
+      // Use session from login response directly (most reliable)
+      const session = data?.session;
+      
+      if (!session) {
+        // Session not in response - try getSession() as fallback
+        console.log("Session not in response, trying getSession()...");
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        const { data: { session: fallbackSession }, error: sessionError } = await supabase.auth.getSession();
+        console.log("getSession() result:", {
+          hasSession: !!fallbackSession,
+          error: sessionError?.message,
+        });
+        
+        if (!fallbackSession) {
+          console.log("Session still not available, checking localStorage...");
+          // Check localStorage directly
+          const localStorageKeys = Object.keys(localStorage).filter(key => key.includes('supabase'));
+          console.log("Supabase localStorage keys:", localStorageKeys);
+          
+          console.log("Redirecting to /onboarding anyway - session will be checked there");
+          window.location.replace("/onboarding");
+          return;
+        }
+        // Use fallback session
+        const authToken = fallbackSession.access_token;
+        await checkProfileAndRedirect(authToken);
+        return;
+      }
+
+      const authToken = session.access_token;
+      console.log("Using session from login response, token:", authToken ? "available" : "not available");
+      
+      // Check profile and redirect
+      await checkProfileAndRedirect(authToken);
     } catch (error) {
       // Handle timeout or network errors
       let errorMessage = "Nie udało się zalogować. Sprawdź połączenie z internetem i spróbuj ponownie.";

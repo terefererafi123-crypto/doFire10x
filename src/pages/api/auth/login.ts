@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro';
 import { createSupabaseServerInstance } from '../../../db/supabase.client.ts';
 
-export const POST: APIRoute = async ({ request, cookies }) => {
+export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const { email, password } = await request.json();
 
   if (!email || !password) {
@@ -15,7 +15,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     headers: request.headers,
   });
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
@@ -35,9 +35,9 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
   }
 
-  // Success - return 200 with no body (session is stored in cookies)
-  return new Response(null, {
-    status: 200,
-  });
+  // Success - cookies are set by Supabase SSR
+  // Use server-side redirect to ensure cookies are available
+  // Onboarding page will check if profile exists and redirect to dashboard if needed
+  return redirect('/onboarding', 302);
 };
 

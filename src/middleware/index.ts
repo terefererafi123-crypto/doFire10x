@@ -60,6 +60,7 @@ export const onRequest = defineMiddleware(
 
       // IMPORTANT: Always get user session first before any other operations
       // This verifies the JWT token and retrieves user data
+      // Use getUser() as it works better with cookies in SSR
       const {
         data: { user },
         error: userError,
@@ -77,11 +78,20 @@ export const onRequest = defineMiddleware(
         // User is not authenticated
         // Log for debugging (especially for onboarding redirects after login)
         if (url.pathname === '/onboarding') {
-          console.log('Middleware: No user found for /onboarding', {
+          const cookieHeader = request.headers.get('Cookie') || '';
+          console.log('Middleware: No user found for /onboarding (allowing access - session may be in localStorage)', {
             hasCookies: cookies.getAll().length > 0,
             cookieNames: cookies.getAll().map(c => c.name),
+            cookieHeader: cookieHeader.substring(0, 200), // First 200 chars
             userError: userError?.message,
+            requestMethod: request.method,
+            requestUrl: url.pathname,
           });
+          
+          // Allow /onboarding to render even without cookies
+          // Client-side script will check session from localStorage and redirect if needed
+          locals.supabase = supabase;
+          return next();
         }
         
         // For API routes, return 401 instead of redirecting

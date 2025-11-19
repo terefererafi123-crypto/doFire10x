@@ -38,9 +38,19 @@ export const prerender = false;
  * - X-Request-Id: <uuid> (optional, for log correlation)
  */
 export const GET: APIRoute = async ({ locals, request }) => {
+  // 0. Check if supabase client is available
+  if (!locals.supabase) {
+    console.error("GET /api/v1/me/profile: Supabase client not available in locals");
+    return errorResponse(
+      { code: "internal", message: "Server configuration error" },
+      500
+    );
+  }
+
   // 1. Authentication check - early return guard clause
   const user = await getAuthenticatedUser(locals.supabase);
   if (!user) {
+    console.log("GET /api/v1/me/profile: No authenticated user");
     return errorResponse(
       {
         code: "unauthorized",
@@ -50,11 +60,14 @@ export const GET: APIRoute = async ({ locals, request }) => {
     );
   }
 
+  console.log(`GET /api/v1/me/profile: Checking profile for user ${user.id}`);
+
   // 2. Get profile by user ID
   try {
     const profile = await getProfileByUserId(locals.supabase, user.id);
 
     if (!profile) {
+      console.log(`GET /api/v1/me/profile: Profile not found for user ${user.id}`);
       return errorResponse(
         {
           code: "not_found",
@@ -64,6 +77,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
       );
     }
 
+    console.log(`GET /api/v1/me/profile: Profile found for user ${user.id}`);
     return jsonResponse(profile, 200);
   } catch (error) {
     // Log error with context (X-Request-Id if available)

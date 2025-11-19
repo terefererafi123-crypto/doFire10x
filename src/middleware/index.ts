@@ -62,6 +62,7 @@ export const onRequest = defineMiddleware(
       // This verifies the JWT token and retrieves user data
       const {
         data: { user },
+        error: userError,
       } = await supabase.auth.getUser();
 
       if (user) {
@@ -70,8 +71,19 @@ export const onRequest = defineMiddleware(
           email: user.email,
           id: user.id,
         };
+        locals.supabase = supabase;
+        return next();
       } else {
         // User is not authenticated
+        // Log for debugging (especially for onboarding redirects after login)
+        if (url.pathname === '/onboarding') {
+          console.log('Middleware: No user found for /onboarding', {
+            hasCookies: cookies.getAll().length > 0,
+            cookieNames: cookies.getAll().map(c => c.name),
+            userError: userError?.message,
+          });
+        }
+        
         // For API routes, return 401 instead of redirecting
         if (url.pathname.startsWith('/api/')) {
           locals.supabase = supabase;

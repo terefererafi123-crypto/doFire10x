@@ -43,8 +43,9 @@ export const onRequest = defineMiddleware(
         id: user.id,
       };
     } else if (!PUBLIC_PATHS.includes(url.pathname)) {
-      // Redirect to login for protected routes
-      return redirect('/login');
+      // Redirect to login for protected routes with error message
+      // This handles both expired sessions and unauthorized access attempts
+      return redirect('/login?error=session_expired');
     }
 
     locals.supabase = supabase;

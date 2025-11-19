@@ -2,11 +2,9 @@
 import Layout from "../layouts/Layout.astro";
 import LoginForm from "../components/LoginForm";
 
-// Check if user is already logged in and redirect to dashboard
-if (import.meta.env.SSR) {
-  // Server-side: check session via middleware/context if needed
-  // For now, we'll handle redirect client-side
-}
+// Middleware handles redirecting logged-in users, so we don't need to check here
+// If user is logged in, middleware will redirect to dashboard
+// If user is not logged in, they can see the login page
 ---
 
 <Layout title="Logowanie - DoFIRE">
@@ -27,23 +25,4 @@ if (import.meta.env.SSR) {
     </div>
   </main>
 </Layout>
-
-<script>
-  // Client-side redirect check for already logged-in users
-  import { supabaseClient } from "../db/supabase.client";
-
-  async function checkSession() {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    
-    if (session) {
-      // User is already logged in, redirect to dashboard
-      window.location.href = "/dashboard";
-    }
-  }
-
-  // Check session on page load
-  if (typeof window !== "undefined") {
-    checkSession();
-  }
-</script>
 

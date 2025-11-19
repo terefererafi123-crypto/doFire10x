@@ -302,27 +302,27 @@ export default function LoginForm() {
         return;
       }
 
-      // CRITICAL: Explicitly set session to ensure it's stored in localStorage
-      // createBrowserClient from @supabase/ssr may not automatically persist
-      // the session from signInWithPassword response to localStorage
+      // CRITICAL: createBrowserClient from @supabase/ssr may not persist session
+      // Try setSession() first, but if it doesn't work, pass token via URL hash
       console.log("Setting session explicitly to ensure localStorage persistence...");
       const { error: setSessionError } = await supabase.auth.setSession({
         access_token: session.access_token,
         refresh_token: session.refresh_token,
       });
       
-      if (setSessionError) {
-        console.error("Error setting session:", setSessionError.message);
-        // Continue anyway - try to use session from response
+      // Verify session is now available
+      const { data: { session: verifiedSession } } = await supabase.auth.getSession();
+      
+      if (setSessionError || !verifiedSession) {
+        console.warn("Warning: Session not persisted, will pass token via URL hash");
+        // Store session in sessionStorage as backup
+        sessionStorage.setItem('supabase.auth.session', JSON.stringify({
+          access_token: session.access_token,
+          refresh_token: session.refresh_token,
+          expires_at: session.expires_at,
+        }));
       } else {
-        console.log("Session set successfully in localStorage");
-        // Verify session is now available
-        const { data: { session: verifiedSession } } = await supabase.auth.getSession();
-        if (!verifiedSession) {
-          console.warn("Warning: Session set but getSession() still returns null");
-        } else {
-          console.log("Session verified in localStorage");
-        }
+        console.log("Session verified in localStorage");
       }
 
       const authToken = session.access_token;

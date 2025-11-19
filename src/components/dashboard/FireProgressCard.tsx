@@ -4,7 +4,9 @@ import { formatPercent } from "@/lib/utils/formatting";
 import type { FireProgressCardProps } from "./types";
 
 export function FireProgressCard({ fireProgress }: FireProgressCardProps) {
-  const percentage = Math.min(Math.max(fireProgress * 100, 0), 100);
+  // Clamp progress to 0-1 range (0-100%)
+  const clampedProgress = Math.min(Math.max(fireProgress, 0), 1);
+  const percentage = clampedProgress * 100;
 
   return (
     <Card>
@@ -12,7 +14,7 @@ export function FireProgressCard({ fireProgress }: FireProgressCardProps) {
         <CardTitle>Postęp do FIRE</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <p className="text-2xl font-bold">{formatPercent(fireProgress)}</p>
+        <p className="text-2xl font-bold">{formatPercent(clampedProgress)}</p>
         <Progress value={percentage} max={100} />
       </CardContent>
     </Card>

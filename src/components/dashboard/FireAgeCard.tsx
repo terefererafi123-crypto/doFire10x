@@ -63,6 +63,9 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
 
   // Both values available
   if (isFireAchieved) {
+    // Only show age if it's positive and valid
+    const showAge = fire_age !== null && fire_age > 0;
+    
     return (
       <Card>
         <CardHeader>
@@ -70,9 +73,11 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
         </CardHeader>
         <CardContent>
           <p className="text-2xl font-bold text-green-600">🎉 Gratulacje! Osiągnąłeś FIRE!</p>
-          <p className="mt-2 text-sm text-muted-foreground">
-            Osiągnąłeś FIRE w wieku {formatYearsAndMonths(fire_age)}
-          </p>
+          {showAge && (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Osiągnąłeś FIRE w wieku {formatYearsAndMonths(fire_age)}
+            </p>
+          )}
         </CardContent>
       </Card>
     );

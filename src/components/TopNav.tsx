@@ -38,14 +38,33 @@ export function TopNav() {
         return;
       }
 
-      // Fallback: check sessionStorage
+      // Fallback: check sessionStorage and try to restore session
       if (typeof window !== "undefined") {
         const sessionStorageData = sessionStorage.getItem('supabase.auth.session');
         if (sessionStorageData) {
           try {
             const parsedSession = JSON.parse(sessionStorageData);
             if (parsedSession.access_token) {
-              console.log("TopNav: Session found in sessionStorage");
+              console.log("TopNav: Session found in sessionStorage, attempting to restore...");
+              // Try to set session in Supabase
+              const { error: setError } = await supabaseClient.auth.setSession({
+                access_token: parsedSession.access_token,
+                refresh_token: parsedSession.refresh_token,
+              });
+              
+              if (!setError) {
+                // Session restored, try to get user
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                if (user) {
+                  console.log("TopNav: Session restored, user:", user.email);
+                  setIsAuthenticated(true);
+                  setUserEmail(user.email || null);
+                  return;
+                }
+              }
+              
+              // If setSession failed or getUser failed, use sessionStorage data directly
+              console.log("TopNav: Using sessionStorage data directly");
               setIsAuthenticated(true);
               setUserEmail(parsedSession.user?.email || null);
               return;

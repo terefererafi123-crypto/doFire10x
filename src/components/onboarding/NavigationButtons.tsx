@@ -8,6 +8,7 @@ interface NavigationButtonsProps {
   onBack: () => void;
   onNext: () => void;
   isFormValid: boolean;
+  isEditingProfile?: boolean;
 }
 
 export function NavigationButtons({
@@ -16,6 +17,7 @@ export function NavigationButtons({
   onBack,
   onNext,
   isFormValid,
+  isEditingProfile = false,
 }: NavigationButtonsProps) {
   const isNextDisabled = isLoading || !isFormValid;
 
@@ -56,7 +58,7 @@ export function NavigationButtons({
             </span>
           </>
         ) : currentStep === 1 ? (
-          "Dalej"
+          isEditingProfile ? "Zapisz zmiany" : "Dalej"
         ) : (
           "Zakończ i przejdź do dashboardu"
         )}

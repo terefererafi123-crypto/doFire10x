@@ -32,8 +32,11 @@ interface OnboardingState {
 
 export function OnboardingContainer() {
   const { validateProfileForm, validateInvestmentForm } = useOnboardingForm();
-  const { createProfile, createInvestment } = useOnboardingApi();
+  const { createProfile, createInvestment, getProfile, updateProfile } = useOnboardingApi();
   const investmentErrorHandler = useApiErrorHandler(investmentErrorMessages);
+  
+  // Track if we're editing an existing profile
+  const [isEditingProfile, setIsEditingProfile] = React.useState(false);
 
   // Get initial step from URL parameter
   const getInitialStep = (): OnboardingStep => {
@@ -66,6 +69,42 @@ export function OnboardingContainer() {
     isLoading: false,
     apiError: null,
   });
+
+  // Load existing profile on mount (if on step 1)
+  const profileLoadedRef = React.useRef(false);
+  React.useEffect(() => {
+    const loadExistingProfile = async () => {
+      // Only load once, and only if on step 1
+      if (profileLoadedRef.current || state.currentStep !== 1) {
+        return;
+      }
+      
+      profileLoadedRef.current = true;
+      
+      try {
+        const profile = await getProfile();
+        if (profile) {
+          // Profile exists - load it into form and set editing mode
+          setIsEditingProfile(true);
+          setState((prev) => ({
+            ...prev,
+            profileData: {
+              monthly_expense: profile.monthly_expense,
+              withdrawal_rate_pct: profile.withdrawal_rate_pct,
+              expected_return_pct: profile.expected_return_pct,
+              birth_date: profile.birth_date || undefined,
+            },
+          }));
+        }
+      } catch (error) {
+        // If error is 401/403, GlobalErrorBanner will handle it
+        // For other errors, just log and continue (user can still create profile)
+        console.error("Error loading existing profile:", error);
+      }
+    };
+    
+    loadExistingProfile();
+  }, [state.currentStep, getProfile]); // Only run when currentStep changes to 1
 
   // Clear API error when user interacts with form
   const clearApiError = React.useCallback(() => {
@@ -159,18 +198,31 @@ export function OnboardingContainer() {
         return;
       }
 
-      // Save profile
+      // Save profile (create or update)
       setState((prev) => ({ ...prev, isLoading: true, apiError: null }));
 
       try {
-        await createProfile(state.profileData);
-        // Success - move to step 2
-        setState((prev) => ({
-          ...prev,
-          currentStep: 2,
-          isLoading: false,
-          apiError: null,
-        }));
+        if (isEditingProfile) {
+          // Update existing profile
+          await updateProfile(state.profileData);
+          // Success - move to step 2
+          setState((prev) => ({
+            ...prev,
+            currentStep: 2,
+            isLoading: false,
+            apiError: null,
+          }));
+        } else {
+          // Create new profile
+          await createProfile(state.profileData);
+          // Success - move to step 2
+          setState((prev) => ({
+            ...prev,
+            currentStep: 2,
+            isLoading: false,
+            apiError: null,
+          }));
+        }
       } catch (error) {
         // Handle network errors
         if (error instanceof TypeError && error.message === "Failed to fetch") {
@@ -202,15 +254,13 @@ export function OnboardingContainer() {
           }));
           // GlobalErrorBanner will handle redirect
         } else if (apiError.error?.code === "conflict") {
-          // Profile already exists - redirect to dashboard
+          // Profile already exists - switch to edit mode and try again
+          setIsEditingProfile(true);
           setState((prev) => ({
             ...prev,
             isLoading: false,
-            apiError: "Profil już istnieje",
+            apiError: "Profil już istnieje. Zaktualizowano tryb edycji - spróbuj ponownie.",
           }));
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-          }, 2000);
         } else {
           // Other errors
           setState((prev) => ({
@@ -285,9 +335,11 @@ export function OnboardingContainer() {
     state.currentStep,
     state.profileData,
     state.investmentData,
+    isEditingProfile,
     validateProfileForm,
     validateInvestmentForm,
     createProfile,
+    updateProfile,
     createInvestment,
     investmentErrorHandler,
   ]);
@@ -347,6 +399,7 @@ export function OnboardingContainer() {
                   ? isProfileFormValid
                   : isInvestmentFormValid
               }
+              isEditingProfile={isEditingProfile}
             />
           </CardContent>
         </Card>

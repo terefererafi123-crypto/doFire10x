@@ -2,6 +2,7 @@ import { useCallback, useState, useEffect } from "react";
 import type {
   CreateProfileCommand,
   CreateInvestmentCommand,
+  UpdateProfileCommand,
   ProfileDto,
   InvestmentDto,
   ApiError,
@@ -17,6 +18,8 @@ const REQUEST_TIMEOUT_MS = 30000; // 30 seconds
  */
 export function useOnboardingApi() {
   const [isMounted, setIsMounted] = useState(false);
+  // useGlobalError returns a safe default if context is not available
+  // This is fine - it will just be a no-op until the provider mounts
   const globalErrorContext = useGlobalError();
   
   // Wait for component to mount before using context to avoid hydration issues
@@ -128,9 +131,109 @@ export function useOnboardingApi() {
     [setGlobalError]
   );
 
+  const getProfile = useCallback(async (): Promise<ProfileDto | null> => {
+    const authToken = await getAuthToken();
+    if (!authToken) {
+      throw new Error("Brak sesji");
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch("/api/v1/me/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (response.status === 404) {
+        // Profile doesn't exist - return null
+        return null;
+      }
+
+      if (!response.ok) {
+        const error: ApiError = await response.json();
+        // Handle global errors (401/403/5xx/429)
+        if (shouldHandleGlobally(error)) {
+          setGlobalError(error);
+        }
+        throw error;
+      }
+
+      return response.json();
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (error instanceof Error && error.name === "AbortError") {
+        throw {
+          error: {
+            code: "internal" as const,
+            message: "Żądanie trwa zbyt długo – spróbuj ponownie",
+          },
+        } as ApiError;
+      }
+      throw error;
+    }
+  }, [setGlobalError]);
+
+  const updateProfile = useCallback(
+    async (data: UpdateProfileCommand): Promise<ProfileDto> => {
+      const authToken = await getAuthToken();
+      if (!authToken) {
+        throw new Error("Brak sesji");
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+      try {
+        const response = await fetch("/api/v1/me/profile", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(data),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const error: ApiError = await response.json();
+          // Handle global errors (401/403/5xx/429)
+          if (shouldHandleGlobally(error)) {
+            setGlobalError(error);
+          }
+          throw error;
+        }
+
+        return response.json();
+      } catch (error) {
+        clearTimeout(timeoutId);
+        if (error instanceof Error && error.name === "AbortError") {
+          throw {
+            error: {
+              code: "internal" as const,
+              message: "Żądanie trwa zbyt długo – spróbuj ponownie",
+            },
+          } as ApiError;
+        }
+        throw error;
+      }
+    },
+    [setGlobalError]
+  );
+
   return {
     createProfile,
     createInvestment,
+    getProfile,
+    updateProfile,
   };
 }
 

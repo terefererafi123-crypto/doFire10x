@@ -596,3 +596,4 @@ curl -X GET http://localhost:4321/api/v1/me/portfolio-agg \
 **Status:** Gotowy do implementacji
 
 
+

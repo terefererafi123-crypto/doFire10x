@@ -98,13 +98,12 @@ Aplikacja DoFIRE rozwiązuje ten problem, oferując proste, dynamiczne narzędzi
 
 ### US-001: Logowanie użytkownika
 **Opis:**  
-Jako użytkownik chcę móc zalogować się przez link magiczny, aby uzyskać dostęp do mojego profilu finansowego.
+Jako użytkownik chcę móc zalogować do aplikacji, aby uzyskać dostęp do mojego profilu finansowego.
 
 **Wymaga logowania:** Nie
 
 **Kryteria akceptacji:**
-- Użytkownik wprowadza e-mail i otrzymuje link logujący.
-- Po kliknięciu linku zostaje zalogowany.
+
 - Sesja utrzymuje się między odświeżeniami strony.
 - Przy błędnym tokenie wyświetlany jest komunikat „Zaloguj ponownie”.
 
@@ -174,6 +173,22 @@ Jako użytkownik chcę być informowany o błędach przy wprowadzaniu danych lub
 - Kwota ≤ 0 → komunikat „Kwota musi być większa od zera”.
 - Data > dziś → komunikat „Nieprawidłowa data”.
 - Błąd 401/403 → komunikat „Zaloguj ponownie”.
+
+---
+
+### US-007: Bezpieczny dostęp i uwierzytelnianie
+**Opis:**  
+Jako użytkownik chcę mieć możliwość rejestracji i logowania się do systemu w sposób zapewniający bezpieczeństwo moich danych.
+
+ 
+**Kryteria akceptacji:**
+- Logowanie i rejestracja odbywają się na dedykowanych stronach.
+  - Logowanie wymaga podania adresu email i hasła.
+  - Rejestracja wymaga podania adresu email, hasła i potwierdzenia hasła
+  - Użytkownik może logować się do systemu poprzez przycisk w prawym górnym rogu.
+  - Użytkownik może się wylogować z systemu poprzez przycisk w prawym górnym rogu w głównym 
+    - Nie korzystamy z zewnętrznych serwisów logowania (np. Google, GitHub).
+  - Odzyskiwanie hasła powinno być możliwe.
 
 ---
 

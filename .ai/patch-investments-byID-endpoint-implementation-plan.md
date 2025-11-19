@@ -525,3 +525,4 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
    - [ ] Zgodność z regułami implementacji (backend.mdc, astro.mdc)
 
 
+

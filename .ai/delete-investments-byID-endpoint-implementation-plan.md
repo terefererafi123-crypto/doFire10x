@@ -518,3 +518,4 @@ export async function deleteInvestmentById(
 - ✅ Indeksy: Wykorzystanie `investments_pkey` i `investments_user_id_idx`
 
 
+

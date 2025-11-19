@@ -1,12 +1,16 @@
 ---
 import AppLayout from "../layouts/AppLayout.astro";
 import { DashboardContent } from "../components/dashboard/DashboardContent";
+import { requireAuth } from "../lib/auth/helpers";
+
+// Middleware (src/middleware/index.ts) handles primary route protection.
+// This is a defense-in-depth check to ensure user is authenticated.
+const redirect = requireAuth(Astro.locals.user);
+if (redirect) {
+  return redirect;
+}
 
 const { user } = Astro.locals;
-
-if (!user) {
-  return Astro.redirect('/login');
-}
 ---
 
 <AppLayout title="Dashboard - DoFIRE">

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { supabaseClient } from "@/db/supabase.client";
+import { getAuthToken } from "@/lib/auth/client-helpers";
 import { Button } from "@/components/ui/button";
 
 export function TopNav() {
@@ -7,52 +8,80 @@ export function TopNav() {
   const [userEmail, setUserEmail] = React.useState<string | null>(null);
 
   React.useEffect(() => {
-    // Check session on mount - try getSession() first, then fallback to sessionStorage
+    // Check session on mount
     const checkAuth = async () => {
-      const { data: { session } } = await supabaseClient.auth.getSession();
+      // Try getSession() first
+      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+      
+      if (sessionError) {
+        console.error("TopNav: Error getting session:", sessionError.message);
+      }
       
       if (session) {
+        console.log("TopNav: Session found, user:", session.user?.email);
         setIsAuthenticated(true);
-        setUserEmail(session.user.email || null);
+        setUserEmail(session.user?.email || null);
         return;
       }
 
-      // Fallback to sessionStorage (from LoginForm)
+      // Fallback: try getUser() (works better with cookies)
+      const { data: { user }, error: userError } = await supabaseClient.auth.getUser();
+      
+      if (userError) {
+        console.error("TopNav: Error getting user:", userError.message);
+      }
+      
+      if (user) {
+        console.log("TopNav: User found via getUser(), email:", user.email);
+        setIsAuthenticated(true);
+        setUserEmail(user.email || null);
+        return;
+      }
+
+      // Fallback: check sessionStorage
       if (typeof window !== "undefined") {
         const sessionStorageData = sessionStorage.getItem('supabase.auth.session');
         if (sessionStorageData) {
           try {
             const parsedSession = JSON.parse(sessionStorageData);
             if (parsedSession.access_token) {
+              console.log("TopNav: Session found in sessionStorage");
               setIsAuthenticated(true);
-              // Try to get user email from Supabase
-              const { data: { user } } = await supabaseClient.auth.getUser();
-              if (user?.email) {
-                setUserEmail(user.email);
-              }
+              setUserEmail(parsedSession.user?.email || null);
               return;
             }
           } catch (e) {
-            // Ignore parse errors
+            console.error("TopNav: Error parsing sessionStorage:", e);
           }
         }
       }
 
+      // No session found
+      console.log("TopNav: No session found, user not authenticated");
       setIsAuthenticated(false);
       setUserEmail(null);
     };
 
+    // Check immediately
     checkAuth();
+
+    // Also check again after a short delay (in case session is still syncing)
+    const timeoutId = setTimeout(() => {
+      console.log("TopNav: Rechecking auth after delay...");
+      checkAuth();
+    }, 500);
 
     // Listen for auth state changes
     const {
       data: { subscription },
     } = supabaseClient.auth.onAuthStateChange((event, session) => {
+      console.log("TopNav: Auth state changed:", event, session?.user?.email);
       setIsAuthenticated(!!session);
       setUserEmail(session?.user?.email || null);
     });
 
     return () => {
+      clearTimeout(timeoutId);
       subscription.unsubscribe();
     };
   }, []);
@@ -63,32 +92,21 @@ export function TopNav() {
   };
 
   // Show loading state while checking authentication
-  // Use a simple loading state that matches server-side rendering
-  if (isAuthenticated === null) {
-    return (
-      <nav className="border-b bg-background" role="navigation" aria-label="Główne menu">
-        <div className="container mx-auto flex h-16 items-center justify-between px-4">
-          <div className="flex items-center gap-6">
-            <a href="/" className="text-lg font-bold">
-              DoFIRE
-            </a>
-          </div>
-          <Button variant="outline" size="sm" asChild>
-            <a href="/login">Zaloguj się</a>
-          </Button>
-        </div>
-      </nav>
-    );
-  }
+  // But also check if we can find session quickly
+  // If isAuthenticated is null, show minimal nav, but keep checking
+  const showMinimalNav = isAuthenticated === null;
+
+  // Determine if user is authenticated (optimistic: if null, assume false for now)
+  const authenticated = isAuthenticated === true;
 
   return (
     <nav className="border-b bg-background" role="navigation" aria-label="Główne menu">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <a href={isAuthenticated ? "/dashboard" : "/"} className="text-lg font-bold">
+          <a href={authenticated ? "/dashboard" : "/"} className="text-lg font-bold">
             DoFIRE
           </a>
-          {isAuthenticated && (
+          {authenticated && (
             <>
               <div className="hidden md:flex gap-4">
                 <a
@@ -125,7 +143,7 @@ export function TopNav() {
             </>
           )}
         </div>
-        {isAuthenticated ? (
+        {authenticated ? (
           <div className="flex items-center gap-4">
             {userEmail && (
               <span className="text-sm text-muted-foreground hidden sm:inline">

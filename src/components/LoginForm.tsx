@@ -232,8 +232,50 @@ export default function LoginForm() {
         return;
       }
 
-      // Success - redirect to dashboard
-      window.location.href = "/dashboard";
+      // Success - check if user has profile, then redirect accordingly
+      // Wait a bit for session to sync, then get auth token and check profile
+      try {
+        // Wait for session to sync (cookies need time to be set)
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        
+        // Import getAuthToken dynamically to avoid SSR issues
+        const { getAuthToken } = await import("@/lib/auth/client-helpers");
+        let authToken = await getAuthToken();
+        
+        // Retry once if token is not available yet
+        if (!authToken) {
+          await new Promise((resolve) => setTimeout(resolve, 300));
+          authToken = await getAuthToken();
+        }
+        
+        const headers: HeadersInit = {
+          "Content-Type": "application/json",
+        };
+        if (authToken) {
+          headers.Authorization = `Bearer ${authToken}`;
+        }
+
+        const profileResponse = await fetch("/api/v1/me/profile", {
+          method: "GET",
+          headers,
+          credentials: "include", // Include cookies for session
+        });
+
+        if (profileResponse.ok) {
+          // User has profile - redirect to dashboard
+          window.location.href = "/dashboard";
+        } else if (profileResponse.status === 404) {
+          // User doesn't have profile - redirect to onboarding
+          window.location.href = "/onboarding";
+        } else {
+          // Other error (401, 500, etc.) - default to dashboard (will handle error there)
+          window.location.href = "/dashboard";
+        }
+      } catch (error) {
+        // If profile check fails, default to dashboard
+        console.error("Error checking profile:", error);
+        window.location.href = "/dashboard";
+      }
     } catch (error) {
       // Handle timeout or network errors
       let errorMessage = "Nie udało się zalogować. Sprawdź połączenie z internetem i spróbuj ponownie.";

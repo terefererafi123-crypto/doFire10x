@@ -33,6 +33,15 @@ export const prerender = false;
  * - invested_total: Override portfolio total amount (>= 0)
  */
 export const GET: APIRoute = async ({ locals, url }) => {
+  // 0. Check if supabase client is available
+  if (!locals.supabase) {
+    console.error("Supabase client not available in locals");
+    return errorResponse(
+      { code: "internal", message: "Server configuration error" },
+      500
+    );
+  }
+
   // 1. Authentication check - early return guard clause
   const user = await getAuthenticatedUser(locals.supabase);
   if (!user) {

@@ -71,10 +71,16 @@ export const onRequest = defineMiddleware(
           id: user.id,
         };
       } else {
-        // User is not authenticated - redirect to login with error message
+        // User is not authenticated
+        // For API routes, return 401 instead of redirecting
+        if (url.pathname.startsWith('/api/')) {
+          locals.supabase = supabase;
+          // Let the API route handle the 401 response
+          return next();
+        }
+        
+        // For page routes, redirect to login with error message
         // This handles both expired sessions and unauthorized access attempts
-        // Note: /dashboard and other protected routes are NOT in PUBLIC_PATHS,
-        // so they will be caught here and redirected
         return redirect('/login?error=session_expired');
       }
 

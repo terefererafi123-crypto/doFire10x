@@ -126,5 +126,5 @@ jobs:
       - name: Dodanie komentarza do PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          message-path: comment-body.md
+          path: comment-body.md
           recreate: true

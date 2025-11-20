@@ -1,96 +1,96 @@
 import * as React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { EmailField } from "./EmailField";
-import { useAuthForm } from "@/lib/hooks/useAuthForm";
+import { forgotPasswordSchema, type ForgotPasswordFormData } from "@/lib/validators/auth.schemas";
 import { forgotPasswordService } from "@/lib/services/forgot-password.service";
+import { useRateLimiter } from "@/lib/hooks/useRateLimiter";
 
 const RATE_LIMIT_COOLDOWN_MS = 60000; // 60 seconds
 
-interface ForgotPasswordFormData {
-  email: string;
-}
-
 export default function ForgotPasswordForm() {
-  const form = useAuthForm<ForgotPasswordFormData>({
-    initialData: {
-      email: "",
-    },
-    rateLimitCooldownMs: RATE_LIMIT_COOLDOWN_MS,
-  });
-
-  // Track success state separately
+  const rateLimiter = useRateLimiter({ cooldownMs: RATE_LIMIT_COOLDOWN_MS });
   const [isSuccess, setIsSuccess] = React.useState(false);
   const [successMessage, setSuccessMessage] = React.useState<string | undefined>();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const form = useForm<ForgotPasswordFormData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: {
+      email: "",
+    },
+    mode: "onBlur", // Validate on blur
+  });
 
+  const { register, handleSubmit, watch, setValue, clearErrors, setError, formState } = form;
+  const emailRegister = register("email");
+
+  const onSubmit = handleSubmit(async (data) => {
     // Check if rate limited
-    if (form.rateLimiter.isRateLimited) {
+    if (rateLimiter.isRateLimited) {
       return;
     }
 
-    // Validate email
-    if (!form.validateAll()) {
-      return;
-    }
-
-    // Set loading state
-    form.setLoading(true);
-    form.clearErrors();
+    // Clear previous errors
+    clearErrors("root");
     setIsSuccess(false);
 
     try {
       // Use ForgotPasswordService
-      const result = await forgotPasswordService.sendResetEmail(form.state.data.email);
+      const result = await forgotPasswordService.sendResetEmail(data.email);
 
       if (!result.success) {
-        form.setSubmitError(result.error?.message || "Nie udało się wysłać linku.");
+        setError("root", {
+          message: result.error?.message || "Nie udało się wysłać linku.",
+        });
 
         if (result.error?.isRateLimited) {
-          form.rateLimiter.startCooldown();
+          rateLimiter.startCooldown();
         }
 
         return;
       }
 
       // Success - always show success message (don't reveal if email exists)
-      form.setLoading(false);
       setIsSuccess(true);
       setSuccessMessage("Jeśli konto istnieje, otrzymasz email z linkiem resetującym hasło.");
     } catch (error) {
       console.error("Forgot password error:", error);
-      form.setSubmitError(
-        "Nie udało się wysłać linku. Sprawdź połączenie z internetem i spróbuj ponownie."
-      );
+      setError("root", {
+        message: "Nie udało się wysłać linku. Sprawdź połączenie z internetem i spróbuj ponownie.",
+      });
     }
-  };
+  });
+
+  const isSubmitting = formState.isSubmitting;
+  const rootError = formState.errors.root?.message;
+  const emailError = formState.errors.email?.message;
 
   const isSubmitDisabled =
-    form.state.isLoading ||
-    !form.state.data.email.trim() ||
-    !!form.state.errors.email ||
+    isSubmitting ||
+    !watch("email")?.trim() ||
+    !!emailError ||
     isSuccess ||
-    form.rateLimiter.isRateLimited;
+    rateLimiter.isRateLimited;
 
   return (
     <div className="w-full">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
         className="space-y-6"
         noValidate
         aria-label="Formularz odzyskiwania hasła"
       >
         <EmailField
-          value={form.state.data.email}
+          value={watch("email")}
           onChange={(value) => {
-            form.setFieldValue("email", value);
+            setValue("email", value);
             setIsSuccess(false);
           }}
-          onBlur={() => form.validateField("email")}
-          onFocus={() => form.clearFieldError("email")}
-          error={form.state.errors.email}
-          disabled={form.state.isLoading || isSuccess}
+          onBlur={emailRegister.onBlur}
+          onFocus={() => clearErrors("email")}
+          error={emailError}
+          disabled={isSubmitting || isSuccess}
           autoFocus={true}
         />
 
@@ -101,14 +101,14 @@ export default function ForgotPasswordForm() {
           </p>
         </div>
 
-        {form.state.errors.submit && (
+        {rootError && (
           <div
             role="alert"
             className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm font-medium text-destructive"
             aria-live="assertive"
             aria-atomic="true"
           >
-            {form.state.errors.submit}
+            {rootError}
           </div>
         )}
 
@@ -127,10 +127,10 @@ export default function ForgotPasswordForm() {
           type="submit"
           disabled={isSubmitDisabled}
           className="w-full transition-all"
-          aria-busy={form.state.isLoading}
+          aria-busy={isSubmitting}
           aria-disabled={isSubmitDisabled}
         >
-          {form.state.isLoading ? (
+          {isSubmitting ? (
             <>
               <span className="mr-2" aria-hidden="true">Wysyłanie...</span>
               <span
@@ -139,10 +139,10 @@ export default function ForgotPasswordForm() {
               />
               <span className="sr-only">Wysyłanie linku resetującego hasło</span>
             </>
-          ) : form.rateLimiter.isRateLimited ? (
+          ) : rateLimiter.isRateLimited ? (
             <>
               <span aria-live="polite" aria-atomic="true">
-                Spróbuj ponownie za {form.rateLimiter.cooldownSeconds}s
+                Spróbuj ponownie za {rateLimiter.cooldownSeconds}s
               </span>
             </>
           ) : (

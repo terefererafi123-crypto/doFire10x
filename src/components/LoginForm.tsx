@@ -1,34 +1,30 @@
 import * as React from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { EmailField } from "./EmailField";
 import { PasswordField } from "./PasswordField";
-import { useAuthForm } from "@/lib/hooks/useAuthForm";
+import { loginSchema, type LoginFormData } from "@/lib/validators/auth.schemas";
 import { authService } from "@/lib/services/auth.service";
+import { useRateLimiter } from "@/lib/hooks/useRateLimiter";
 
 const RATE_LIMIT_COOLDOWN_MS = 60000; // 60 seconds
 
-interface LoginFormData {
-  email: string;
-  password: string;
-}
-
 export default function LoginForm() {
-  const form = useAuthForm<LoginFormData>({
-    initialData: {
+  const rateLimiter = useRateLimiter({ cooldownMs: RATE_LIMIT_COOLDOWN_MS });
+
+  const form = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
       email: "",
       password: "",
     },
-    rateLimitCooldownMs: RATE_LIMIT_COOLDOWN_MS,
-    // Login form doesn't require minimum password length validation
-    validators: {
-      password: (password: string) => {
-        if (!password) {
-          return "Pole hasła jest wymagane";
-        }
-        return undefined;
-      },
-    },
+    mode: "onBlur",
   });
+
+  const { register, handleSubmit, watch, setValue, clearErrors, setError, formState } = form;
+  const emailRegister = register("email");
+  const passwordRegister = register("password");
 
   // Check for error in query params on mount (from middleware redirect)
   React.useEffect(() => {
@@ -36,44 +32,35 @@ export default function LoginForm() {
     const error = urlParams.get("error");
     
     if (error === "session_expired") {
-      form.setSubmitError("Zaloguj ponownie.");
+      setError("root", { message: "Zaloguj ponownie." });
       
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, [form]);
+  }, [setError]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const onSubmit = handleSubmit(async (data) => {
     // Check if rate limited
-    if (form.rateLimiter.isRateLimited) {
+    if (rateLimiter.isRateLimited) {
       return;
     }
 
-    // Validate all fields
-    if (!form.validateAll()) {
-      return;
-    }
-
-    // Set loading state
-    form.setLoading(true);
-    form.clearErrors();
+    // Clear previous errors
+    clearErrors("root");
 
     try {
       // Use AuthService for sign in
-      const signInResult = await authService.signIn(
-        form.state.data.email,
-        form.state.data.password
-      );
+      const signInResult = await authService.signIn(data.email, data.password);
 
       if (!signInResult.success) {
         // Handle error
-        form.setSubmitError(signInResult.error?.message || "Nie udało się zalogować.");
+        setError("root", {
+          message: signInResult.error?.message || "Nie udało się zalogować.",
+        });
 
         // Start countdown if rate limited
         if (signInResult.error?.isRateLimited) {
-          form.rateLimiter.startCooldown();
+          rateLimiter.startCooldown();
         }
 
         return;
@@ -90,56 +77,61 @@ export default function LoginForm() {
     } catch (error) {
       // Handle unexpected errors
       console.error("Login error:", error);
-      form.setSubmitError(
-        "Nie udało się zalogować. Sprawdź połączenie z internetem i spróbuj ponownie."
-      );
+      setError("root", {
+        message: "Nie udało się zalogować. Sprawdź połączenie z internetem i spróbuj ponownie.",
+      });
     }
-  };
+  });
+
+  const isSubmitting = formState.isSubmitting;
+  const rootError = formState.errors.root?.message;
+  const emailError = formState.errors.email?.message;
+  const passwordError = formState.errors.password?.message;
 
   const isSubmitDisabled =
-    form.state.isLoading ||
-    !form.state.data.email.trim() ||
-    !form.state.data.password ||
-    !!form.state.errors.email ||
-    !!form.state.errors.password ||
-    form.rateLimiter.isRateLimited;
+    isSubmitting ||
+    !watch("email")?.trim() ||
+    !watch("password") ||
+    !!emailError ||
+    !!passwordError ||
+    rateLimiter.isRateLimited;
 
   return (
     <div className="w-full">
       <form
-        onSubmit={handleSubmit}
+        onSubmit={onSubmit}
         className="space-y-6"
         noValidate
         aria-label="Formularz logowania"
       >
         <EmailField
-          value={form.state.data.email}
-          onChange={(value) => form.setFieldValue("email", value)}
-          onBlur={() => form.validateField("email")}
-          onFocus={() => form.clearFieldError("email")}
-          error={form.state.errors.email}
-          disabled={form.state.isLoading}
+          value={watch("email")}
+          onChange={(value) => setValue("email", value)}
+          onBlur={emailRegister.onBlur}
+          onFocus={() => clearErrors("email")}
+          error={emailError}
+          disabled={isSubmitting}
           autoFocus={true}
         />
 
         <PasswordField
-          value={form.state.data.password}
-          onChange={(value) => form.setFieldValue("password", value)}
-          onBlur={() => form.validateField("password")}
-          onFocus={() => form.clearFieldError("password")}
-          error={form.state.errors.password}
-          disabled={form.state.isLoading}
+          value={watch("password")}
+          onChange={(value) => setValue("password", value)}
+          onBlur={passwordRegister.onBlur}
+          onFocus={() => clearErrors("password")}
+          error={passwordError}
+          disabled={isSubmitting}
           placeholder="Wprowadź hasło"
         />
 
-        {form.state.errors.submit && (
+        {rootError && (
           <div
             role="alert"
             className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm font-medium text-destructive"
             aria-live="assertive"
             aria-atomic="true"
           >
-            {form.state.errors.submit}
+            {rootError}
           </div>
         )}
 
@@ -147,10 +139,10 @@ export default function LoginForm() {
           type="submit"
           disabled={isSubmitDisabled}
           className="w-full transition-all"
-          aria-busy={form.state.isLoading}
+          aria-busy={isSubmitting}
           aria-disabled={isSubmitDisabled}
         >
-          {form.state.isLoading ? (
+          {isSubmitting ? (
             <>
               <span className="mr-2" aria-hidden="true">Logowanie...</span>
               <span
@@ -159,10 +151,10 @@ export default function LoginForm() {
               />
               <span className="sr-only">Logowanie</span>
             </>
-          ) : form.rateLimiter.isRateLimited ? (
+          ) : rateLimiter.isRateLimited ? (
             <>
               <span aria-live="polite" aria-atomic="true">
-                Spróbuj ponownie za {form.rateLimiter.cooldownSeconds}s
+                Spróbuj ponownie za {rateLimiter.cooldownSeconds}s
               </span>
             </>
           ) : (

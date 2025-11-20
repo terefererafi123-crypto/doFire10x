@@ -229,11 +229,46 @@ export function useOnboardingApi() {
     [setGlobalError]
   );
 
+  const hasInvestments = useCallback(async (): Promise<boolean> => {
+    const authToken = await getAuthToken();
+    if (!authToken) {
+      return false;
+    }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch("/api/v1/investments", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        // If error, assume no investments
+        return false;
+      }
+
+      const data = await response.json();
+      return (data.items || []).length > 0;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      // On error, assume no investments
+      return false;
+    }
+  }, []);
+
   return {
     createProfile,
     createInvestment,
     getProfile,
     updateProfile,
+    hasInvestments,
   };
 }
 

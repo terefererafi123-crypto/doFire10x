@@ -32,7 +32,7 @@ interface OnboardingState {
 
 export function OnboardingContainer() {
   const { validateProfileForm, validateInvestmentForm } = useOnboardingForm();
-  const { createProfile, createInvestment, getProfile, updateProfile } = useOnboardingApi();
+  const { createProfile, createInvestment, getProfile, updateProfile, hasInvestments } = useOnboardingApi();
   const investmentErrorHandler = useApiErrorHandler(investmentErrorMessages);
   
   // Track if we're editing an existing profile
@@ -205,7 +205,14 @@ export function OnboardingContainer() {
         if (isEditingProfile) {
           // Update existing profile
           await updateProfile(state.profileData);
-          // Success - move to step 2
+          // Check if user already has investments
+          const userHasInvestments = await hasInvestments();
+          if (userHasInvestments) {
+            // User already has investments - redirect to dashboard
+            window.location.href = "/dashboard";
+            return;
+          }
+          // Success - move to step 2 (user needs to add first investment)
           setState((prev) => ({
             ...prev,
             currentStep: 2,
@@ -215,7 +222,7 @@ export function OnboardingContainer() {
         } else {
           // Create new profile
           await createProfile(state.profileData);
-          // Success - move to step 2
+          // Success - move to step 2 (user needs to add first investment)
           setState((prev) => ({
             ...prev,
             currentStep: 2,
@@ -341,6 +348,7 @@ export function OnboardingContainer() {
     createProfile,
     updateProfile,
     createInvestment,
+    hasInvestments,
     investmentErrorHandler,
   ]);
 

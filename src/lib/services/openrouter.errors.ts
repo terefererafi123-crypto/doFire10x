@@ -9,24 +9,29 @@ export class OpenRouterApiError extends Error {
     public readonly statusCode: number
   ) {
     super(message);
-    this.name = 'OpenRouterApiError';
+    this.name = "OpenRouterApiError";
     Object.setPrototypeOf(this, OpenRouterApiError.prototype);
   }
 }
 
 export class OpenRouterRateLimitError extends OpenRouterApiError {
-  constructor(message: string, public readonly retryAfter: number) {
-    super(message, '429', 'rate_limit_error', 429);
-    this.name = 'OpenRouterRateLimitError';
+  constructor(
+    message: string,
+    public readonly retryAfter: number
+  ) {
+    super(message, "429", "rate_limit_error", 429);
+    this.name = "OpenRouterRateLimitError";
     Object.setPrototypeOf(this, OpenRouterRateLimitError.prototype);
   }
 }
 
 export class OpenRouterValidationError extends Error {
-  constructor(message: string, public readonly field?: string) {
+  constructor(
+    message: string,
+    public readonly field?: string
+  ) {
     super(message);
-    this.name = 'OpenRouterValidationError';
+    this.name = "OpenRouterValidationError";
     Object.setPrototypeOf(this, OpenRouterValidationError.prototype);
   }
 }
-

@@ -12,23 +12,23 @@ export function mapOpenRouterErrorToApiError(error: unknown): ApiError {
     if (error.statusCode === 401 || error.statusCode === 403) {
       return {
         error: {
-          code: 'unauthorized',
-          message: 'Authentication failed with AI service',
+          code: "unauthorized",
+          message: "Authentication failed with AI service",
         },
       };
     }
     if (error.statusCode === 429) {
       return {
         error: {
-          code: 'too_many_requests',
-          message: 'Rate limit exceeded. Please try again later.',
+          code: "too_many_requests",
+          message: "Rate limit exceeded. Please try again later.",
         },
       };
     }
     if (error.statusCode >= 400 && error.statusCode < 500) {
       return {
         error: {
-          code: 'bad_request',
+          code: "bad_request",
           message: error.message,
         },
       };
@@ -38,8 +38,8 @@ export function mapOpenRouterErrorToApiError(error: unknown): ApiError {
   // Domyślny błąd wewnętrzny
   return {
     error: {
-      code: 'internal',
-      message: error instanceof Error ? error.message : 'Unknown error occurred',
+      code: "internal",
+      message: error instanceof Error ? error.message : "Unknown error occurred",
     },
   };
 }
@@ -51,12 +51,7 @@ export function mapOpenRouterErrorToApiError(error: unknown): ApiError {
  */
 export function shouldHandleGlobally(error: ApiError): boolean {
   const code = error.error.code;
-  return (
-    code === "unauthorized" ||
-    code === "forbidden" ||
-    code === "internal" ||
-    code === "too_many_requests"
-  );
+  return code === "unauthorized" || code === "forbidden" || code === "internal" || code === "too_many_requests";
 }
 
 /**
@@ -86,4 +81,3 @@ export function isServerError(error: ApiError): boolean {
 export function isRateLimitError(error: ApiError): boolean {
   return error.error.code === "too_many_requests";
 }
-

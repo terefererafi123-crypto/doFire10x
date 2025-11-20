@@ -1,12 +1,12 @@
 // src/pages/api/v1/test/openrouter.ts
 // POST /v1/test/openrouter - Test endpoint for OpenRouter service
 
-import type { APIRoute } from 'astro';
-import { getOpenRouterService } from '../../../../lib/services/openrouter.client.ts';
-import { OpenRouterApiError } from '../../../../lib/services/openrouter.errors.ts';
-import { mapOpenRouterErrorToApiError } from '../../../../lib/utils/api-error-handler.ts';
-import { jsonResponse, errorResponse } from '../../../../lib/api/response.ts';
-import type { ChatCompletionParams } from '../../../../lib/services/openrouter.types.ts';
+import type { APIRoute } from "astro";
+import { getOpenRouterService } from "../../../../lib/services/openrouter.client.ts";
+import { OpenRouterApiError } from "../../../../lib/services/openrouter.errors.ts";
+import { mapOpenRouterErrorToApiError } from "../../../../lib/utils/api-error-handler.ts";
+import { jsonResponse, errorResponse } from "../../../../lib/api/response.ts";
+import type { ChatCompletionParams } from "../../../../lib/services/openrouter.types.ts";
 
 export const prerender = false;
 
@@ -50,8 +50,8 @@ export const POST: APIRoute = async ({ request }) => {
     } catch (error) {
       return errorResponse(
         {
-          code: 'bad_request',
-          message: 'Invalid JSON in request body',
+          code: "bad_request",
+          message: "Invalid JSON in request body",
         },
         400
       );
@@ -61,18 +61,18 @@ export const POST: APIRoute = async ({ request }) => {
     if (!body.messages || !Array.isArray(body.messages)) {
       return errorResponse(
         {
-          code: 'bad_request',
-          message: 'Messages array is required',
+          code: "bad_request",
+          message: "Messages array is required",
         },
         400
       );
     }
 
-    if (!body.model || typeof body.model !== 'string') {
+    if (!body.model || typeof body.model !== "string") {
       return errorResponse(
         {
-          code: 'bad_request',
-          message: 'Model name is required and must be a string',
+          code: "bad_request",
+          message: "Model name is required and must be a string",
         },
         400
       );
@@ -83,16 +83,16 @@ export const POST: APIRoute = async ({ request }) => {
     try {
       service = getOpenRouterService();
     } catch (error) {
-      const requestId = request.headers.get('X-Request-Id');
-      console.error('Error initializing OpenRouter service:', {
+      const requestId = request.headers.get("X-Request-Id");
+      console.error("Error initializing OpenRouter service:", {
         requestId,
         error: error instanceof Error ? error.message : String(error),
       });
 
       return errorResponse(
         {
-          code: 'internal',
-          message: 'AI service is not properly configured',
+          code: "internal",
+          message: "AI service is not properly configured",
         },
         500
       );
@@ -119,25 +119,25 @@ export const POST: APIRoute = async ({ request }) => {
     return jsonResponse(response, 200);
   } catch (error) {
     // 6. Handle errors
-    const requestId = request.headers.get('X-Request-Id');
+    const requestId = request.headers.get("X-Request-Id");
 
     // Log error details (only on server side)
-    console.error('OpenRouter API Error:', {
+    console.error("OpenRouter API Error:", {
       requestId,
-      error: error instanceof Error ? {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
-      } : error,
+      error:
+        error instanceof Error
+          ? {
+              message: error.message,
+              name: error.name,
+              stack: error.stack,
+            }
+          : error,
     });
 
     // Map OpenRouter errors to ApiError format
     const apiError = mapOpenRouterErrorToApiError(error);
-    const statusCode = error instanceof OpenRouterApiError
-      ? error.statusCode
-      : 500;
+    const statusCode = error instanceof OpenRouterApiError ? error.statusCode : 500;
 
     return errorResponse(apiError.error, statusCode);
   }
 };
-

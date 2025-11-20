@@ -44,4 +44,3 @@ export class InvestmentClientService {
 
 // Export singleton instance
 export const investmentClientService = new InvestmentClientService();
-

@@ -3,13 +3,13 @@
 
 // Typy dla wiadomości
 export interface Message {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
 // Typy dla response format
 export interface ResponseFormat {
-  type: 'json_schema';
+  type: "json_schema";
   json_schema: {
     name: string;
     strict: boolean;
@@ -37,11 +37,11 @@ export interface ChatCompletionResponse {
   id: string;
   model: string;
   created: number;
-  choices: Array<{
+  choices: {
     index: number;
     message: Message;
-    finish_reason: 'stop' | 'length' | 'tool_calls' | 'content_filter' | null;
-  }>;
+    finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | null;
+  }[];
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
@@ -93,4 +93,3 @@ export interface JSONSchema {
   description?: string;
   [key: string]: unknown;
 }
-

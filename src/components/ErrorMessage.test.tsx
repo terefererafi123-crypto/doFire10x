@@ -1,69 +1,69 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { ErrorMessage } from './ErrorMessage';
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { ErrorMessage } from "./ErrorMessage";
 
-describe('ErrorMessage', () => {
-  it('should render inline variant by default', () => {
+describe("ErrorMessage", () => {
+  it("should render inline variant by default", () => {
     // Arrange & Act
     render(<ErrorMessage message="Test error message" />);
 
     // Assert
-    const errorElement = screen.getByText('Test error message');
+    const errorElement = screen.getByText("Test error message");
     expect(errorElement).toBeInTheDocument();
-    expect(errorElement.tagName).toBe('P');
-    expect(errorElement).toHaveAttribute('role', 'alert');
+    expect(errorElement.tagName).toBe("P");
+    expect(errorElement).toHaveAttribute("role", "alert");
   });
 
-  it('should render inline variant explicitly', () => {
+  it("should render inline variant explicitly", () => {
     // Arrange & Act
     render(<ErrorMessage message="Test error message" variant="inline" />);
 
     // Assert
-    const errorElement = screen.getByText('Test error message');
+    const errorElement = screen.getByText("Test error message");
     expect(errorElement).toBeInTheDocument();
-    expect(errorElement.tagName).toBe('P');
-    expect(errorElement).toHaveClass('text-destructive');
+    expect(errorElement.tagName).toBe("P");
+    expect(errorElement).toHaveClass("text-destructive");
   });
 
-  it('should render AlertCircle icon in banner variant', () => {
+  it("should render AlertCircle icon in banner variant", () => {
     // Arrange & Act
     render(<ErrorMessage message="Test error message" variant="banner" />);
 
     // Assert
     // Sprawdzamy czy ikona jest renderowana (lucide-react renderuje jako SVG)
-    const errorElement = screen.getByText('Test error message').parentElement;
+    const errorElement = screen.getByText("Test error message").parentElement;
     expect(errorElement).toBeInTheDocument();
     // Ikona powinna być w kontenerze
-    const icon = errorElement?.querySelector('svg');
+    const icon = errorElement?.querySelector("svg");
     expect(icon).toBeInTheDocument();
   });
 
-  it('should not render icon in inline variant', () => {
+  it("should not render icon in inline variant", () => {
     // Arrange & Act
     const { container } = render(<ErrorMessage message="Test error message" variant="inline" />);
 
     // Assert
     // W inline variant nie powinno być ikony
-    const svg = container.querySelector('svg');
+    const svg = container.querySelector("svg");
     expect(svg).not.toBeInTheDocument();
   });
 
-  it('should apply custom className', () => {
+  it("should apply custom className", () => {
     // Arrange & Act
     render(<ErrorMessage message="Test error message" className="custom-class" />);
 
     // Assert
-    const errorElement = screen.getByText('Test error message');
-    expect(errorElement).toHaveClass('custom-class');
+    const errorElement = screen.getByText("Test error message");
+    expect(errorElement).toHaveClass("custom-class");
   });
 
-  it('should apply id attribute when provided', () => {
+  it("should apply id attribute when provided", () => {
     // Arrange & Act
     render(<ErrorMessage message="Test error message" id="test-error-id" />);
 
     // Assert
-    const errorElement = screen.getByText('Test error message');
-    expect(errorElement).toHaveAttribute('id', 'test-error-id');
+    const errorElement = screen.getByText("Test error message");
+    expect(errorElement).toHaveAttribute("id", "test-error-id");
   });
 
   it('should have aria-live="polite" in inline variant', () => {
@@ -71,8 +71,7 @@ describe('ErrorMessage', () => {
     render(<ErrorMessage message="Test error message" variant="inline" />);
 
     // Assert
-    const errorElement = screen.getByText('Test error message');
-    expect(errorElement).toHaveAttribute('aria-live', 'polite');
+    const errorElement = screen.getByText("Test error message");
+    expect(errorElement).toHaveAttribute("aria-live", "polite");
   });
 });
-

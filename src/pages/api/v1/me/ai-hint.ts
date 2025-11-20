@@ -32,10 +32,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
   // 1. Authentication check - early return guard clause
   const user = await getAuthenticatedUser(locals.supabase);
   if (!user) {
-    return errorResponse(
-      { code: "unauthorized", message: "Authentication required" },
-      401
-    );
+    return errorResponse({ code: "unauthorized", message: "Authentication required" }, 401);
   }
 
   // 2. Parse Accept-Language header
@@ -55,10 +52,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
       error: error instanceof Error ? error.message : String(error),
     });
 
-    return errorResponse(
-      { code: "internal", message: "An unexpected error occurred" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "An unexpected error occurred" }, 500);
   }
 
   // 4. Generate AI Hint - happy path last
@@ -74,10 +68,6 @@ export const GET: APIRoute = async ({ locals, request }) => {
       error: error instanceof Error ? error.message : String(error),
     });
 
-    return errorResponse(
-      { code: "internal", message: "An unexpected error occurred" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "An unexpected error occurred" }, 500);
   }
 };
-

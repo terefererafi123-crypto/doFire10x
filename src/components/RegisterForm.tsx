@@ -49,10 +49,7 @@ export default function RegisterForm() {
 
     try {
       // Use RegisterService for registration
-      const registerResult = await registerService.register(
-        form.state.data.email,
-        form.state.data.password
-      );
+      const registerResult = await registerService.register(form.state.data.email, form.state.data.password);
 
       if (!registerResult.success) {
         // Handle error
@@ -72,12 +69,9 @@ export default function RegisterForm() {
       setSuccessMessage(
         "Konto zostało utworzone. Sprawdź swoją skrzynkę e-mail i kliknij w link potwierdzający, aby aktywować konto."
       );
-    } catch (error) {
+    } catch {
       // Handle unexpected errors
-      console.error("Registration error:", error);
-      form.setSubmitError(
-        "Nie udało się utworzyć konta. Sprawdź połączenie z internetem i spróbuj ponownie."
-      );
+      form.setSubmitError("Nie udało się utworzyć konta. Sprawdź połączenie z internetem i spróbuj ponownie.");
     }
   };
 
@@ -94,12 +88,7 @@ export default function RegisterForm() {
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6"
-        noValidate
-        aria-label="Formularz rejestracji"
-      >
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate aria-label="Formularz rejestracji">
         <EmailField
           value={form.state.data.email}
           onChange={(value) => {
@@ -176,7 +165,9 @@ export default function RegisterForm() {
         >
           {form.state.isLoading ? (
             <>
-              <span className="mr-2" aria-hidden="true">Tworzenie konta...</span>
+              <span className="mr-2" aria-hidden="true">
+                Tworzenie konta...
+              </span>
               <span
                 className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
                 aria-hidden="true"
@@ -197,4 +188,3 @@ export default function RegisterForm() {
     </div>
   );
 }
-

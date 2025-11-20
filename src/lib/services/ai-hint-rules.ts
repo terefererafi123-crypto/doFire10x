@@ -65,12 +65,7 @@ const stockPlusEtfLt40: AiHintRule = {
 /**
  * All AI Hint rules in priority order (lower priority number = checked first)
  */
-export const AI_HINT_RULES: readonly AiHintRule[] = [
-  stockPlusEtfGe80,
-  bondGe50,
-  cashGe30,
-  stockPlusEtfLt40,
-] as const;
+export const AI_HINT_RULES: readonly AiHintRule[] = [stockPlusEtfGe80, bondGe50, cashGe30, stockPlusEtfLt40] as const;
 
 /**
  * Matches portfolio shares against AI Hint rules and returns matched rule IDs
@@ -114,4 +109,3 @@ export function matchRules(shares: PortfolioAggDto): AiRuleId[] {
   // No rules matched
   return [];
 }
-

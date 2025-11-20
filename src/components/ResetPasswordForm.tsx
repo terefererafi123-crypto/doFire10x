@@ -27,9 +27,7 @@ export default function ResetPasswordForm() {
   // Check for token in URL on mount
   React.useEffect(() => {
     if (!resetPasswordService.validateToken()) {
-      form.setSubmitError(
-        "Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy link resetujący."
-      );
+      form.setSubmitError("Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy link resetujący.");
     }
 
     // Clean up URL after checking
@@ -39,7 +37,6 @@ export default function ResetPasswordForm() {
       window.history.replaceState({}, document.title, window.location.pathname);
     }
   }, [form]);
-
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -70,11 +67,8 @@ export default function ResetPasswordForm() {
 
       // TODO: After successful password reset, redirect to dashboard
       // window.location.href = "/dashboard";
-    } catch (error) {
-      console.error("Reset password error:", error);
-      form.setSubmitError(
-        "Nie udało się zresetować hasła. Sprawdź połączenie z internetem i spróbuj ponownie."
-      );
+    } catch {
+      form.setSubmitError("Nie udało się zresetować hasła. Sprawdź połączenie z internetem i spróbuj ponownie.");
     }
   };
 
@@ -88,12 +82,7 @@ export default function ResetPasswordForm() {
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-6"
-        noValidate
-        aria-label="Formularz resetowania hasła"
-      >
+      <form onSubmit={handleSubmit} className="space-y-6" noValidate aria-label="Formularz resetowania hasła">
         <PasswordField
           value={form.state.data.password}
           onChange={(value) => {
@@ -158,7 +147,9 @@ export default function ResetPasswordForm() {
         >
           {form.state.isLoading ? (
             <>
-              <span className="mr-2" aria-hidden="true">Resetowanie...</span>
+              <span className="mr-2" aria-hidden="true">
+                Resetowanie...
+              </span>
               <span
                 className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
                 aria-hidden="true"
@@ -173,4 +164,3 @@ export default function ResetPasswordForm() {
     </div>
   );
 }
-

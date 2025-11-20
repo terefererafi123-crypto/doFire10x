@@ -15,7 +15,7 @@ import type { ApiError } from "../../types.ts";
  * return jsonResponse({ message: "Success" }, 200);
  * ```
  */
-export function jsonResponse<T>(data: T, status: number = 200): Response {
+export function jsonResponse<T>(data: T, status = 200): Response {
   return new Response(JSON.stringify(data), {
     status,
     headers: { "Content-Type": "application/json" },
@@ -47,7 +47,3 @@ export function errorResponse(error: ApiError["error"], status: number): Respons
     headers: { "Content-Type": "application/json" },
   });
 }
-
-
-
-

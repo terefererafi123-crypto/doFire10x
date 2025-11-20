@@ -8,10 +8,7 @@ import {
   ConstraintViolationError,
   DatabaseError,
 } from "../../../../lib/services/investment.service";
-import {
-  validateInvestmentListQuery,
-  validateCreateInvestment,
-} from "../../../../lib/validators/investment.validator";
+import { validateInvestmentListQuery, validateCreateInvestment } from "../../../../lib/validators/investment.validator";
 import { jsonResponse, errorResponse } from "../../../../lib/api/response";
 import type { InvestmentListResponseDto, InvestmentDto } from "../../../../types";
 
@@ -51,13 +48,8 @@ export const GET: APIRoute = async ({ request, locals }) => {
   const supabase = locals.supabase;
   if (!supabase) {
     const requestId = request.headers.get("X-Request-Id");
-    console.error(
-      `Supabase client not available in context.locals${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-    );
-    return errorResponse(
-      { code: "internal", message: "Internal server error" },
-      500
-    );
+    console.error(`Supabase client not available in context.locals${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
+    return errorResponse({ code: "internal", message: "Internal server error" }, 500);
   }
 
   const {
@@ -67,26 +59,21 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
   if (authError || !user) {
     const requestId = request.headers.get("X-Request-Id");
-    console.warn(
-      `Authentication failed in GET /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-    );
-    return errorResponse(
-      { code: "unauthorized", message: "Missing or invalid authentication token" },
-      401
-    );
+    console.warn(`Authentication failed in GET /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
+    return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
   }
 
   // 2. Parsowanie i walidacja parametrów zapytania - early return guard clause
   const url = new URL(request.url);
   const queryParams: Record<string, string | undefined> = {};
-  
+
   // Extract all query parameters
   for (const [key, value] of url.searchParams.entries()) {
     queryParams[key] = value;
   }
 
   const validationResult = validateInvestmentListQuery(queryParams);
-  
+
   if (!validationResult.success) {
     // Map Zod errors to field-wise error messages
     const fields: Record<string, string> = {};
@@ -136,22 +123,18 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // 4. Sukces - zwrócenie InvestmentListResponseDto z nagłówkami cache
     // Cache-Control: private, max-age=60 dla zapytań z filtrami (cache tylko dla tego użytkownika)
     // Zapytania z kursorem nie powinny być cache'owane (dynamiczne wyniki)
-    const cacheControl = validatedQuery.cursor 
-      ? "private, no-cache, no-store, must-revalidate"
-      : "private, max-age=60";
-    
+    const cacheControl = validatedQuery.cursor ? "private, no-cache, no-store, must-revalidate" : "private, max-age=60";
+
     const response = jsonResponse(result, 200);
     response.headers.set("Cache-Control", cacheControl);
     return response;
   } catch (error) {
     // 5. Obsługa błędów - sprawdzenie typu błędu
     const requestId = request.headers.get("X-Request-Id");
-    
+
     // Jeśli błąd to "Invalid cursor format", zwróć 400
     if (error instanceof Error && error.message === "Invalid cursor format") {
-      console.warn(
-        `Invalid cursor format in GET /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-      );
+      console.warn(`Invalid cursor format in GET /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
       return errorResponse(
         {
           code: "bad_request",
@@ -163,14 +146,8 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     // Inne błędy to błędy serwera
-    console.error(
-      `Error fetching investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
-      error
-    );
-    return errorResponse(
-      { code: "internal", message: "An unexpected error occurred" },
-      500
-    );
+    console.error(`Error fetching investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`, error);
+    return errorResponse({ code: "internal", message: "An unexpected error occurred" }, 500);
   }
 };
 
@@ -211,13 +188,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // 1. Weryfikacja autoryzacji - early return guard clause
   const supabase = locals.supabase;
   if (!supabase) {
-    console.error(
-      `Supabase client not available in context.locals${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-    );
-    return errorResponse(
-      { code: "internal", message: "Internal server error" },
-      500
-    );
+    console.error(`Supabase client not available in context.locals${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
+    return errorResponse({ code: "internal", message: "Internal server error" }, 500);
   }
 
   const {
@@ -226,13 +198,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    console.warn(
-      `Authentication failed in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-    );
-    return errorResponse(
-      { code: "unauthorized", message: "Missing or invalid authentication token" },
-      401
-    );
+    console.warn(`Authentication failed in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
+    return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
   }
 
   // 2. Parsowanie request body - early return guard clause
@@ -323,28 +290,24 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   // 4. Tworzenie inwestycji - happy path last
   try {
-    const createdInvestment: InvestmentDto = await createInvestment(
-      supabase,
-      user.id,
-      createCommand
-    );
+    const createdInvestment: InvestmentDto = await createInvestment(supabase, user.id, createCommand);
 
     // 5. Sukces - zwrócenie 201 Created z InvestmentDto
     const response = jsonResponse(createdInvestment, 201);
-    
+
     // Add Location header
     response.headers.set("Location", `/v1/investments/${createdInvestment.id}`);
-    
+
     // Echo Idempotency-Key header if provided (for future idempotency support)
     if (idempotencyKey) {
       response.headers.set("Idempotency-Key", idempotencyKey);
     }
-    
+
     // Echo X-Request-Id header if provided
     if (requestId) {
       response.headers.set("X-Request-Id", requestId);
     }
-    
+
     return response;
   } catch (error) {
     // 6. Obsługa błędów - sprawdzenie typu błędu
@@ -360,7 +323,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
           fields[error.field] = "constraint_violation";
         }
       }
-      
+
       console.warn(
         `Constraint violation in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
         error.message
@@ -380,21 +343,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
         `Database error in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
         error.originalError || error.message
       );
-      return errorResponse(
-        { code: "internal", message: "An unexpected error occurred" },
-        500
-      );
+      return errorResponse({ code: "internal", message: "An unexpected error occurred" }, 500);
     }
 
     // Unexpected error
-    console.error(
-      `Unexpected error in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
-      error
-    );
-    return errorResponse(
-      { code: "internal", message: "An unexpected error occurred" },
-      500
-    );
+    console.error(`Unexpected error in POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}:`, error);
+    return errorResponse({ code: "internal", message: "An unexpected error occurred" }, 500);
   }
 };
-

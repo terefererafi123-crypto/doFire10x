@@ -24,9 +24,7 @@ import type { Redirect } from "astro";
  * }
  * ```
  */
-export async function getAuthenticatedUser(
-  supabase: SupabaseClient<Database>
-): Promise<User | null> {
+export async function getAuthenticatedUser(supabase: SupabaseClient<Database>): Promise<User | null> {
   const {
     data: { user },
     error,
@@ -41,37 +39,34 @@ export async function getAuthenticatedUser(
 
 /**
  * Requires authentication for an Astro page.
- * 
+ *
  * This function provides a defense-in-depth mechanism for protecting Astro pages.
  * The primary protection is handled by middleware (src/middleware/index.ts), which
  * redirects unauthenticated users to /login?error=session_expired.
- * 
+ *
  * This helper function can be used in page components as an additional safeguard
  * to ensure that the user is authenticated before rendering the page content.
- * 
+ *
  * Note: In practice, middleware will handle most cases. This function serves as
  * a safety net and makes the protection intent explicit in the page code.
- * 
+ *
  * @param user - User object from Astro.locals.user (set by middleware)
  * @param redirectPath - Optional custom redirect path (defaults to '/login')
  * @returns Redirect response if user is not authenticated, null otherwise
- * 
+ *
  * @example
  * ```astro
  * ---
  * import { requireAuth } from '../lib/auth/helpers';
- * 
+ *
  * const redirect = requireAuth(Astro.locals.user);
  * if (redirect) return redirect;
  * ---
- * 
+ *
  * <h1>Protected Page</h1>
  * ```
  */
-export function requireAuth(
-  user: { email: string; id: string } | undefined,
-  redirectPath: string = '/login'
-): Redirect | null {
+export function requireAuth(user: { email: string; id: string } | undefined, redirectPath = "/login"): Redirect | null {
   if (!user) {
     // Redirect to login with error message indicating session expired
     // Using Response with 302 status for redirect
@@ -82,8 +77,6 @@ export function requireAuth(
       },
     }) as Redirect;
   }
-  
+
   return null;
 }
-
-

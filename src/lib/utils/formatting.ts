@@ -20,7 +20,7 @@ export function formatCurrency(value: number): string {
  * @param decimals - Number of decimal places (default: 2)
  * @returns Formatted string (e.g., "2,52%")
  */
-export function formatPercent(value: number, decimals: number = 2): string {
+export function formatPercent(value: number, decimals = 2): string {
   const percentValue = value * 100;
   return new Intl.NumberFormat("pl-PL", {
     style: "percent",
@@ -51,22 +51,21 @@ export function formatAge(age: number): string {
 export function formatYearsAndMonths(years: number): string {
   const fullYears = Math.floor(years);
   const months = Math.round((years - fullYears) * 12);
-  
+
   if (fullYears === 0 && months === 0) {
     return "0 lat";
   }
-  
+
   if (fullYears === 0) {
     return `${months} ${months === 1 ? "miesiąc" : months < 5 ? "miesiące" : "miesięcy"}`;
   }
-  
+
   if (months === 0) {
     return `${fullYears} ${fullYears === 1 ? "rok" : fullYears < 5 ? "lata" : "lat"}`;
   }
-  
+
   const yearsText = fullYears === 1 ? "rok" : fullYears < 5 ? "lata" : "lat";
   const monthsText = months === 1 ? "miesiąc" : months < 5 ? "miesiące" : "miesięcy";
-  
+
   return `${fullYears} ${yearsText} i ${months} ${monthsText}`;
 }
-

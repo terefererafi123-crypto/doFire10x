@@ -1,11 +1,11 @@
-import type { APIRoute } from 'astro';
-import { createSupabaseServerInstance } from '../../../db/supabase.client.ts';
+import type { APIRoute } from "astro";
+import { createSupabaseServerInstance } from "../../../db/supabase.client.ts";
 
 export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const { email, password } = await request.json();
 
   if (!email || !password) {
-    return new Response(JSON.stringify({ error: 'Email i hasło są wymagane' }), {
+    return new Response(JSON.stringify({ error: "Email i hasło są wymagane" }), {
       status: 400,
     });
   }
@@ -25,8 +25,10 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
     let status = 400;
     if (error.status === 429) {
       status = 429;
-    } else if (error.message?.toLowerCase().includes('invalid') || 
-               error.message?.toLowerCase().includes('credentials')) {
+    } else if (
+      error.message?.toLowerCase().includes("invalid") ||
+      error.message?.toLowerCase().includes("credentials")
+    ) {
       status = 401;
     }
 
@@ -38,6 +40,5 @@ export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   // Success - cookies are set by Supabase SSR
   // Use server-side redirect to ensure cookies are available
   // Onboarding page will check if profile exists and redirect to dashboard if needed
-  return redirect('/onboarding', 302);
+  return redirect("/onboarding", 302);
 };
-

@@ -10,9 +10,7 @@ interface GlobalErrorProviderWrapperProps {
  * Wrapper component that provides GlobalErrorProvider and GlobalErrorBanner
  * This component should be used in Astro layouts
  */
-export function GlobalErrorProviderWrapper({
-  children,
-}: GlobalErrorProviderWrapperProps) {
+export function GlobalErrorProviderWrapper({ children }: GlobalErrorProviderWrapperProps) {
   return (
     <GlobalErrorProvider>
       <GlobalErrorBannerWrapper />
@@ -20,4 +18,3 @@ export function GlobalErrorProviderWrapper({
     </GlobalErrorProvider>
   );
 }
-

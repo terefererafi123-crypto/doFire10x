@@ -16,15 +16,7 @@ export interface FormFieldProps {
  * Universal form field component with error handling
  * Wraps input/select/textarea with label, error message, and helper text
  */
-export function FormField({
-  label,
-  name,
-  required = false,
-  error,
-  helperText,
-  children,
-  className,
-}: FormFieldProps) {
+export function FormField({ label, name, required = false, error, helperText, children, className }: FormFieldProps) {
   const errorId = error ? `${name}-error` : undefined;
   const helperId = helperText ? `${name}-helper` : undefined;
   const describedBy = [errorId, helperId].filter(Boolean).join(" ") || undefined;
@@ -36,10 +28,7 @@ export function FormField({
         id: name,
         "aria-invalid": error ? true : undefined,
         "aria-describedby": describedBy,
-        className: cn(
-          child.props.className,
-          error && "border-destructive focus-visible:ring-destructive"
-        ),
+        className: cn(child.props.className, error && "border-destructive focus-visible:ring-destructive"),
       } as React.HTMLAttributes<HTMLElement>);
     }
     return child;
@@ -55,24 +44,12 @@ export function FormField({
         {required && <span className="text-destructive ml-1">*</span>}
       </label>
       {enhancedChildren}
-      {error && (
-        <ErrorMessage
-          message={error}
-          variant="inline"
-          className="mt-1"
-          id={errorId}
-        />
-      )}
+      {error && <ErrorMessage message={error} variant="inline" className="mt-1" id={errorId} />}
       {helperText && !error && (
-        <p
-          id={helperId}
-          className="text-xs text-muted-foreground"
-          aria-live="polite"
-        >
+        <p id={helperId} className="text-xs text-muted-foreground" aria-live="polite">
           {helperText}
         </p>
       )}
     </div>
   );
 }
-

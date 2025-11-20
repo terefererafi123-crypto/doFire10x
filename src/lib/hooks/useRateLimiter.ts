@@ -29,19 +29,17 @@ export interface UseRateLimiterReturn {
 
 /**
  * Custom hook for managing rate limiting with countdown
- * 
+ *
  * @example
  * ```tsx
  * const { cooldownSeconds, isRateLimited, startCooldown } = useRateLimiter();
- * 
+ *
  * if (error.status === 429) {
  *   startCooldown();
  * }
  * ```
  */
-export function useRateLimiter(
-  options: UseRateLimiterOptions = {}
-): UseRateLimiterReturn {
+export function useRateLimiter(options: UseRateLimiterOptions = {}): UseRateLimiterReturn {
   const { cooldownMs = 60000 } = options;
   const [cooldownSeconds, setCooldownSeconds] = useState<number>(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -99,4 +97,3 @@ export function useRateLimiter(
     clearCooldown,
   };
 }
-

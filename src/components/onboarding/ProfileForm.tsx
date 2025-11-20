@@ -13,16 +13,8 @@ interface ProfileFormProps {
   onBlur?: (field: keyof ProfileFormData) => void;
 }
 
-export function ProfileForm({
-  data,
-  errors,
-  onChange,
-  onBlur,
-}: ProfileFormProps) {
-  const handleChange = (
-    field: keyof ProfileFormData,
-    value: string | number
-  ) => {
+export function ProfileForm({ data, errors, onChange, onBlur }: ProfileFormProps) {
+  const handleChange = (field: keyof ProfileFormData, value: string | number) => {
     if (field === "birth_date") {
       onChange(field, value || undefined);
     } else {
@@ -75,16 +67,10 @@ export function ProfileForm({
           placeholder="0.00"
           className={cn(errors.monthly_expense && "border-destructive")}
           aria-invalid={!!errors.monthly_expense}
-          aria-describedby={
-            errors.monthly_expense ? "monthly_expense-error" : undefined
-          }
+          aria-describedby={errors.monthly_expense ? "monthly_expense-error" : undefined}
         />
         {errors.monthly_expense && (
-          <p
-            id="monthly_expense-error"
-            className="text-sm text-destructive"
-            role="alert"
-          >
+          <p id="monthly_expense-error" className="text-sm text-destructive" role="alert">
             {errors.monthly_expense}
           </p>
         )}
@@ -104,28 +90,22 @@ export function ProfileForm({
           min="0"
           max="100"
           step="0.01"
-          value={data.withdrawal_rate_pct === undefined || data.withdrawal_rate_pct === null ? "" : data.withdrawal_rate_pct}
+          value={
+            data.withdrawal_rate_pct === undefined || data.withdrawal_rate_pct === null ? "" : data.withdrawal_rate_pct
+          }
           onChange={(e) => handleChange("withdrawal_rate_pct", e.target.value)}
           onBlur={() => handleBlur("withdrawal_rate_pct")}
           placeholder="4.00"
           className={cn(errors.withdrawal_rate_pct && "border-destructive")}
           aria-invalid={!!errors.withdrawal_rate_pct}
-          aria-describedby={
-            errors.withdrawal_rate_pct ? "withdrawal_rate_pct-error" : undefined
-          }
+          aria-describedby={errors.withdrawal_rate_pct ? "withdrawal_rate_pct-error" : undefined}
         />
         {errors.withdrawal_rate_pct && (
-          <p
-            id="withdrawal_rate_pct-error"
-            className="text-sm text-destructive"
-            role="alert"
-          >
+          <p id="withdrawal_rate_pct-error" className="text-sm text-destructive" role="alert">
             {errors.withdrawal_rate_pct}
           </p>
         )}
-        <p className="text-xs text-muted-foreground">
-          Zalecana wartość: 4% (reguła 4%)
-        </p>
+        <p className="text-xs text-muted-foreground">Zalecana wartość: 4% (reguła 4%)</p>
       </div>
 
       <div className="space-y-2">
@@ -142,28 +122,22 @@ export function ProfileForm({
           min="-100"
           max="1000"
           step="0.01"
-          value={data.expected_return_pct === undefined || data.expected_return_pct === null ? "" : data.expected_return_pct}
+          value={
+            data.expected_return_pct === undefined || data.expected_return_pct === null ? "" : data.expected_return_pct
+          }
           onChange={(e) => handleChange("expected_return_pct", e.target.value)}
           onBlur={() => handleBlur("expected_return_pct")}
           placeholder="7.00"
           className={cn(errors.expected_return_pct && "border-destructive")}
           aria-invalid={!!errors.expected_return_pct}
-          aria-describedby={
-            errors.expected_return_pct ? "expected_return_pct-error" : undefined
-          }
+          aria-describedby={errors.expected_return_pct ? "expected_return_pct-error" : undefined}
         />
         {errors.expected_return_pct && (
-          <p
-            id="expected_return_pct-error"
-            className="text-sm text-destructive"
-            role="alert"
-          >
+          <p id="expected_return_pct-error" className="text-sm text-destructive" role="alert">
             {errors.expected_return_pct}
           </p>
         )}
-        <p className="text-xs text-muted-foreground">
-          Zalecana wartość: 7% (średni zwrot z portfela akcji)
-        </p>
+        <p className="text-xs text-muted-foreground">Zalecana wartość: 7% (średni zwrot z portfela akcji)</p>
       </div>
 
       <div className="space-y-2">
@@ -183,24 +157,15 @@ export function ProfileForm({
           min={minDateString}
           className={cn(errors.birth_date && "border-destructive")}
           aria-invalid={!!errors.birth_date}
-          aria-describedby={
-            errors.birth_date ? "birth_date-error" : undefined
-          }
+          aria-describedby={errors.birth_date ? "birth_date-error" : undefined}
         />
         {errors.birth_date && (
-          <p
-            id="birth_date-error"
-            className="text-sm text-destructive"
-            role="alert"
-          >
+          <p id="birth_date-error" className="text-sm text-destructive" role="alert">
             {errors.birth_date}
           </p>
         )}
-        <p className="text-xs text-muted-foreground">
-          Opcjonalne - pozwala obliczyć wiek osiągnięcia FIRE
-        </p>
+        <p className="text-xs text-muted-foreground">Opcjonalne - pozwala obliczyć wiek osiągnięcia FIRE</p>
       </div>
     </div>
   );
 }
-

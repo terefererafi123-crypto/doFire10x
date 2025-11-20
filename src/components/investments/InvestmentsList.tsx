@@ -116,9 +116,7 @@ export function InvestmentsList() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Moje inwestycje</CardTitle>
-            <Button onClick={() => window.location.href = "/onboarding?step=2"}>
-              Dodaj inwestycję
-            </Button>
+            <Button onClick={() => (window.location.href = "/onboarding?step=2")}>Dodaj inwestycję</Button>
           </div>
         </CardHeader>
         <CardContent>
@@ -131,25 +129,18 @@ export function InvestmentsList() {
           {investments.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-muted-foreground mb-4">Brak inwestycji</p>
-              <Button onClick={() => window.location.href = "/onboarding?step=2"}>
-                Dodaj pierwszą inwestycję
-              </Button>
+              <Button onClick={() => (window.location.href = "/onboarding?step=2")}>Dodaj pierwszą inwestycję</Button>
             </div>
           ) : (
             <div className="space-y-4">
               {investments.map((investment) => (
-                <div
-                  key={investment.id}
-                  className="flex items-center justify-between p-4 border rounded-lg"
-                >
+                <div key={investment.id} className="flex items-center justify-between p-4 border rounded-lg">
                   <div className="flex-1">
                     <div className="font-medium">{getAssetTypeLabel(investment.type)}</div>
                     <div className="text-sm text-muted-foreground">
                       {formatCurrency(investment.amount)} • {formatDate(investment.acquired_at)}
                     </div>
-                    {investment.notes && (
-                      <div className="text-sm text-muted-foreground mt-1">{investment.notes}</div>
-                    )}
+                    {investment.notes && <div className="text-sm text-muted-foreground mt-1">{investment.notes}</div>}
                   </div>
                   <div className="flex gap-2">
                     <Button
@@ -217,4 +208,3 @@ export function InvestmentsList() {
     </div>
   );
 }
-

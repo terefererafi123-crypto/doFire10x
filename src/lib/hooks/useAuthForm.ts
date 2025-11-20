@@ -111,7 +111,7 @@ export function validateEmail(email: string): string | undefined {
 /**
  * Default password validator
  */
-export function validatePassword(password: string, minLength: number = 6): string | undefined {
+export function validatePassword(password: string, minLength = 6): string | undefined {
   if (!password) {
     return "Pole hasła jest wymagane";
   }
@@ -126,10 +126,7 @@ export function validatePassword(password: string, minLength: number = 6): strin
 /**
  * Default confirm password validator
  */
-export function validateConfirmPassword(
-  password: string,
-  confirmPassword: string
-): string | undefined {
+export function validateConfirmPassword(password: string, confirmPassword: string): string | undefined {
   if (!confirmPassword) {
     return "Pole potwierdzenia hasła jest wymagane";
   }
@@ -143,16 +140,16 @@ export function validateConfirmPassword(
 
 /**
  * Custom hook for managing authentication form state and validation
- * 
+ *
  * Provides common functionality for login, register, and password reset forms
- * 
+ *
  * @example
  * ```tsx
  * const form = useAuthForm({
  *   initialData: { email: '', password: '' },
  *   minPasswordLength: 6,
  * });
- * 
+ *
  * const handleSubmit = async () => {
  *   if (!form.validateAll()) return;
  *   form.setLoading(true);
@@ -160,15 +157,8 @@ export function validateConfirmPassword(
  * };
  * ```
  */
-export function useAuthForm<T extends Record<string, unknown>>(
-  options: UseAuthFormOptions<T>
-): UseAuthFormReturn<T> {
-  const {
-    initialData,
-    validators = {},
-    minPasswordLength = 6,
-    rateLimitCooldownMs = 60000,
-  } = options;
+export function useAuthForm<T extends Record<string, unknown>>(options: UseAuthFormOptions<T>): UseAuthFormReturn<T> {
+  const { initialData, validators = {}, minPasswordLength = 6, rateLimitCooldownMs = 60000 } = options;
 
   const rateLimiter = useRateLimiter({ cooldownMs: rateLimitCooldownMs });
 
@@ -189,9 +179,7 @@ export function useAuthForm<T extends Record<string, unknown>>(
       ...prev,
       data: { ...prev.data, [field]: value },
       // Clear error for this field when user starts typing
-      errors: prev.errors[field as keyof AuthFormErrors]
-        ? { ...prev.errors, [field]: undefined }
-        : prev.errors,
+      errors: prev.errors[field as keyof AuthFormErrors] ? { ...prev.errors, [field]: undefined } : prev.errors,
       isSuccess: false,
     }));
   }, []);
@@ -337,4 +325,3 @@ export function useAuthForm<T extends Record<string, unknown>>(
     rateLimiter,
   };
 }
-

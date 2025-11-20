@@ -100,10 +100,7 @@ export class RegisterService {
     if (error instanceof Error) {
       if (error.message === "TIMEOUT") {
         errorMessage = "Żądanie trwa zbyt długo. Spróbuj ponownie.";
-      } else if (
-        error.message?.toLowerCase().includes("network") ||
-        error.message?.toLowerCase().includes("fetch")
-      ) {
+      } else if (error.message?.toLowerCase().includes("network") || error.message?.toLowerCase().includes("fetch")) {
         errorMessage = "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie.";
       }
     }
@@ -120,4 +117,3 @@ export class RegisterService {
 
 // Export singleton instance
 export const registerService = new RegisterService();
-

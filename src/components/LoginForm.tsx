@@ -30,10 +30,10 @@ export default function LoginForm() {
   React.useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const error = urlParams.get("error");
-    
+
     if (error === "session_expired") {
       setError("root", { message: "Zaloguj ponownie." });
-      
+
       // Clean up URL
       window.history.replaceState({}, document.title, window.location.pathname);
     }
@@ -74,9 +74,8 @@ export default function LoginForm() {
       } else if (profileResult.shouldRedirectToOnboarding) {
         window.location.replace("/onboarding");
       }
-    } catch (error) {
+    } catch {
       // Handle unexpected errors
-      console.error("Login error:", error);
       setError("root", {
         message: "Nie udało się zalogować. Sprawdź połączenie z internetem i spróbuj ponownie.",
       });
@@ -98,12 +97,7 @@ export default function LoginForm() {
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={onSubmit}
-        className="space-y-6"
-        noValidate
-        aria-label="Formularz logowania"
-      >
+      <form onSubmit={onSubmit} className="space-y-6" noValidate aria-label="Formularz logowania">
         <EmailField
           value={watch("email")}
           onChange={(value) => setValue("email", value)}
@@ -144,7 +138,9 @@ export default function LoginForm() {
         >
           {isSubmitting ? (
             <>
-              <span className="mr-2" aria-hidden="true">Logowanie...</span>
+              <span className="mr-2" aria-hidden="true">
+                Logowanie...
+              </span>
               <span
                 className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
                 aria-hidden="true"
@@ -165,4 +161,3 @@ export default function LoginForm() {
     </div>
   );
 }
-

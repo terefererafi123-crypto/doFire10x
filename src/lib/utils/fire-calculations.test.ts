@@ -1,15 +1,15 @@
-import { describe, it, expect } from 'vitest';
-import { calculateAge, calculateYearsToFire } from './fire-calculations';
-import type { ISODateString } from '@/types';
+import { describe, it, expect } from "vitest";
+import { calculateAge, calculateYearsToFire } from "./fire-calculations";
+import type { ISODateString } from "@/types";
 
-describe('fire-calculations', () => {
-  describe('calculateAge', () => {
-    it('should calculate age correctly for a person born 30 years ago', () => {
+describe("fire-calculations", () => {
+  describe("calculateAge", () => {
+    it("should calculate age correctly for a person born 30 years ago", () => {
       // Arrange
       const today = new Date();
       const birthDate = new Date(today);
       birthDate.setFullYear(today.getFullYear() - 30);
-      const birthDateString = birthDate.toISOString().split('T')[0] as ISODateString;
+      const birthDateString = birthDate.toISOString().split("T")[0] as ISODateString;
 
       // Act
       const age = calculateAge(birthDateString);
@@ -18,13 +18,13 @@ describe('fire-calculations', () => {
       expect(age).toBeCloseTo(30, 0);
     });
 
-    it('should calculate age with decimal precision for months', () => {
+    it("should calculate age with decimal precision for months", () => {
       // Arrange
       const today = new Date();
       const birthDate = new Date(today);
       birthDate.setFullYear(today.getFullYear() - 30);
       birthDate.setMonth(today.getMonth() - 6); // 6 miesięcy temu
-      const birthDateString = birthDate.toISOString().split('T')[0] as ISODateString;
+      const birthDateString = birthDate.toISOString().split("T")[0] as ISODateString;
 
       // Act
       const age = calculateAge(birthDateString);
@@ -33,10 +33,10 @@ describe('fire-calculations', () => {
       expect(age).toBeCloseTo(30.5, 0);
     });
 
-    it('should handle birthday today correctly', () => {
+    it("should handle birthday today correctly", () => {
       // Arrange
       const today = new Date();
-      const birthDateString = today.toISOString().split('T')[0] as ISODateString;
+      const birthDateString = today.toISOString().split("T")[0] as ISODateString;
 
       // Act
       const age = calculateAge(birthDateString);
@@ -45,9 +45,9 @@ describe('fire-calculations', () => {
       expect(age).toBeCloseTo(0, 1);
     });
 
-    it('should handle leap year birthdays correctly', () => {
+    it("should handle leap year birthdays correctly", () => {
       // Arrange - urodziny 29 lutego
-      const birthDateString = '2000-02-29' as ISODateString;
+      const birthDateString = "2000-02-29" as ISODateString;
 
       // Act
       const age = calculateAge(birthDateString);
@@ -57,7 +57,7 @@ describe('fire-calculations', () => {
       expect(age).toBeLessThan(30);
     });
 
-    it('should calculate age correctly when birthday is in the future month', () => {
+    it("should calculate age correctly when birthday is in the future month", () => {
       // Arrange - urodziny w przyszłym miesiącu (ale w przeszłym roku)
       // Uwaga: jeśli urodziny są w przyszłości względem dzisiejszej daty,
       // wynik może być ujemny (co jest poprawne matematycznie)
@@ -65,7 +65,7 @@ describe('fire-calculations', () => {
       const birthDate = new Date(today);
       birthDate.setFullYear(today.getFullYear() - 1);
       birthDate.setMonth(today.getMonth() + 1);
-      const birthDateString = birthDate.toISOString().split('T')[0] as ISODateString;
+      const birthDateString = birthDate.toISOString().split("T")[0] as ISODateString;
 
       // Act
       const age = calculateAge(birthDateString);
@@ -75,10 +75,10 @@ describe('fire-calculations', () => {
     });
   });
 
-  describe('calculateYearsToFire', () => {
+  describe("calculateYearsToFire", () => {
     // Testy zgodne z PRD: years_to_fire = log(fire_target / invested_total) / log(1 + expected_return_pct / 100)
 
-    it('should calculate years correctly for standard scenario', () => {
+    it("should calculate years correctly for standard scenario", () => {
       // Arrange
       const fireTarget = 1_000_000; // 1M PLN
       const investedTotal = 100_000; // 100k PLN
@@ -93,7 +93,7 @@ describe('fire-calculations', () => {
       expect(result).toBeCloseTo(34.0, 0);
     });
 
-    it('should return null when investedTotal is 0', () => {
+    it("should return null when investedTotal is 0", () => {
       // Arrange
       const fireTarget = 1_000_000;
       const investedTotal = 0;
@@ -106,7 +106,7 @@ describe('fire-calculations', () => {
       expect(result).toBeNull();
     });
 
-    it('should return null when investedTotal is negative', () => {
+    it("should return null when investedTotal is negative", () => {
       // Arrange
       const fireTarget = 1_000_000;
       const investedTotal = -1000;
@@ -119,7 +119,7 @@ describe('fire-calculations', () => {
       expect(result).toBeNull();
     });
 
-    it('should return null when fireTarget is 0', () => {
+    it("should return null when fireTarget is 0", () => {
       // Arrange
       const fireTarget = 0;
       const investedTotal = 100_000;
@@ -132,7 +132,7 @@ describe('fire-calculations', () => {
       expect(result).toBeNull();
     });
 
-    it('should return null when fireTarget is negative', () => {
+    it("should return null when fireTarget is negative", () => {
       // Arrange
       const fireTarget = -1_000_000;
       const investedTotal = 100_000;
@@ -145,7 +145,7 @@ describe('fire-calculations', () => {
       expect(result).toBeNull();
     });
 
-    it('should return null when expectedReturnPct is -100', () => {
+    it("should return null when expectedReturnPct is -100", () => {
       // Arrange
       const fireTarget = 1_000_000;
       const investedTotal = 100_000;
@@ -158,7 +158,7 @@ describe('fire-calculations', () => {
       expect(result).toBeNull();
     });
 
-    it('should return null when expectedReturnPct is less than -100', () => {
+    it("should return null when expectedReturnPct is less than -100", () => {
       // Arrange
       const fireTarget = 1_000_000;
       const investedTotal = 100_000;
@@ -171,7 +171,7 @@ describe('fire-calculations', () => {
       expect(result).toBeNull();
     });
 
-    it('should handle case when fireTarget equals investedTotal', () => {
+    it("should handle case when fireTarget equals investedTotal", () => {
       // Arrange - użytkownik już osiągnął FIRE
       const fireTarget = 1_000_000;
       const investedTotal = 1_000_000;
@@ -185,7 +185,7 @@ describe('fire-calculations', () => {
       expect(result).toBeCloseTo(0, 2);
     });
 
-    it('should handle case when fireTarget is less than investedTotal', () => {
+    it("should handle case when fireTarget is less than investedTotal", () => {
       // Arrange - użytkownik przekroczył FIRE target
       const fireTarget = 500_000;
       const investedTotal = 1_000_000;
@@ -199,7 +199,7 @@ describe('fire-calculations', () => {
       expect(result).toBeLessThan(0);
     });
 
-    it('should handle zero expected return', () => {
+    it("should handle zero expected return", () => {
       // Arrange
       const fireTarget = 1_000_000;
       const investedTotal = 100_000;
@@ -216,7 +216,7 @@ describe('fire-calculations', () => {
       expect(result).toBe(Infinity);
     });
 
-    it('should calculate correctly for high return rate', () => {
+    it("should calculate correctly for high return rate", () => {
       // Arrange
       const fireTarget = 1_000_000;
       const investedTotal = 100_000;
@@ -231,7 +231,7 @@ describe('fire-calculations', () => {
       expect(result).toBeGreaterThan(10);
     });
 
-    it('should calculate correctly for low return rate', () => {
+    it("should calculate correctly for low return rate", () => {
       // Arrange
       const fireTarget = 1_000_000;
       const investedTotal = 100_000;
@@ -245,7 +245,7 @@ describe('fire-calculations', () => {
       expect(result).toBeGreaterThan(100);
     });
 
-    it('should handle very large numbers', () => {
+    it("should handle very large numbers", () => {
       // Arrange
       const fireTarget = 10_000_000_000; // 10 miliardów
       const investedTotal = 1_000_000_000; // 1 miliard
@@ -260,7 +260,7 @@ describe('fire-calculations', () => {
       expect(result).toBeCloseTo(34.0, 0);
     });
 
-    it('should handle very small numbers with precision', () => {
+    it("should handle very small numbers with precision", () => {
       // Arrange
       const fireTarget = 1_000;
       const investedTotal = 100;
@@ -275,7 +275,7 @@ describe('fire-calculations', () => {
       expect(result).toBeCloseTo(34.0, 0);
     });
 
-    it('should handle negative expected return (but > -100)', () => {
+    it("should handle negative expected return (but > -100)", () => {
       // Arrange - ujemny zwrot (strata)
       const fireTarget = 1_000_000;
       const investedTotal = 100_000;
@@ -292,4 +292,3 @@ describe('fire-calculations', () => {
     });
   });
 });
-

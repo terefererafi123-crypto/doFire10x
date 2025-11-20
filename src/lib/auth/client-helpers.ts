@@ -19,7 +19,7 @@ export async function getAuthToken(): Promise<string | null> {
 
   // Fallback to sessionStorage (from LoginForm)
   if (typeof window !== "undefined") {
-    const sessionStorageData = sessionStorage.getItem('supabase.auth.session');
+    const sessionStorageData = sessionStorage.getItem("supabase.auth.session");
     if (sessionStorageData) {
       try {
         const parsedSession = JSON.parse(sessionStorageData);
@@ -34,4 +34,3 @@ export async function getAuthToken(): Promise<string | null> {
 
   return null;
 }
-

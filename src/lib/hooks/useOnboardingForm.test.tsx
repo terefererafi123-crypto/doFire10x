@@ -1,18 +1,18 @@
-import { describe, it, expect } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useOnboardingForm } from './useOnboardingForm';
-import type { CreateProfileCommand, CreateInvestmentCommand } from '@/types';
+import { describe, it, expect } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useOnboardingForm } from "./useOnboardingForm";
+import type { CreateProfileCommand, CreateInvestmentCommand } from "@/types";
 
-describe('useOnboardingForm', () => {
-  describe('validateProfileForm', () => {
-    it('should return no errors for valid profile data', () => {
+describe("useOnboardingForm", () => {
+  describe("validateProfileForm", () => {
+    it("should return no errors for valid profile data", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const validData: CreateProfileCommand = {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: '1992-05-12',
+        birth_date: "1992-05-12",
       };
 
       // Act
@@ -22,7 +22,7 @@ describe('useOnboardingForm', () => {
       expect(errors).toEqual({});
     });
 
-    it('should return no errors for profile without birth_date', () => {
+    it("should return no errors for profile without birth_date", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const validData: CreateProfileCommand = {
@@ -38,7 +38,7 @@ describe('useOnboardingForm', () => {
       expect(errors).toEqual({});
     });
 
-    it('should return error for undefined monthly_expense', () => {
+    it("should return error for undefined monthly_expense", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
@@ -50,10 +50,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 
-    it('should return error for null monthly_expense', () => {
+    it("should return error for null monthly_expense", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
@@ -66,10 +66,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 
-    it('should return error for NaN monthly_expense', () => {
+    it("should return error for NaN monthly_expense", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -82,10 +82,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 
-    it('should return error for Infinity monthly_expense', () => {
+    it("should return error for Infinity monthly_expense", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -98,10 +98,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 
-    it('should return error for negative monthly_expense', () => {
+    it("should return error for negative monthly_expense", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -114,10 +114,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki muszą być >= 0');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki muszą być >= 0");
     });
 
-    it('should accept zero monthly_expense', () => {
+    it("should accept zero monthly_expense", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const validData: CreateProfileCommand = {
@@ -133,7 +133,7 @@ describe('useOnboardingForm', () => {
       expect(errors.monthly_expense).toBeUndefined();
     });
 
-    it('should return error for undefined withdrawal_rate_pct', () => {
+    it("should return error for undefined withdrawal_rate_pct", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
@@ -145,10 +145,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.withdrawal_rate_pct).toBe('Stopa wypłat jest wymagana');
+      expect(errors.withdrawal_rate_pct).toBe("Stopa wypłat jest wymagana");
     });
 
-    it('should return error for withdrawal_rate_pct < 0', () => {
+    it("should return error for withdrawal_rate_pct < 0", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -161,10 +161,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.withdrawal_rate_pct).toBe('Stopa wypłat musi być w zakresie 0-100');
+      expect(errors.withdrawal_rate_pct).toBe("Stopa wypłat musi być w zakresie 0-100");
     });
 
-    it('should return error for withdrawal_rate_pct > 100', () => {
+    it("should return error for withdrawal_rate_pct > 100", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -177,10 +177,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.withdrawal_rate_pct).toBe('Stopa wypłat musi być w zakresie 0-100');
+      expect(errors.withdrawal_rate_pct).toBe("Stopa wypłat musi być w zakresie 0-100");
     });
 
-    it('should accept withdrawal_rate_pct at boundaries (0 and 100)', () => {
+    it("should accept withdrawal_rate_pct at boundaries (0 and 100)", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const dataAt0: CreateProfileCommand = {
@@ -203,7 +203,7 @@ describe('useOnboardingForm', () => {
       expect(errors100.withdrawal_rate_pct).toBeUndefined();
     });
 
-    it('should return error for expected_return_pct < -100', () => {
+    it("should return error for expected_return_pct < -100", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -216,10 +216,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.expected_return_pct).toBe('Oczekiwany zwrot musi być w zakresie -100 do 1000');
+      expect(errors.expected_return_pct).toBe("Oczekiwany zwrot musi być w zakresie -100 do 1000");
     });
 
-    it('should return error for expected_return_pct > 1000', () => {
+    it("should return error for expected_return_pct > 1000", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -232,10 +232,10 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.expected_return_pct).toBe('Oczekiwany zwrot musi być w zakresie -100 do 1000');
+      expect(errors.expected_return_pct).toBe("Oczekiwany zwrot musi być w zakresie -100 do 1000");
     });
 
-    it('should accept expected_return_pct at boundaries (-100 and 1000)', () => {
+    it("should accept expected_return_pct at boundaries (-100 and 1000)", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const dataAtMinus100: CreateProfileCommand = {
@@ -258,7 +258,7 @@ describe('useOnboardingForm', () => {
       expect(errors1000.expected_return_pct).toBeUndefined();
     });
 
-    it('should return error for birth_date in the future', () => {
+    it("should return error for birth_date in the future", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const tomorrow = new Date();
@@ -267,17 +267,17 @@ describe('useOnboardingForm', () => {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: tomorrow.toISOString().split('T')[0],
+        birth_date: tomorrow.toISOString().split("T")[0],
       };
 
       // Act
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.birth_date).toBe('Data urodzenia musi być w przeszłości');
+      expect(errors.birth_date).toBe("Data urodzenia musi być w przeszłości");
     });
 
-    it('should return error for birth_date older than 120 years', () => {
+    it("should return error for birth_date older than 120 years", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const tooOld = new Date();
@@ -286,17 +286,17 @@ describe('useOnboardingForm', () => {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: tooOld.toISOString().split('T')[0],
+        birth_date: tooOld.toISOString().split("T")[0],
       };
 
       // Act
       const errors = result.current.validateProfileForm(invalidData);
 
       // Assert
-      expect(errors.birth_date).toBe('Data urodzenia nie może być starsza niż 120 lat');
+      expect(errors.birth_date).toBe("Data urodzenia nie może być starsza niż 120 lat");
     });
 
-    it('should return multiple errors for multiple invalid fields', () => {
+    it("should return multiple errors for multiple invalid fields", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
@@ -315,15 +315,15 @@ describe('useOnboardingForm', () => {
     });
   });
 
-  describe('validateInvestmentForm', () => {
-    it('should return no errors for valid investment data', () => {
+  describe("validateInvestmentForm", () => {
+    it("should return no errors for valid investment data", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 10000.0,
-        acquired_at: '2024-01-15',
-        notes: 'ETF SP500',
+        acquired_at: "2024-01-15",
+        notes: "ETF SP500",
       };
 
       // Act
@@ -333,13 +333,13 @@ describe('useOnboardingForm', () => {
       expect(errors).toEqual({});
     });
 
-    it('should return no errors for investment without notes', () => {
+    it("should return no errors for investment without notes", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'bond',
+        type: "bond",
         amount: 5000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 
       // Act
@@ -349,66 +349,66 @@ describe('useOnboardingForm', () => {
       expect(errors).toEqual({});
     });
 
-    it('should return error for invalid type', () => {
+    it("should return error for invalid type", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
-        type: 'invalid_type',
+        type: "invalid_type",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       } as CreateInvestmentCommand;
 
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.type).toBe('Wybierz typ inwestycji');
+      expect(errors.type).toBe("Wybierz typ inwestycji");
     });
 
-    it('should return error for undefined type', () => {
+    it("should return error for undefined type", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
         amount: 1000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       } as CreateInvestmentCommand;
 
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.type).toBe('Wybierz typ inwestycji');
+      expect(errors.type).toBe("Wybierz typ inwestycji");
     });
 
-    it('should validate all valid asset types', () => {
+    it("should validate all valid asset types", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
-      const types: Array<CreateInvestmentCommand['type']> = ['etf', 'bond', 'stock', 'cash'];
+      const types: CreateInvestmentCommand["type"][] = ["etf", "bond", "stock", "cash"];
 
       // Act & Assert
       types.forEach((type) => {
         const data: CreateInvestmentCommand = {
           type,
           amount: 1000.0,
-          acquired_at: '2024-01-15',
+          acquired_at: "2024-01-15",
         };
         const errors = result.current.validateInvestmentForm(data);
         expect(errors.type).toBeUndefined();
       });
     });
 
-    it('should return error for amount <= 0', () => {
+    it("should return error for amount <= 0", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData1: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
       const invalidData2: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: -100,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 
       // Act
@@ -416,62 +416,62 @@ describe('useOnboardingForm', () => {
       const errors2 = result.current.validateInvestmentForm(invalidData2);
 
       // Assert
-      expect(errors1.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
-      expect(errors2.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors1.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
+      expect(errors2.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 
-    it('should return error for amount > max', () => {
+    it("should return error for amount > max", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 999999999999.99 + 0.01,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 
-    it('should return error for undefined amount', () => {
+    it("should return error for undefined amount", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
-        type: 'etf',
-        acquired_at: '2024-01-15',
+        type: "etf",
+        acquired_at: "2024-01-15",
       } as CreateInvestmentCommand;
 
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 
-    it('should return error for NaN amount', () => {
+    it("should return error for NaN amount", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: NaN,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 
-    it('should return error for missing acquired_at', () => {
+    it("should return error for missing acquired_at", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
       } as CreateInvestmentCommand;
 
@@ -479,35 +479,35 @@ describe('useOnboardingForm', () => {
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.acquired_at).toBe('Data nabycia jest wymagana');
+      expect(errors.acquired_at).toBe("Data nabycia jest wymagana");
     });
 
-    it('should return error for future acquired_at', () => {
+    it("should return error for future acquired_at", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: tomorrow.toISOString().split('T')[0],
+        acquired_at: tomorrow.toISOString().split("T")[0],
       };
 
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.acquired_at).toBe('Data nabycia nie może być w przyszłości');
+      expect(errors.acquired_at).toBe("Data nabycia nie może być w przyszłości");
     });
 
-    it('should accept today as acquired_at', () => {
+    it("should accept today as acquired_at", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const today = new Date();
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: today.toISOString().split('T')[0],
+        acquired_at: today.toISOString().split("T")[0],
       };
 
       // Act
@@ -517,31 +517,31 @@ describe('useOnboardingForm', () => {
       expect(errors.acquired_at).toBeUndefined();
     });
 
-    it('should return error for notes exceeding 1000 characters', () => {
+    it("should return error for notes exceeding 1000 characters", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: 'a'.repeat(1001),
+        acquired_at: "2024-01-15",
+        notes: "a".repeat(1001),
       };
 
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 
       // Assert
-      expect(errors.notes).toBe('Notatki nie mogą przekraczać 1000 znaków');
+      expect(errors.notes).toBe("Notatki nie mogą przekraczać 1000 znaków");
     });
 
-    it('should accept notes with exactly 1000 characters', () => {
+    it("should accept notes with exactly 1000 characters", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: 'a'.repeat(1000),
+        acquired_at: "2024-01-15",
+        notes: "a".repeat(1000),
       };
 
       // Act
@@ -551,14 +551,14 @@ describe('useOnboardingForm', () => {
       expect(errors.notes).toBeUndefined();
     });
 
-    it('should accept empty string notes (optional)', () => {
+    it("should accept empty string notes (optional)", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: '',
+        acquired_at: "2024-01-15",
+        notes: "",
       };
 
       // Act
@@ -568,11 +568,11 @@ describe('useOnboardingForm', () => {
       expect(errors.notes).toBeUndefined();
     });
 
-    it('should return multiple errors for multiple invalid fields', () => {
+    it("should return multiple errors for multiple invalid fields", () => {
       // Arrange
       const { result } = renderHook(() => useOnboardingForm());
       const invalidData = {
-        type: 'invalid_type',
+        type: "invalid_type",
         amount: -100,
         // brak acquired_at
       } as CreateInvestmentCommand;
@@ -587,4 +587,3 @@ describe('useOnboardingForm', () => {
     });
   });
 });
-

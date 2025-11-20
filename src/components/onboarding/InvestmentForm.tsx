@@ -1,13 +1,7 @@
 import * as React from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { FormField } from "@/components/FormField";
 import { FormErrorSummary } from "@/components/FormErrorSummary";
 import type { CreateInvestmentCommand, AssetType } from "@/types";
@@ -23,24 +17,15 @@ interface InvestmentFormProps {
   showErrorSummary?: boolean;
 }
 
-const ASSET_TYPE_OPTIONS: Array<{ value: AssetType; label: string }> = [
+const ASSET_TYPE_OPTIONS: { value: AssetType; label: string }[] = [
   { value: "etf", label: "ETF" },
   { value: "bond", label: "Obligacja" },
   { value: "stock", label: "Akcja" },
   { value: "cash", label: "Gotówka" },
 ];
 
-export function InvestmentForm({
-  data,
-  errors,
-  onChange,
-  onBlur,
-  showErrorSummary = false,
-}: InvestmentFormProps) {
-  const handleChange = (
-    field: keyof InvestmentFormData,
-    value: string | number | null
-  ) => {
+export function InvestmentForm({ data, errors, onChange, onBlur, showErrorSummary = false }: InvestmentFormProps) {
+  const handleChange = (field: keyof InvestmentFormData, value: string | number | null) => {
     if (field === "notes") {
       onChange(field, value || undefined);
     } else if (field === "type") {
@@ -73,16 +58,8 @@ export function InvestmentForm({
     <div className="space-y-6">
       {showErrorSummary && <FormErrorSummary errors={errors} />}
 
-      <FormField
-        label="Typ inwestycji"
-        name="type"
-        required
-        error={errors.type}
-      >
-        <Select
-          value={data.type || ""}
-          onValueChange={(value) => handleChange("type", value)}
-        >
+      <FormField label="Typ inwestycji" name="type" required error={errors.type}>
+        <Select value={data.type || ""} onValueChange={(value) => handleChange("type", value)}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Wybierz typ inwestycji" />
           </SelectTrigger>
@@ -96,12 +73,7 @@ export function InvestmentForm({
         </Select>
       </FormField>
 
-      <FormField
-        label="Kwota (PLN)"
-        name="amount"
-        required
-        error={errors.amount}
-      >
+      <FormField label="Kwota (PLN)" name="amount" required error={errors.amount}>
         <Input
           type="number"
           min="0.01"
@@ -114,12 +86,7 @@ export function InvestmentForm({
         />
       </FormField>
 
-      <FormField
-        label="Data nabycia"
-        name="acquired_at"
-        required
-        error={errors.acquired_at}
-      >
+      <FormField label="Data nabycia" name="acquired_at" required error={errors.acquired_at}>
         <Input
           type="date"
           value={data.acquired_at || ""}
@@ -129,12 +96,7 @@ export function InvestmentForm({
         />
       </FormField>
 
-      <FormField
-        label="Notatki"
-        name="notes"
-        error={errors.notes}
-        helperText="Maksymalnie 1000 znaków"
-      >
+      <FormField label="Notatki" name="notes" error={errors.notes} helperText="Maksymalnie 1000 znaków">
         <Textarea
           value={data.notes || ""}
           onChange={(e) => handleChange("notes", e.target.value || null)}
@@ -147,4 +109,3 @@ export function InvestmentForm({
     </div>
   );
 }
-

@@ -64,4 +64,3 @@ export function calculateYearsToFire(
   // years = log(ratio) / log(growthRate)
   return Math.log(ratio) / Math.log(growthRate);
 }
-

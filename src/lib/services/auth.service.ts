@@ -57,7 +57,9 @@ export class AuthService {
       if (!session) {
         // Session not in response - try getSession() as fallback
         await new Promise((resolve) => setTimeout(resolve, 500));
-        const { data: { session: fallbackSession } } = await supabase.auth.getSession();
+        const {
+          data: { session: fallbackSession },
+        } = await supabase.auth.getSession();
 
         if (!fallbackSession) {
           return {
@@ -186,10 +188,7 @@ export class AuthService {
     if (error instanceof Error) {
       if (error.message === "TIMEOUT") {
         errorMessage = "Żądanie trwa zbyt długo. Spróbuj ponownie.";
-      } else if (
-        error.message?.toLowerCase().includes("network") ||
-        error.message?.toLowerCase().includes("fetch")
-      ) {
+      } else if (error.message?.toLowerCase().includes("network") || error.message?.toLowerCase().includes("fetch")) {
         errorMessage = "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie.";
       }
     }
@@ -218,7 +217,9 @@ export class AuthService {
     });
 
     // Verify session is now available
-    const { data: { session: verifiedSession } } = await supabase.auth.getSession();
+    const {
+      data: { session: verifiedSession },
+    } = await supabase.auth.getSession();
 
     if (setSessionError || !verifiedSession) {
       // Store session in sessionStorage as backup
@@ -238,4 +239,3 @@ export class AuthService {
 
 // Export singleton instance
 export const authService = new AuthService();
-

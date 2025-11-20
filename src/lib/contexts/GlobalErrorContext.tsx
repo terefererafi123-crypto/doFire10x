@@ -7,9 +7,7 @@ interface GlobalErrorContextType {
   clearError: () => void;
 }
 
-const GlobalErrorContext = React.createContext<GlobalErrorContextType | undefined>(
-  undefined
-);
+const GlobalErrorContext = React.createContext<GlobalErrorContextType | undefined>(undefined);
 
 /**
  * Provider for global error state
@@ -31,11 +29,7 @@ export function GlobalErrorProvider({ children }: { children: React.ReactNode })
     [error, clearError]
   );
 
-  return (
-    <GlobalErrorContext.Provider value={value}>
-      {children}
-    </GlobalErrorContext.Provider>
-  );
+  return <GlobalErrorContext.Provider value={value}>{children}</GlobalErrorContext.Provider>;
 }
 
 /**
@@ -47,9 +41,7 @@ export function useGlobalError() {
   if (context === undefined) {
     // Return a safe default instead of throwing to prevent component crashes
     // This can happen during SSR or if the provider hasn't mounted yet
-    console.warn(
-      "useGlobalError called outside GlobalErrorProvider, using default no-op implementation"
-    );
+    console.warn("useGlobalError called outside GlobalErrorProvider, using default no-op implementation");
     return {
       error: null,
       setError: () => {
@@ -62,4 +54,3 @@ export function useGlobalError() {
   }
   return context;
 }
-

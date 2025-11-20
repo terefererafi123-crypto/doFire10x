@@ -33,14 +33,9 @@ export const GET: APIRoute = async ({ request }) => {
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     // Log warning for missing/invalid format token (as per spec: WARN level)
     const requestId = request.headers.get("X-Request-Id");
-    console.warn(
-      `Missing or invalid Authorization header format${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-    );
+    console.warn(`Missing or invalid Authorization header format${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
 
-    return errorResponse(
-      { code: "unauthorized", message: "Missing or invalid authentication token" },
-      401
-    );
+    return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
   }
 
   const token = authHeader.replace("Bearer ", "");
@@ -52,10 +47,7 @@ export const GET: APIRoute = async ({ request }) => {
 
     if (!supabaseUrl || !supabaseAnonKey) {
       console.error("Missing Supabase environment variables");
-      return errorResponse(
-        { code: "internal", message: "Internal server error" },
-        500
-      );
+      return errorResponse({ code: "internal", message: "Internal server error" }, 500);
     }
 
     // Create a new client with the token in headers for verification
@@ -81,10 +73,7 @@ export const GET: APIRoute = async ({ request }) => {
         userError?.message || "User not found"
       );
 
-      return errorResponse(
-        { code: "unauthorized", message: "Missing or invalid authentication token" },
-        401
-      );
+      return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
     }
 
     // 4. Extract iat from JWT token payload
@@ -92,9 +81,7 @@ export const GET: APIRoute = async ({ request }) => {
     try {
       // Parse JWT payload to extract iat
       // JWT format: header.payload.signature
-      const payload = JSON.parse(
-        Buffer.from(token.split(".")[1], "base64").toString()
-      );
+      const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
       iat = payload.iat || Math.floor(Date.now() / 1000);
     } catch (parseError) {
       // Log error for JWT parsing failure (as per spec: ERROR level for parsing errors)
@@ -120,15 +107,8 @@ export const GET: APIRoute = async ({ request }) => {
   } catch (error) {
     // Log unexpected errors
     const requestId = request.headers.get("X-Request-Id");
-    console.error(
-      `Error in GET /v1/auth/session${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
-      error
-    );
+    console.error(`Error in GET /v1/auth/session${requestId ? ` [Request-ID: ${requestId}]` : ""}:`, error);
 
-    return errorResponse(
-      { code: "internal", message: "Internal server error" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "Internal server error" }, 500);
   }
 };
-

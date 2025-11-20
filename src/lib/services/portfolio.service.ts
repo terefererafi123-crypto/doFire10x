@@ -32,11 +32,7 @@ export async function getPortfolioAggByUserId(
   userId: string
 ): Promise<PortfolioAggDto> {
   // RLS automatically filters by user_id = auth.uid()
-  const { data, error } = await supabase
-    .from("v_investments_agg")
-    .select("*")
-    .eq("user_id", userId)
-    .maybeSingle();
+  const { data, error } = await supabase.from("v_investments_agg").select("*").eq("user_id", userId).maybeSingle();
 
   // Handle database errors (excluding "not found" which is expected for zero investments)
   if (error && error.code !== "PGRST116") {
@@ -62,4 +58,3 @@ export async function getPortfolioAggByUserId(
   // Convert DB row to DTO (handles null values by zeroing them)
   return toPortfolioAggDto(data);
 }
-

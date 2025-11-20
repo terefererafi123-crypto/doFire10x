@@ -59,15 +59,9 @@ export class ResetPasswordService {
     if (error instanceof Error) {
       if (error.message === "TIMEOUT") {
         errorMessage = "Żądanie trwa zbyt długo. Spróbuj ponownie.";
-      } else if (
-        error.message?.toLowerCase().includes("network") ||
-        error.message?.toLowerCase().includes("fetch")
-      ) {
+      } else if (error.message?.toLowerCase().includes("network") || error.message?.toLowerCase().includes("fetch")) {
         errorMessage = "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie.";
-      } else if (
-        error.message?.toLowerCase().includes("token") ||
-        error.message?.toLowerCase().includes("expired")
-      ) {
+      } else if (error.message?.toLowerCase().includes("token") || error.message?.toLowerCase().includes("expired")) {
         errorMessage = "Link resetujący wygasł lub jest nieprawidłowy. Poproś o nowy link resetujący.";
       }
     }
@@ -83,4 +77,3 @@ export class ResetPasswordService {
 
 // Export singleton instance
 export const resetPasswordService = new ResetPasswordService();
-

@@ -1,11 +1,11 @@
-import type { APIRoute } from 'astro';
-import { createSupabaseServerInstance } from '../../../db/supabase.client.ts';
+import type { APIRoute } from "astro";
+import { createSupabaseServerInstance } from "../../../db/supabase.client.ts";
 
 export const POST: APIRoute = async ({ request, cookies }) => {
   const { email, password } = await request.json();
 
   if (!email || !password) {
-    return new Response(JSON.stringify({ error: 'Email i hasło są wymagane' }), {
+    return new Response(JSON.stringify({ error: "Email i hasło są wymagane" }), {
       status: 400,
     });
   }
@@ -25,8 +25,10 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     let status = 400;
     if (error.status === 429) {
       status = 429;
-    } else if (error.message?.toLowerCase().includes('user already registered') ||
-               error.message?.toLowerCase().includes('already registered')) {
+    } else if (
+      error.message?.toLowerCase().includes("user already registered") ||
+      error.message?.toLowerCase().includes("already registered")
+    ) {
       status = 409; // Conflict
     }
 
@@ -42,4 +44,3 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     status: 200,
   });
 };
-

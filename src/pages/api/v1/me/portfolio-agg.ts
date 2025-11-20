@@ -30,10 +30,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
   // 1. Authentication check - early return guard clause
   const user = await getAuthenticatedUser(locals.supabase);
   if (!user) {
-    return errorResponse(
-      { code: "unauthorized", message: "Authentication required. Please log in." },
-      401
-    );
+    return errorResponse({ code: "unauthorized", message: "Authentication required. Please log in." }, 401);
   }
 
   // 2. Get portfolio aggregation
@@ -58,4 +55,3 @@ export const GET: APIRoute = async ({ locals, request }) => {
     );
   }
 };
-

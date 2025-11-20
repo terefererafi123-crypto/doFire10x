@@ -87,10 +87,7 @@ export type CreateProfileSchemaType = z.infer<typeof createProfileSchema>;
  * ```
  */
 export function validateCreateProfile(body: unknown) {
-  return createProfileSchema.safeParse(body) as z.SafeParseReturnType<
-    unknown,
-    CreateProfileCommand
-  >;
+  return createProfileSchema.safeParse(body) as z.SafeParseReturnType<unknown, CreateProfileCommand>;
 }
 
 /**
@@ -192,9 +189,5 @@ export type UpdateProfileSchemaType = z.infer<typeof updateProfileSchema>;
  * ```
  */
 export function validateUpdateProfile(body: unknown) {
-  return updateProfileSchema.safeParse(body) as z.SafeParseReturnType<
-    unknown,
-    UpdateProfileCommand
-  >;
+  return updateProfileSchema.safeParse(body) as z.SafeParseReturnType<unknown, UpdateProfileCommand>;
 }
-

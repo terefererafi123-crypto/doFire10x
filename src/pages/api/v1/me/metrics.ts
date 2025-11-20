@@ -36,19 +36,13 @@ export const GET: APIRoute = async ({ locals, url }) => {
   // 0. Check if supabase client is available
   if (!locals.supabase) {
     console.error("Supabase client not available in locals");
-    return errorResponse(
-      { code: "internal", message: "Server configuration error" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "Server configuration error" }, 500);
   }
 
   // 1. Authentication check - early return guard clause
   const user = await getAuthenticatedUser(locals.supabase);
   if (!user) {
-    return errorResponse(
-      { code: "unauthorized", message: "Missing or invalid authentication token" },
-      401
-    );
+    return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
   }
 
   // 2. Parse and validate query parameters
@@ -81,10 +75,7 @@ export const GET: APIRoute = async ({ locals, url }) => {
     }
   } catch (error) {
     console.error("Error fetching profile:", error);
-    return errorResponse(
-      { code: "internal", message: "An internal server error occurred" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
   }
 
   // 4. Get portfolio aggregation
@@ -93,10 +84,7 @@ export const GET: APIRoute = async ({ locals, url }) => {
     portfolioAgg = await getPortfolioAggByUserId(locals.supabase, user.id);
   } catch (error) {
     console.error("Error fetching portfolio aggregation:", error);
-    return errorResponse(
-      { code: "internal", message: "An internal server error occurred" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
   }
 
   // 5. Merge data (query params override profile/portfolio values)
@@ -128,12 +116,6 @@ export const GET: APIRoute = async ({ locals, url }) => {
     return jsonResponse(metrics, 200);
   } catch (error) {
     console.error("Error calculating metrics:", error);
-    return errorResponse(
-      { code: "internal", message: "An internal server error occurred" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
   }
 };
-
-
-

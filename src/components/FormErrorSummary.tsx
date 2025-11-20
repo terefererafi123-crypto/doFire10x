@@ -13,11 +13,7 @@ export interface FormErrorSummaryProps {
  * Component displaying a summary of all form validation errors
  * Shows a list of errors with optional links to scroll to fields
  */
-export function FormErrorSummary({
-  errors,
-  onFieldClick,
-  className,
-}: FormErrorSummaryProps) {
+export function FormErrorSummary({ errors, onFieldClick, className }: FormErrorSummaryProps) {
   // Don't render if there are no errors
   if (Object.keys(errors).length === 0) {
     return null;
@@ -64,4 +60,3 @@ export function FormErrorSummary({
     </Alert>
   );
 }
-

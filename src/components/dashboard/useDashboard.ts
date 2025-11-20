@@ -13,18 +13,21 @@ const REQUEST_TIMEOUT_MS = 30000; // 30 seconds
 export function useDashboard() {
   const [isMounted, setIsMounted] = useState(false);
   const globalErrorContext = useGlobalError();
-  
+
   // Wait for component to mount before using context to avoid hydration issues
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  
+
   // Use setGlobalError only after component has mounted
-  const setGlobalError = useCallback((error: ApiError | null) => {
-    if (isMounted) {
-      globalErrorContext.setError(error);
-    }
-  }, [isMounted, globalErrorContext.setError]);
+  const setGlobalError = useCallback(
+    (error: ApiError | null) => {
+      if (isMounted) {
+        globalErrorContext.setError(error);
+      }
+    },
+    [isMounted, globalErrorContext.setError]
+  );
   const [state, setState] = useState<DashboardState>({
     metrics: null,
     aiHint: null,
@@ -90,7 +93,7 @@ export function useDashboard() {
         }
 
         const error: ApiError = await metricsResponse.json();
-        
+
         // Handle auth errors (401/403) - but don't set global error immediately
         // Middleware already verified auth, so 401 might be a timing/sync issue
         // Only set global error if it's a persistent auth problem
@@ -110,19 +113,19 @@ export function useDashboard() {
           }));
           return;
         }
-        
+
         // Handle other global errors (5xx/429)
         if (shouldHandleGlobally(error)) {
           setGlobalError(error);
         }
-        
+
         throw new Error(error.error?.message || "Błąd pobierania metryk");
       }
 
       // Handle AI hint response
       if (!aiHintResponse.ok) {
         const error: ApiError = await aiHintResponse.json();
-        
+
         // For AI hint, auth errors are less critical - just show error, don't redirect
         if (aiHintResponse.status === 401 || aiHintResponse.status === 403) {
           // Set error but don't redirect - metrics might still be available
@@ -139,12 +142,12 @@ export function useDashboard() {
           }));
           return;
         }
-        
+
         // Handle other global errors (5xx/429)
         if (shouldHandleGlobally(error)) {
           setGlobalError(error);
         }
-        
+
         throw new Error(error.error?.message || "Błąd pobierania AI hint");
       }
 
@@ -193,19 +196,20 @@ export function useDashboard() {
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error
-          ? {
-              error: {
-                code: "internal",
-                message: error.message,
+        error:
+          error instanceof Error
+            ? {
+                error: {
+                  code: "internal",
+                  message: error.message,
+                },
+              }
+            : {
+                error: {
+                  code: "internal",
+                  message: "Wystąpił nieoczekiwany błąd",
+                },
               },
-            }
-          : {
-              error: {
-                code: "internal",
-                message: "Wystąpił nieoczekiwany błąd",
-              },
-            },
       }));
     }
   };

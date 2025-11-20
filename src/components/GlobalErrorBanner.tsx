@@ -16,12 +16,7 @@ export interface GlobalErrorBannerProps {
  * Global error banner component for displaying API errors
  * Handles 401/403 (authorization), 5xx (server), and 429 (rate limiting) errors
  */
-export function GlobalErrorBanner({
-  error,
-  onDismiss,
-  onRedirect,
-  className,
-}: GlobalErrorBannerProps) {
+export function GlobalErrorBanner({ error, onDismiss, onRedirect, className }: GlobalErrorBannerProps) {
   const [isRedirecting, setIsRedirecting] = React.useState(false);
 
   // Don't render if there's no error
@@ -104,30 +99,16 @@ export function GlobalErrorBanner({
           <AlertCircle className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
         )}
         <p className={textClassName}>{getErrorMessage()}</p>
-        {isRedirecting && isAuthError && (
-          <span className="text-xs text-muted-foreground">Przekierowywanie...</span>
-        )}
+        {isRedirecting && isAuthError && <span className="text-xs text-muted-foreground">Przekierowywanie...</span>}
       </div>
       <div className="flex items-center gap-2 shrink-0">
         {isAuthError && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRedirect}
-            disabled={isRedirecting}
-            className="h-8"
-          >
+          <Button variant="outline" size="sm" onClick={handleRedirect} disabled={isRedirecting} className="h-8">
             Zaloguj ponownie
           </Button>
         )}
         {(isServerError || isRateLimitError) && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleDismiss}
-            className="h-8 w-8"
-            aria-label="Zamknij"
-          >
+          <Button variant="ghost" size="icon" onClick={handleDismiss} className="h-8 w-8" aria-label="Zamknij">
             <X className="h-4 w-4" />
           </Button>
         )}
@@ -135,4 +116,3 @@ export function GlobalErrorBanner({
     </div>
   );
 }
-

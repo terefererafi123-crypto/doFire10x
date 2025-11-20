@@ -22,7 +22,10 @@ export class ProfileNotFoundError extends Error {
  * Custom error thrown when a database operation fails unexpectedly.
  */
 export class DatabaseError extends Error {
-  constructor(message: string, public originalError?: unknown) {
+  constructor(
+    message: string,
+    public originalError?: unknown
+  ) {
     super(message);
     this.name = "DatabaseError";
   }
@@ -50,11 +53,7 @@ export async function getProfileByUserId(
   userId: string
 ): Promise<ProfileDto | null> {
   // RLS automatically filters by user_id = auth.uid()
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
+  const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userId).single();
 
   if (error) {
     // PGRST116 is the code for "not found" (no rows returned)
@@ -166,9 +165,7 @@ export async function createProfile(
  * @param command - Partial profile update command
  * @returns Database update payload
  */
-function buildProfileUpdatePayload(
-  command: UpdateProfileCommand
-): TablesUpdate<"profiles"> {
+function buildProfileUpdatePayload(command: UpdateProfileCommand): TablesUpdate<"profiles"> {
   const payload: TablesUpdate<"profiles"> = {};
 
   if (command.monthly_expense !== undefined) {
@@ -254,12 +251,7 @@ export async function updateProfile(
   // 3. Execute UPDATE with select to return updated row
   // RLS ensures user can only update their own profile
   // Additional safety: filter by user_id (defense in depth)
-  const { data, error } = await supabase
-    .from("profiles")
-    .update(updatePayload)
-    .eq("user_id", userId)
-    .select()
-    .single();
+  const { data, error } = await supabase.from("profiles").update(updatePayload).eq("user_id", userId).select().single();
 
   if (error) {
     // PGRST116 means no rows returned (shouldn't happen after verification, but handle it)
@@ -288,4 +280,3 @@ export async function updateProfile(
 
   return profile;
 }
-

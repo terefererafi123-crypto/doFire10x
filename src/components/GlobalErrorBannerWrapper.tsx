@@ -13,12 +13,5 @@ export function GlobalErrorBannerWrapper() {
     window.location.href = "/login";
   }, []);
 
-  return (
-    <GlobalErrorBanner
-      error={error}
-      onDismiss={clearError}
-      onRedirect={handleRedirect}
-    />
-  );
+  return <GlobalErrorBanner error={error} onDismiss={clearError} onRedirect={handleRedirect} />;
 }
-

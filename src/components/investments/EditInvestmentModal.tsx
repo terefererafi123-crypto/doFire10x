@@ -8,7 +8,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { InvestmentForm, type InvestmentFormData, type InvestmentFormErrors } from "@/components/onboarding/InvestmentForm";
+import {
+  InvestmentForm,
+  type InvestmentFormData,
+  type InvestmentFormErrors,
+} from "@/components/onboarding/InvestmentForm";
 import { getAuthToken } from "@/lib/auth/client-helpers";
 import type { InvestmentDto, ApiError, UpdateInvestmentCommand } from "@/types";
 import { Loader2 } from "lucide-react";
@@ -20,12 +24,7 @@ interface EditInvestmentModalProps {
   onSuccess: () => void;
 }
 
-export function EditInvestmentModal({
-  investment,
-  open,
-  onOpenChange,
-  onSuccess,
-}: EditInvestmentModalProps) {
+export function EditInvestmentModal({ investment, open, onOpenChange, onSuccess }: EditInvestmentModalProps) {
   const [formData, setFormData] = React.useState<InvestmentFormData>({
     type: "etf",
     amount: 0,
@@ -126,25 +125,26 @@ export function EditInvestmentModal({
       // Build update command with only changed fields
       // Compare values carefully - handle number/string conversions
       const updateCommand: UpdateInvestmentCommand = {};
-      
+
       if (formData.type !== investment.type) {
         updateCommand.type = formData.type;
       }
-      
+
       // Compare amounts as numbers (handle potential string/number issues)
-      const formAmount = typeof formData.amount === 'string' ? parseFloat(formData.amount) : formData.amount;
-      const investmentAmount = typeof investment.amount === 'string' ? parseFloat(String(investment.amount)) : investment.amount;
+      const formAmount = typeof formData.amount === "string" ? parseFloat(formData.amount) : formData.amount;
+      const investmentAmount =
+        typeof investment.amount === "string" ? parseFloat(String(investment.amount)) : investment.amount;
       if (formAmount !== investmentAmount) {
         updateCommand.amount = formAmount;
       }
-      
+
       // Compare dates (normalize format)
       const formDate = formData.acquired_at;
       const investmentDate = investment.acquired_at;
       if (formDate !== investmentDate) {
         updateCommand.acquired_at = formDate;
       }
-      
+
       // Compare notes (handle null/undefined)
       const formNotes = formData.notes || null;
       const investmentNotes = investment.notes || null;
@@ -177,7 +177,7 @@ export function EditInvestmentModal({
       if (!response.ok) {
         const error: ApiError = await response.json();
         console.error("EditInvestmentModal: API error:", error);
-        
+
         // Handle field-specific validation errors
         if (error.error.fields) {
           const fieldErrors: InvestmentFormErrors = {};
@@ -201,7 +201,7 @@ export function EditInvestmentModal({
       // Closing modal immediately provides better UX
       setIsSubmitting(false);
       onOpenChange(false);
-      
+
       // Refresh list after modal closes
       onSuccess();
     } catch (err) {
@@ -227,23 +227,11 @@ export function EditInvestmentModal({
         </DialogHeader>
         <form onSubmit={handleSubmit}>
           <div className="py-4">
-            <InvestmentForm
-              data={formData}
-              errors={errors}
-              onChange={handleChange}
-              showErrorSummary={false}
-            />
-            {submitError && (
-              <div className="mt-4 text-sm text-destructive">{submitError}</div>
-            )}
+            <InvestmentForm data={formData} errors={errors} onChange={handleChange} showErrorSummary={false} />
+            {submitError && <div className="mt-4 text-sm text-destructive">{submitError}</div>}
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isSubmitting}
-            >
+            <Button type="button" variant="outline" onClick={handleCancel} disabled={isSubmitting}>
               Anuluj
             </Button>
             <Button type="submit" disabled={isSubmitting}>
@@ -262,4 +250,3 @@ export function EditInvestmentModal({
     </Dialog>
   );
 }
-

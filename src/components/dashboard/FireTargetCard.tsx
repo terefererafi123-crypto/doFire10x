@@ -10,9 +10,7 @@ export function FireTargetCard({ fireTarget }: FireTargetCardProps) {
       </CardHeader>
       <CardContent>
         <p className="text-2xl font-bold">{formatCurrency(fireTarget)}</p>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Kwota potrzebna do osiągnięcia niezależności finansowej
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">Kwota potrzebna do osiągnięcia niezależności finansowej</p>
       </CardContent>
     </Card>
   );

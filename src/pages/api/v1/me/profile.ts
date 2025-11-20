@@ -12,10 +12,7 @@ import {
   ProfileNotFoundError,
   DatabaseError,
 } from "../../../../lib/services/profile.service.ts";
-import {
-  validateCreateProfile,
-  validateUpdateProfile,
-} from "../../../../lib/validators/profile.validator.ts";
+import { validateCreateProfile, validateUpdateProfile } from "../../../../lib/validators/profile.validator.ts";
 import { jsonResponse, errorResponse } from "../../../../lib/api/response.ts";
 import type { CreateProfileCommand, ProfileDto } from "../../../../types.ts";
 
@@ -41,10 +38,7 @@ export const GET: APIRoute = async ({ locals, request }) => {
   // 0. Check if supabase client is available
   if (!locals.supabase) {
     console.error("GET /api/v1/me/profile: Supabase client not available in locals");
-    return errorResponse(
-      { code: "internal", message: "Server configuration error" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "Server configuration error" }, 500);
   }
 
   // 1. Authentication check - early return guard clause
@@ -133,9 +127,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
   // 1. Authentication check - early return guard clause
   const user = await getAuthenticatedUser(locals.supabase);
   if (!user) {
-    console.warn(
-      `Authentication failed in POST /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-    );
+    console.warn(`Authentication failed in POST /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
     return errorResponse(
       {
         code: "unauthorized",
@@ -256,23 +248,19 @@ export const POST: APIRoute = async ({ locals, request }) => {
 
   // 5. Create profile - happy path last
   try {
-    const profile: ProfileDto = await createProfile(
-      locals.supabase,
-      user.id,
-      createCommand
-    );
+    const profile: ProfileDto = await createProfile(locals.supabase, user.id, createCommand);
 
     // 6. Success - return 201 Created with ProfileDto
     const response = jsonResponse(profile, 201);
-    
+
     // Add Location header (optional, for REST compliance)
     response.headers.set("Location", "/v1/me/profile");
-    
+
     // Echo X-Request-Id header if provided
     if (requestId) {
       response.headers.set("X-Request-Id", requestId);
     }
-    
+
     return response;
   } catch (error: any) {
     // 7. Handle errors - check error type
@@ -361,9 +349,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
   // 1. Weryfikacja autoryzacji - early return guard clause
   const user = await getAuthenticatedUser(locals.supabase);
   if (!user) {
-    console.warn(
-      `Authentication failed in PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
-    );
+    console.warn(`Authentication failed in PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`);
     return errorResponse(
       {
         code: "unauthorized",
@@ -478,11 +464,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
 
   // 3. Aktualizacja profilu - happy path last
   try {
-    const updatedProfile: ProfileDto = await updateProfile(
-      locals.supabase,
-      user.id,
-      updateCommand
-    );
+    const updatedProfile: ProfileDto = await updateProfile(locals.supabase, user.id, updateCommand);
 
     // 4. Sukces - zwrócenie zaktualizowanego ProfileDto
     const response = jsonResponse(updatedProfile, 200);
@@ -497,10 +479,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
       console.warn(
         `Profile not found in PATCH /v1/me/profile: ${user.id}${requestId ? ` [Request-ID: ${requestId}]` : ""}`
       );
-      return errorResponse(
-        { code: "not_found", message: "Profile not found" },
-        404
-      );
+      return errorResponse({ code: "not_found", message: "Profile not found" }, 404);
     }
 
     if (error instanceof DatabaseError) {
@@ -508,21 +487,11 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
         `Database error in PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
         error.originalError || error.message
       );
-      return errorResponse(
-        { code: "internal", message: "An unexpected error occurred" },
-        500
-      );
+      return errorResponse({ code: "internal", message: "An unexpected error occurred" }, 500);
     }
 
     // Unexpected error
-    console.error(
-      `Unexpected error in PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
-      error
-    );
-    return errorResponse(
-      { code: "internal", message: "An unexpected error occurred" },
-      500
-    );
+    console.error(`Unexpected error in PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}:`, error);
+    return errorResponse({ code: "internal", message: "An unexpected error occurred" }, 500);
   }
 };
-

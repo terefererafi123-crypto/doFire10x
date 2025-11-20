@@ -10,10 +10,7 @@ import { useOnboardingApi } from "@/lib/hooks/useOnboardingApi";
 import { useApiErrorHandler } from "@/lib/hooks/useApiErrorHandler";
 import { investmentErrorMessages } from "@/lib/utils/error-mapper";
 import { handleOnboardingError } from "@/lib/utils/onboarding-error-handler";
-import type {
-  CreateProfileCommand,
-  CreateInvestmentCommand,
-} from "@/types";
+import type { CreateProfileCommand, CreateInvestmentCommand } from "@/types";
 
 type ProfileFormData = CreateProfileCommand;
 type InvestmentFormData = CreateInvestmentCommand;
@@ -34,7 +31,7 @@ export function OnboardingContainer() {
   const { validateProfileForm, validateInvestmentForm } = useOnboardingForm();
   const { createProfile, createInvestment, getProfile, updateProfile, hasInvestments } = useOnboardingApi();
   const investmentErrorHandler = useApiErrorHandler(investmentErrorMessages);
-  
+
   // Track if we're editing an existing profile
   const [isEditingProfile, setIsEditingProfile] = React.useState(false);
 
@@ -78,9 +75,9 @@ export function OnboardingContainer() {
       if (profileLoadedRef.current || state.currentStep !== 1) {
         return;
       }
-      
+
       profileLoadedRef.current = true;
-      
+
       try {
         const profile = await getProfile();
         if (profile) {
@@ -102,7 +99,7 @@ export function OnboardingContainer() {
         console.error("Error loading existing profile:", error);
       }
     };
-    
+
     loadExistingProfile();
   }, [state.currentStep, getProfile]); // Only run when currentStep changes to 1
 
@@ -348,7 +345,6 @@ export function OnboardingContainer() {
     investmentErrorHandler,
   ]);
 
-
   return (
     <div className="container mx-auto max-w-2xl px-4 py-8">
       <div className="space-y-6">
@@ -398,11 +394,7 @@ export function OnboardingContainer() {
               isLoading={state.isLoading}
               onBack={handleBack}
               onNext={handleNext}
-              isFormValid={
-                state.currentStep === 1
-                  ? isProfileFormValid
-                  : isInvestmentFormValid
-              }
+              isFormValid={state.currentStep === 1 ? isProfileFormValid : isInvestmentFormValid}
               isEditingProfile={isEditingProfile}
             />
           </CardContent>
@@ -411,4 +403,3 @@ export function OnboardingContainer() {
     </div>
   );
 }
-

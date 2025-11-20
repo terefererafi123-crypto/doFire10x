@@ -11,28 +11,26 @@ const DB_DEGRADED_THRESHOLD_MS = 500;
 
 /**
  * Checks database connectivity by executing a simple query and measuring response time.
- * 
+ *
  * This function performs a lightweight database operation to verify connectivity.
  * It uses a simple SELECT query to a table that should be accessible (with RLS handling
  * the case where no rows are returned).
- * 
+ *
  * Status classification:
  * - "reachable": Response time < 500ms and no errors
  * - "degraded": Response time >= 500ms but < 2000ms and no errors
  * - "down": Response time >= 2000ms, timeout, or any error occurred
- * 
+ *
  * @param supabase - Supabase client instance (from context.locals.supabase)
  * @returns Promise resolving to DatabaseStatus indicating database health
- * 
+ *
  * @example
  * ```typescript
  * const dbStatus = await checkDatabaseConnectivity(supabase);
  * // Returns: "reachable" | "degraded" | "down"
  * ```
  */
-export async function checkDatabaseConnectivity(
-  supabase: SupabaseClient<Database>
-): Promise<DatabaseStatus> {
+export async function checkDatabaseConnectivity(supabase: SupabaseClient<Database>): Promise<DatabaseStatus> {
   const startTime = Date.now();
 
   try {
@@ -44,11 +42,7 @@ export async function checkDatabaseConnectivity(
     // Simple query to check database connectivity
     // Using maybeSingle() to avoid errors when no rows exist (RLS may block access)
     // This is a lightweight operation that doesn't require authentication
-    const queryPromise = supabase
-      .from("profiles")
-      .select("id")
-      .limit(1)
-      .maybeSingle();
+    const queryPromise = supabase.from("profiles").select("id").limit(1).maybeSingle();
 
     // Race between query and timeout
     const result = await Promise.race([queryPromise, timeoutPromise]);
@@ -89,4 +83,3 @@ export async function checkDatabaseConnectivity(
     return "down";
   }
 }
-

@@ -23,15 +23,12 @@ import { z } from "zod";
  */
 export const metricsQuerySchema = z.object({
   monthly_expense: z.coerce.number().min(0, "Monthly expense must be >= 0").optional(),
-  withdrawal_rate_pct: z
-    .coerce.number()
+  withdrawal_rate_pct: z.coerce
+    .number()
     .min(0, "Withdrawal rate must be >= 0")
     .max(100, "Withdrawal rate must be <= 100")
     .optional(),
-  expected_return_pct: z
-    .coerce.number()
-    .gt(-100, "Expected return percentage must be greater than -100")
-    .optional(),
+  expected_return_pct: z.coerce.number().gt(-100, "Expected return percentage must be greater than -100").optional(),
   invested_total: z.coerce.number().min(0, "Invested total must be >= 0").optional(),
 });
 
@@ -40,7 +37,3 @@ export const metricsQuerySchema = z.object({
  * Represents the validated query parameters for GET /v1/me/metrics.
  */
 export type MetricsQueryInput = z.infer<typeof metricsQuerySchema>;
-
-
-
-

@@ -37,10 +37,7 @@ export const GET: APIRoute = async (context) => {
     if (!supabase) {
       // This should not happen if middleware is properly configured
       console.error("Supabase client not available in context.locals");
-      return errorResponse(
-        { code: "internal", message: "Internal server error" },
-        500
-      );
+      return errorResponse({ code: "internal", message: "Internal server error" }, 500);
     }
 
     // 2. Check database connectivity
@@ -63,16 +60,9 @@ export const GET: APIRoute = async (context) => {
     // Only log critical errors that prevent the endpoint from responding
     // This should be extremely rare
     const requestId = context.request.headers.get("X-Request-Id");
-    console.error(
-      `Critical error in GET /v1/health${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
-      error
-    );
+    console.error(`Critical error in GET /v1/health${requestId ? ` [Request-ID: ${requestId}]` : ""}:`, error);
 
     // Return 500 only for critical server errors
-    return errorResponse(
-      { code: "internal", message: "Internal server error" },
-      500
-    );
+    return errorResponse({ code: "internal", message: "Internal server error" }, 500);
   }
 };
-

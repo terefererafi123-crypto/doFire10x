@@ -52,9 +52,18 @@ export const investmentListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(200).optional().default(25),
   cursor: z.string().optional(),
   type: z.enum(["etf", "bond", "stock", "cash"]).optional(),
-  acquired_at_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD").optional(),
-  acquired_at_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD").optional(),
-  sort: z.enum(["acquired_at_desc", "acquired_at_asc", "amount_desc", "amount_asc"]).optional().default("acquired_at_desc"),
+  acquired_at_from: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD")
+    .optional(),
+  acquired_at_to: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD")
+    .optional(),
+  sort: z
+    .enum(["acquired_at_desc", "acquired_at_asc", "amount_desc", "amount_asc"])
+    .optional()
+    .default("acquired_at_desc"),
 });
 
 /**
@@ -128,7 +137,11 @@ export const updateInvestmentSchema = z
       .optional(),
     notes: z
       .union([
-        z.string().trim().min(1, "Notes must be at least 1 character after trimming").max(1000, "Notes must not exceed 1000 characters"),
+        z
+          .string()
+          .trim()
+          .min(1, "Notes must be at least 1 character after trimming")
+          .max(1000, "Notes must not exceed 1000 characters"),
         z.null(),
       ])
       .optional(),
@@ -165,10 +178,7 @@ export type UpdateInvestmentSchemaType = z.infer<typeof updateInvestmentSchema>;
  * ```
  */
 export function validateUpdateInvestment(body: unknown) {
-  return updateInvestmentSchema.safeParse(body) as z.SafeParseReturnType<
-    unknown,
-    UpdateInvestmentCommand
-  >;
+  return updateInvestmentSchema.safeParse(body) as z.SafeParseReturnType<unknown, UpdateInvestmentCommand>;
 }
 
 /**
@@ -190,30 +200,34 @@ export function validateUpdateInvestment(body: unknown) {
  * });
  * ```
  */
-export const createInvestmentSchema = z.object({
-  type: z.enum(["etf", "bond", "stock", "cash"]),
-  amount: z.number().positive("Amount must be greater than zero").finite().max(999999999999.99, "Amount exceeds maximum value"),
-  acquired_at: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD")
-    .transform((value) => ({ value, date: new Date(value + "T00:00:00Z") }))
-    .superRefine(({ date }, ctx) => {
-      const today = new Date();
-      today.setUTCHours(0, 0, 0, 0);
-      const dateMidnight = new Date(date);
-      dateMidnight.setUTCHours(0, 0, 0, 0);
-      
-      if (Number.isNaN(date.getTime())) {
-        ctx.addIssue({ code: "custom", message: "invalid_date" });
-        return;
-      }
-      if (dateMidnight > today) {
-        ctx.addIssue({ code: "custom", message: "acquired_at_cannot_be_future" });
-      }
-    })
-    .transform(({ value }) => value),
-  notes: z
-    .preprocess(
+export const createInvestmentSchema = z
+  .object({
+    type: z.enum(["etf", "bond", "stock", "cash"]),
+    amount: z
+      .number()
+      .positive("Amount must be greater than zero")
+      .finite()
+      .max(999999999999.99, "Amount exceeds maximum value"),
+    acquired_at: z
+      .string()
+      .regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date format. Expected YYYY-MM-DD")
+      .transform((value) => ({ value, date: new Date(value + "T00:00:00Z") }))
+      .superRefine(({ date }, ctx) => {
+        const today = new Date();
+        today.setUTCHours(0, 0, 0, 0);
+        const dateMidnight = new Date(date);
+        dateMidnight.setUTCHours(0, 0, 0, 0);
+
+        if (Number.isNaN(date.getTime())) {
+          ctx.addIssue({ code: "custom", message: "invalid_date" });
+          return;
+        }
+        if (dateMidnight > today) {
+          ctx.addIssue({ code: "custom", message: "acquired_at_cannot_be_future" });
+        }
+      })
+      .transform(({ value }) => value),
+    notes: z.preprocess(
       (val) => {
         // If string is provided and empty after trim, treat as null
         if (typeof val === "string") {
@@ -222,14 +236,10 @@ export const createInvestmentSchema = z.object({
         }
         return val;
       },
-      z
-        .union([
-          z.string().min(1).max(1000, "Notes must not exceed 1000 characters"),
-          z.null(),
-        ])
-        .optional()
+      z.union([z.string().min(1).max(1000, "Notes must not exceed 1000 characters"), z.null()]).optional()
     ),
-}).strict(); // Reject unknown fields
+  })
+  .strict(); // Reject unknown fields
 
 /**
  * TypeScript type inferred from the Zod schema.
@@ -254,9 +264,5 @@ export type CreateInvestmentSchemaType = z.infer<typeof createInvestmentSchema>;
  * ```
  */
 export function validateCreateInvestment(body: unknown) {
-  return createInvestmentSchema.safeParse(body) as z.SafeParseReturnType<
-    unknown,
-    CreateInvestmentCommand
-  >;
+  return createInvestmentSchema.safeParse(body) as z.SafeParseReturnType<unknown, CreateInvestmentCommand>;
 }
-

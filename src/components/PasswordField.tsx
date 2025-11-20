@@ -102,20 +102,13 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
           </Button>
         </div>
         {error && (
-          <p
-            id={errorId}
-            role="alert"
-            className="text-sm font-medium text-destructive"
-            aria-live="polite"
-          >
+          <p id={errorId} role="alert" className="text-sm font-medium text-destructive" aria-live="polite">
             {error}
           </p>
         )}
         {showStrengthIndicator && value && !error && (
           <p className="text-xs text-muted-foreground">
-            {value.length < 6
-              ? "Hasło powinno mieć minimum 6 znaków"
-              : "Hasło spełnia wymagania"}
+            {value.length < 6 ? "Hasło powinno mieć minimum 6 znaków" : "Hasło spełnia wymagania"}
           </p>
         )}
       </div>
@@ -124,4 +117,3 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
 );
 
 PasswordField.displayName = "PasswordField";
-

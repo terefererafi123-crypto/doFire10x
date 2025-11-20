@@ -1,11 +1,7 @@
 import { Button } from "@/components/ui/button";
 import type { RecalculateButtonProps } from "./types";
 
-export function RecalculateButton({
-  onClick,
-  isLoading,
-  disabled = false,
-}: RecalculateButtonProps) {
+export function RecalculateButton({ onClick, isLoading, disabled = false }: RecalculateButtonProps) {
   return (
     <Button
       onClick={onClick}

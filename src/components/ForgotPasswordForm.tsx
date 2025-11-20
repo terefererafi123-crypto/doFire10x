@@ -54,8 +54,7 @@ export default function ForgotPasswordForm() {
       // Success - always show success message (don't reveal if email exists)
       setIsSuccess(true);
       setSuccessMessage("Jeśli konto istnieje, otrzymasz email z linkiem resetującym hasło.");
-    } catch (error) {
-      console.error("Forgot password error:", error);
+    } catch {
       setError("root", {
         message: "Nie udało się wysłać linku. Sprawdź połączenie z internetem i spróbuj ponownie.",
       });
@@ -67,20 +66,11 @@ export default function ForgotPasswordForm() {
   const emailError = formState.errors.email?.message;
 
   const isSubmitDisabled =
-    isSubmitting ||
-    !watch("email")?.trim() ||
-    !!emailError ||
-    isSuccess ||
-    rateLimiter.isRateLimited;
+    isSubmitting || !watch("email")?.trim() || !!emailError || isSuccess || rateLimiter.isRateLimited;
 
   return (
     <div className="w-full">
-      <form
-        onSubmit={onSubmit}
-        className="space-y-6"
-        noValidate
-        aria-label="Formularz odzyskiwania hasła"
-      >
+      <form onSubmit={onSubmit} className="space-y-6" noValidate aria-label="Formularz odzyskiwania hasła">
         <EmailField
           value={watch("email")}
           onChange={(value) => {
@@ -96,8 +86,8 @@ export default function ForgotPasswordForm() {
 
         <div className="text-sm text-muted-foreground">
           <p>
-            Wprowadź swój adres e-mail, a wyślemy Ci link resetujący hasło. Kliknij w link w wiadomości
-            e-mail, aby zresetować hasło.
+            Wprowadź swój adres e-mail, a wyślemy Ci link resetujący hasło. Kliknij w link w wiadomości e-mail, aby
+            zresetować hasło.
           </p>
         </div>
 
@@ -132,7 +122,9 @@ export default function ForgotPasswordForm() {
         >
           {isSubmitting ? (
             <>
-              <span className="mr-2" aria-hidden="true">Wysyłanie...</span>
+              <span className="mr-2" aria-hidden="true">
+                Wysyłanie...
+              </span>
               <span
                 className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
                 aria-hidden="true"
@@ -153,4 +145,3 @@ export default function ForgotPasswordForm() {
     </div>
   );
 }
-

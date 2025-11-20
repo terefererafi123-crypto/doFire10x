@@ -24,13 +24,7 @@ export function NavigationButtons({
   return (
     <div className="flex items-center justify-between gap-4 pt-6">
       {currentStep === 2 && (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onBack}
-          disabled={isLoading}
-          className="flex-1"
-        >
+        <Button type="button" variant="outline" onClick={onBack} disabled={isLoading} className="flex-1">
           Wstecz
         </Button>
       )}
@@ -51,14 +45,14 @@ export function NavigationButtons({
               className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
               aria-hidden="true"
             />
-            <span className="sr-only">
-              {currentStep === 1
-                ? "Zapisywanie profilu"
-                : "Zapisywanie inwestycji"}
-            </span>
+            <span className="sr-only">{currentStep === 1 ? "Zapisywanie profilu" : "Zapisywanie inwestycji"}</span>
           </>
         ) : currentStep === 1 ? (
-          isEditingProfile ? "Zapisz zmiany" : "Dalej"
+          isEditingProfile ? (
+            "Zapisz zmiany"
+          ) : (
+            "Dalej"
+          )
         ) : (
           "Zakończ i przejdź do dashboardu"
         )}
@@ -66,4 +60,3 @@ export function NavigationButtons({
     </div>
   );
 }
-

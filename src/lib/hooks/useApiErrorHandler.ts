@@ -1,10 +1,6 @@
 import { useState, useCallback } from "react";
 import type { ApiError } from "@/types";
-import {
-  mapApiErrorsToFormErrors,
-  type ErrorMessageMap,
-  investmentErrorMessages,
-} from "@/lib/utils/error-mapper";
+import { mapApiErrorsToFormErrors, type ErrorMessageMap, investmentErrorMessages } from "@/lib/utils/error-mapper";
 
 /**
  * Type representing form validation errors
@@ -28,10 +24,7 @@ export function useApiErrorHandler(errorMessages?: ErrorMessageMap) {
     (error: ApiError) => {
       // If error has field-wise validation info, map to form errors
       if (error.error.fields) {
-        const mappedErrors = mapApiErrorsToFormErrors(
-          error.error.fields,
-          errorMessages || investmentErrorMessages
-        );
+        const mappedErrors = mapApiErrorsToFormErrors(error.error.fields, errorMessages || investmentErrorMessages);
         setFieldErrors(mappedErrors);
         setApiError(null);
       } else {
@@ -68,15 +61,12 @@ export function useApiErrorHandler(errorMessages?: ErrorMessageMap) {
    * @param fieldName - Name of the field
    * @param errorMessage - Error message to set
    */
-  const setFieldError = useCallback(
-    (fieldName: string, errorMessage: string) => {
-      setFieldErrors((prev) => ({
-        ...prev,
-        [fieldName]: errorMessage,
-      }));
-    },
-    []
-  );
+  const setFieldError = useCallback((fieldName: string, errorMessage: string) => {
+    setFieldErrors((prev) => ({
+      ...prev,
+      [fieldName]: errorMessage,
+    }));
+  }, []);
 
   return {
     fieldErrors,
@@ -88,4 +78,3 @@ export function useApiErrorHandler(errorMessages?: ErrorMessageMap) {
     setFieldErrors,
   };
 }
-

@@ -21,18 +21,21 @@ export function useOnboardingApi() {
   // useGlobalError returns a safe default if context is not available
   // This is fine - it will just be a no-op until the provider mounts
   const globalErrorContext = useGlobalError();
-  
+
   // Wait for component to mount before using context to avoid hydration issues
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  
+
   // Use setGlobalError only after component has mounted
-  const setGlobalError = useCallback((error: ApiError | null) => {
-    if (isMounted) {
-      globalErrorContext.setError(error);
-    }
-  }, [isMounted, globalErrorContext.setError]);
+  const setGlobalError = useCallback(
+    (error: ApiError | null) => {
+      if (isMounted) {
+        globalErrorContext.setError(error);
+      }
+    },
+    [isMounted, globalErrorContext.setError]
+  );
   const createProfile = useCallback(
     async (data: CreateProfileCommand): Promise<ProfileDto> => {
       const authToken = await getAuthToken();
@@ -271,4 +274,3 @@ export function useOnboardingApi() {
     hasInvestments,
   };
 }
-

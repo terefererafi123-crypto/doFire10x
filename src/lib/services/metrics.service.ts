@@ -43,11 +43,7 @@ export function calculateFireMetrics(inputs: FireMetricsInputs): MetricsDto {
   const fire_progress = inputs.invested_total / fire_target;
 
   // Calculate time to FIRE
-  const years_to_fire = calculateYearsToFire(
-    fire_target,
-    inputs.invested_total,
-    inputs.expected_return_pct
-  );
+  const years_to_fire = calculateYearsToFire(fire_target, inputs.invested_total, inputs.expected_return_pct);
 
   // Calculate age-related metrics
   let current_age: number | null = null;
@@ -87,4 +83,3 @@ export function calculateFireMetrics(inputs: FireMetricsInputs): MetricsDto {
 
   return result;
 }
-

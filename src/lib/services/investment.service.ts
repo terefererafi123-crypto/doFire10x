@@ -28,7 +28,10 @@ export class InvestmentNotFoundError extends Error {
  * Custom error thrown when a database operation fails unexpectedly.
  */
 export class DatabaseError extends Error {
-  constructor(message: string, public originalError?: unknown) {
+  constructor(
+    message: string,
+    public originalError?: unknown
+  ) {
     super(message);
     this.name = "DatabaseError";
   }
@@ -38,7 +41,11 @@ export class DatabaseError extends Error {
  * Custom error thrown when a database constraint is violated.
  */
 export class ConstraintViolationError extends Error {
-  constructor(message: string, public field?: string, public originalError?: unknown) {
+  constructor(
+    message: string,
+    public field?: string,
+    public originalError?: unknown
+  ) {
     super(message);
     this.name = "ConstraintViolationError";
   }
@@ -53,16 +60,9 @@ export class ConstraintViolationError extends Error {
  * @returns Promise resolving to InvestmentDto if found, null if not found or access denied
  * @throws Error if database operation fails unexpectedly
  */
-export async function getInvestmentById(
-  id: string,
-  supabase: SupabaseClient<Database>
-): Promise<InvestmentDto | null> {
+export async function getInvestmentById(id: string, supabase: SupabaseClient<Database>): Promise<InvestmentDto | null> {
   // RLS automatically filters by user_id = auth.uid()
-  const { data, error } = await supabase
-    .from("investments")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const { data, error } = await supabase.from("investments").select("*").eq("id", id).single();
 
   if (error) {
     // If error is "not found" (PGRST116), return null
@@ -96,10 +96,7 @@ export async function deleteInvestmentById(
   investmentId: string
 ): Promise<{ success: boolean; error?: string }> {
   // RLS automatically filters by user_id = auth.uid()
-  const { error, count } = await supabase
-    .from("investments")
-    .delete({ count: "exact" })
-    .eq("id", investmentId);
+  const { error, count } = await supabase.from("investments").delete({ count: "exact" }).eq("id", investmentId);
 
   if (error) {
     console.error("Database error deleting investment:", error);
@@ -137,11 +134,11 @@ function decodeCursor(cursor: string): CursorData | null {
   try {
     const decoded = Buffer.from(cursor, "base64").toString("utf-8");
     const data = JSON.parse(decoded) as CursorData;
-    
+
     if (!data.last_id || data.last_sort_value === undefined) {
       return null;
     }
-    
+
     return data;
   } catch {
     return null;
@@ -190,9 +187,7 @@ export async function getInvestments(
   query: InvestmentListQuery
 ): Promise<InvestmentListResponseDto> {
   // RLS automatically filters by user_id = auth.uid()
-  let queryBuilder = supabase
-    .from("investments")
-    .select("*", { count: "exact" });
+  let queryBuilder = supabase.from("investments").select("*", { count: "exact" });
 
   // Apply filters
   if (query.type) {
@@ -225,7 +220,7 @@ export async function getInvestments(
     // we use a simpler approach: filter by sort_column with appropriate operator,
     // and handle tie-breaking by id in post-processing if needed.
     // However, for better performance, we'll use a two-part filter approach.
-    
+
     if (sortDirection) {
       // ASC: We want records where (sort_column, id) > (last_sort_value, last_id)
       // This means: sort_column > last_sort_value OR (sort_column = last_sort_value AND id > last_id)
@@ -271,13 +266,14 @@ export async function getInvestments(
       // For stable pagination: exclude records where (sort_column, id) <= (last_sort_value, last_id)
       filteredData = filteredData.filter((item) => {
         const sortValue = sortColumn === "acquired_at" ? item.acquired_at : item.amount;
-        
+
         // Compare sort values (handle both string dates and numbers)
         const sortValueNum = typeof sortValue === "string" ? new Date(sortValue).getTime() : sortValue;
-        const cursorValueNum = typeof cursorData.last_sort_value === "string" 
-          ? new Date(cursorData.last_sort_value).getTime() 
-          : cursorData.last_sort_value;
-        
+        const cursorValueNum =
+          typeof cursorData.last_sort_value === "string"
+            ? new Date(cursorData.last_sort_value).getTime()
+            : cursorData.last_sort_value;
+
         if (sortDirection) {
           // ASC: include if sort_column > last_sort_value OR (sort_column = last_sort_value AND id > last_id)
           if (sortValueNum > cursorValueNum) {
@@ -313,7 +309,7 @@ export async function getInvestments(
   if (hasNextPage && items.length > 0) {
     const lastItem = items[items.length - 1];
     const lastSortValue = sortColumn === "acquired_at" ? lastItem.acquired_at : lastItem.amount;
-    
+
     nextCursor = encodeCursor({
       last_id: lastItem.id,
       last_sort_value: lastSortValue,
@@ -334,9 +330,7 @@ export async function getInvestments(
  * @param command - Update command with optional fields
  * @returns Database update payload with only provided fields
  */
-function buildInvestmentUpdatePayload(
-  command: UpdateInvestmentCommand
-): TablesUpdate<"investments"> {
+function buildInvestmentUpdatePayload(command: UpdateInvestmentCommand): TablesUpdate<"investments"> {
   const payload: TablesUpdate<"investments"> = {};
 
   if (command.type !== undefined) {
@@ -446,10 +440,7 @@ export async function updateInvestment(
  * @param userId - ID of the authenticated user
  * @returns Database insert payload
  */
-function buildInvestmentInsertPayload(
-  command: CreateInvestmentCommand,
-  userId: string
-): TablesInsert<"investments"> {
+function buildInvestmentInsertPayload(command: CreateInvestmentCommand, userId: string): TablesInsert<"investments"> {
   return {
     type: command.type,
     amount: Number(command.amount.toFixed(2)), // Ensure 2 decimal places
@@ -471,7 +462,7 @@ function mapSupabaseError(error: any): Error | null {
   // 23514 = CHECK constraint violation
   // 22P02 = invalid input syntax (e.g., invalid date format)
   // 42501 = insufficient privilege (shouldn't happen with RLS, but handle it)
-  
+
   if (error.code === "23514") {
     // CHECK constraint violation - could be amount <= 0 or acquired_at > current_date
     const message = error.message || "Constraint violation";
@@ -484,17 +475,17 @@ function mapSupabaseError(error: any): Error | null {
     }
     return new ConstraintViolationError(message, field, error);
   }
-  
+
   if (error.code === "22P02") {
     // Invalid input syntax
     return new ConstraintViolationError("Invalid input format", undefined, error);
   }
-  
+
   if (error.code === "42501") {
     // Insufficient privilege
     return new DatabaseError("Access denied", error);
   }
-  
+
   // Other errors are not mapped here - let them bubble up as DatabaseError
   return null;
 }
@@ -530,11 +521,7 @@ export async function createInvestment(
 
   // 2. Execute INSERT with select to return created row
   // RLS ensures user can only create investments for themselves
-  const { data, error } = await supabase
-    .from("investments")
-    .insert(insertPayload)
-    .select()
-    .single();
+  const { data, error } = await supabase.from("investments").insert(insertPayload).select().single();
 
   if (error) {
     // 3. Map known Supabase errors to controlled exceptions
@@ -542,7 +529,7 @@ export async function createInvestment(
     if (mappedError) {
       throw mappedError;
     }
-    
+
     // Other errors are unexpected
     throw new DatabaseError("Failed to create investment", error);
   }
@@ -554,4 +541,3 @@ export async function createInvestment(
   // 4. Convert DB row to DTO (removes user_id)
   return toInvestmentDto(data);
 }
-

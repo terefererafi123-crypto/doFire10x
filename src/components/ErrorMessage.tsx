@@ -13,12 +13,7 @@ export interface ErrorMessageProps {
  * Component for displaying error messages
  * Supports two variants: inline (for form fields) and banner (for global errors)
  */
-export function ErrorMessage({
-  message,
-  variant = "inline",
-  className,
-  id,
-}: ErrorMessageProps) {
+export function ErrorMessage({ message, variant = "inline", className, id }: ErrorMessageProps) {
   if (variant === "banner") {
     return (
       <div
@@ -37,14 +32,8 @@ export function ErrorMessage({
 
   // Inline variant (default)
   return (
-    <p
-      id={id}
-      className={cn("text-sm text-destructive", className)}
-      role="alert"
-      aria-live="polite"
-    >
+    <p id={id} className={cn("text-sm text-destructive", className)} role="alert" aria-live="polite">
       {message}
     </p>
   );
 }
-

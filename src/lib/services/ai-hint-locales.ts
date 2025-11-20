@@ -10,27 +10,27 @@ import type { Locale } from "./ai-hint-rules.ts";
 const HINT_MESSAGES: Record<AiRuleId, Record<Locale, string>> = {
   stock_plus_etf_ge_80: {
     "pl-PL": "Wysokie ryzyko – duży udział akcji i ETF.",
-    "pl": "Wysokie ryzyko – duży udział akcji i ETF.",
+    pl: "Wysokie ryzyko – duży udział akcji i ETF.",
     "en-US": "High risk — large share of stocks and ETFs.",
-    "en": "High risk — large share of stocks and ETFs.",
+    en: "High risk — large share of stocks and ETFs.",
   },
   bond_ge_50: {
     "pl-PL": "Bezpieczny portfel – przewaga obligacji.",
-    "pl": "Bezpieczny portfel – przewaga obligacji.",
+    pl: "Bezpieczny portfel – przewaga obligacji.",
     "en-US": "Conservative — bonds dominate.",
-    "en": "Conservative — bonds dominate.",
+    en: "Conservative — bonds dominate.",
   },
   cash_ge_30: {
     "pl-PL": "Zbyt dużo gotówki – rozważ inwestowanie nadwyżki.",
-    "pl": "Zbyt dużo gotówki – rozważ inwestowanie nadwyżki.",
+    pl: "Zbyt dużo gotówki – rozważ inwestowanie nadwyżki.",
     "en-US": "Too much cash — consider investing surplus.",
-    "en": "Too much cash — consider investing surplus.",
+    en: "Too much cash — consider investing surplus.",
   },
   stock_plus_etf_lt_40: {
     "pl-PL": "Zbyt mało akcji – niższy potencjał wzrostu.",
-    "pl": "Zbyt mało akcji – niższy potencjał wzrostu.",
+    pl: "Zbyt mało akcji – niższy potencjał wzrostu.",
     "en-US": "Low equity — limited growth potential.",
-    "en": "Low equity — limited growth potential.",
+    en: "Low equity — limited growth potential.",
   },
 };
 
@@ -39,9 +39,9 @@ const HINT_MESSAGES: Record<AiRuleId, Record<Locale, string>> = {
  */
 const DEFAULT_HINTS: Record<Locale, string> = {
   "pl-PL": "Portfel zrównoważony.",
-  "pl": "Portfel zrównoważony.",
+  pl: "Portfel zrównoważony.",
   "en-US": "Balanced portfolio.",
-  "en": "Balanced portfolio.",
+  en: "Balanced portfolio.",
 };
 
 /**
@@ -137,4 +137,3 @@ export function getLocalizedHint(ruleId: AiRuleId, locale: Locale): string {
 export function getDefaultHint(locale: Locale): string {
   return DEFAULT_HINTS[locale] || DEFAULT_HINTS["en"];
 }
-

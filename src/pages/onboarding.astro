@@ -19,17 +19,19 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
     // Wait a bit for session to be available (especially after client-side login)
     // This gives time for setSession() in LoginForm to complete
     await new Promise((resolve) => setTimeout(resolve, 500));
-    
+
     let session = null;
-    
+
     // Try getSession() first
-    const { data: { session: getSessionResult } } = await supabaseClient.auth.getSession();
+    const {
+      data: { session: getSessionResult },
+    } = await supabaseClient.auth.getSession();
     session = getSessionResult;
-    
+
     // If no session, try sessionStorage fallback (from LoginForm)
     if (!session) {
       console.log("Onboarding: No session from getSession(), checking sessionStorage...");
-      const sessionStorageData = sessionStorage.getItem('supabase.auth.session');
+      const sessionStorageData = sessionStorage.getItem("supabase.auth.session");
       if (sessionStorageData) {
         try {
           const parsedSession = JSON.parse(sessionStorageData);
@@ -39,22 +41,25 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
             access_token: parsedSession.access_token,
             refresh_token: parsedSession.refresh_token,
           });
-          
+
           if (setError) {
             console.error("Onboarding: Error setting session from sessionStorage:", setError.message);
           } else {
             console.log("Onboarding: setSession() succeeded, waiting for sync...");
             // Wait for session to sync to localStorage
             await new Promise((resolve) => setTimeout(resolve, 500));
-            
+
             // Try getSession() again
-            const { data: { session: restoredSession }, error: getError } = await supabaseClient.auth.getSession();
+            const {
+              data: { session: restoredSession },
+              error: getError,
+            } = await supabaseClient.auth.getSession();
             if (getError) {
               console.error("Onboarding: Error getting session after set:", getError.message);
             } else if (restoredSession) {
               session = restoredSession;
               // Clear sessionStorage after successful restore
-              sessionStorage.removeItem('supabase.auth.session');
+              sessionStorage.removeItem("supabase.auth.session");
               console.log("Onboarding: Session restored from sessionStorage and verified");
             } else {
               console.warn("Onboarding: setSession() succeeded but getSession() still returns null");
@@ -73,13 +78,15 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
         }
       }
     }
-    
+
     if (!session) {
       // No session - wait a bit more and retry (session might still be syncing)
       console.log("Onboarding: No session found, waiting and retrying...");
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      const { data: { session: retrySession } } = await supabaseClient.auth.getSession();
-      
+      const {
+        data: { session: retrySession },
+      } = await supabaseClient.auth.getSession();
+
       if (!retrySession) {
         // Still no session - redirect to login
         console.log("Onboarding: Still no session, redirecting to /login");
@@ -132,4 +139,3 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
     checkProfile();
   }
 </script>
-

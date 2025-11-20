@@ -12,26 +12,12 @@ export interface EmailFieldProps {
   label?: string;
   required?: boolean;
   disabled?: boolean;
-  autoFocus?: boolean;
 }
 
 export const EmailField = React.forwardRef<HTMLInputElement, EmailFieldProps>(
-  (
-    {
-      value,
-      onChange,
-      error,
-      onBlur,
-      onFocus,
-      id,
-      label = "Adres e-mail",
-      required = true,
-      disabled = false,
-      autoFocus = true,
-    },
-    ref
-  ) => {
-    const fieldId = id || React.useId();
+  ({ value, onChange, error, onBlur, onFocus, id, label = "Adres e-mail", required = true, disabled = false }, ref) => {
+    const generatedId = React.useId();
+    const fieldId = id || generatedId;
     const errorId = `${fieldId}-error`;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,7 +47,6 @@ export const EmailField = React.forwardRef<HTMLInputElement, EmailFieldProps>(
           onFocus={onFocus}
           required={required}
           disabled={disabled}
-          autoFocus={autoFocus}
           autoComplete="email"
           aria-invalid={error ? "true" : "false"}
           aria-describedby={error ? errorId : undefined}
@@ -73,12 +58,7 @@ export const EmailField = React.forwardRef<HTMLInputElement, EmailFieldProps>(
           )}
         />
         {error && (
-          <p
-            id={errorId}
-            role="alert"
-            className="text-sm font-medium text-destructive"
-            aria-live="polite"
-          >
+          <p id={errorId} role="alert" className="text-sm font-medium text-destructive" aria-live="polite">
             {error}
           </p>
         )}
@@ -88,4 +68,3 @@ export const EmailField = React.forwardRef<HTMLInputElement, EmailFieldProps>(
 );
 
 EmailField.displayName = "EmailField";
-

@@ -7,11 +7,7 @@ interface LogoutButtonProps {
   size?: "default" | "sm" | "lg" | "icon" | "icon-sm" | "icon-lg";
 }
 
-export function LogoutButton({ 
-  className,
-  variant = "outline",
-  size = "sm"
-}: LogoutButtonProps) {
+export function LogoutButton({ className, variant = "outline", size = "sm" }: LogoutButtonProps) {
   const [isLoading, setIsLoading] = React.useState(false);
 
   const handleLogout = React.useCallback(async () => {
@@ -30,8 +26,7 @@ export function LogoutButton({
 
       // Redirect to login page after successful logout
       window.location.href = "/login";
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch {
       setIsLoading(false);
       // Even if there's an error, try to redirect to login
       window.location.href = "/login";
@@ -51,7 +46,9 @@ export function LogoutButton({
     >
       {isLoading ? (
         <>
-          <span className="mr-2" aria-hidden="true">Wylogowywanie...</span>
+          <span className="mr-2" aria-hidden="true">
+            Wylogowywanie...
+          </span>
           <span
             className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
             aria-hidden="true"
@@ -64,4 +61,3 @@ export function LogoutButton({
     </Button>
   );
 }
-

@@ -72,4 +72,3 @@ export interface RecalculateButtonProps {
   isLoading: boolean;
   disabled?: boolean;
 }
-

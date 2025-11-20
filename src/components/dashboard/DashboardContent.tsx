@@ -10,10 +10,7 @@ interface ErrorBoundaryState {
   error: Error | null;
 }
 
-class DashboardErrorBoundary extends Component<
-  { children: ReactNode },
-  ErrorBoundaryState
-> {
+class DashboardErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
   constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -34,8 +31,7 @@ class DashboardErrorBoundary extends Component<
           <DashboardHeader />
           <Alert variant="destructive" className="mb-6">
             <AlertDescription>
-              {this.state.error?.message ||
-                "Wystąpił błąd podczas ładowania dashboardu. Odśwież stronę."}
+              {this.state.error?.message || "Wystąpił błąd podczas ładowania dashboardu. Odśwież stronę."}
             </AlertDescription>
           </Alert>
         </div>

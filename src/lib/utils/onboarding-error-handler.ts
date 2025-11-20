@@ -15,8 +15,7 @@ export interface HandleOnboardingErrorOptions {
  * Handles all error types consistently
  */
 export function handleOnboardingError(options: HandleOnboardingErrorOptions): void {
-  const { error, onNetworkError, onValidationError, onAuthError, onConflictError, onOtherError } =
-    options;
+  const { error, onNetworkError, onValidationError, onAuthError, onConflictError, onOtherError } = options;
 
   // Handle network errors
   if (error instanceof TypeError && error.message === "Failed to fetch") {
@@ -35,12 +34,9 @@ export function handleOnboardingError(options: HandleOnboardingErrorOptions): vo
     onAuthError();
   } else if (apiError.error?.code === "conflict") {
     // Conflict error (e.g., profile already exists)
-    onConflictError(
-      apiError.error?.message || "Profil już istnieje. Zaktualizowano tryb edycji - spróbuj ponownie."
-    );
+    onConflictError(apiError.error?.message || "Profil już istnieje. Zaktualizowano tryb edycji - spróbuj ponownie.");
   } else {
     // Other errors (5xx, 429, etc.)
     onOtherError(apiError.error?.message || "Wystąpił błąd serwera. Spróbuj ponownie.");
   }
 }
-

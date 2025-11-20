@@ -29,11 +29,7 @@ export function DashboardGrid({
       {/* Left column */}
       <div className="space-y-6">
         <MetricsPanel metrics={metrics} isLoading={isLoading} />
-        <RecalculateButton
-          onClick={onRecalculate}
-          isLoading={isLoading}
-          disabled={isRecalculateDisabled}
-        />
+        <RecalculateButton onClick={onRecalculate} isLoading={isLoading} disabled={isRecalculateDisabled} />
       </div>
 
       {/* Right column */}

@@ -38,12 +38,7 @@ export const investmentSchema = z.object({
       { message: "Data nabycia nie może być w przyszłości" }
     ),
 
-  notes: z
-    .string()
-    .max(1000, "Notatki nie mogą przekraczać 1000 znaków")
-    .optional()
-    .nullable(),
+  notes: z.string().max(1000, "Notatki nie mogą przekraczać 1000 znaków").optional().nullable(),
 });
 
 export type InvestmentFormData = z.infer<typeof investmentSchema>;
-

@@ -49,19 +49,27 @@ export const createSupabaseServerInstance = (context: {
             const cookieHeader = context.headers.get('Cookie') ?? '';
             const parsedCookies = parseCookieHeader(cookieHeader);
             
-            // If no cookies in header, try AstroCookies as fallback (if available)
-            if (parsedCookies.length === 0 && typeof context.cookies.getAll === 'function') {
-              try {
-                const astroCookies = context.cookies.getAll();
-                if (astroCookies.length > 0) {
-                  return astroCookies.map(c => ({ name: c.name, value: c.value }));
-                }
-              } catch (error) {
-                // AstroCookies.getAll() not available or failed, use parsed cookies
-                console.warn('AstroCookies.getAll() failed, using Cookie header:', error);
-              }
+            // If cookies found in header, return them
+            if (parsedCookies.length > 0) {
+              return parsedCookies;
             }
             
+            // If no cookies in header, try AstroCookies as fallback (if available)
+            try {
+              // @ts-expect-error - getAll() exists at runtime but may not be in type definitions
+              const astroCookies = context.cookies.getAll();
+              if (Array.isArray(astroCookies) && astroCookies.length > 0) {
+                return astroCookies.map((c: { name: string; value: string }) => ({ 
+                  name: c.name, 
+                  value: c.value 
+                }));
+              }
+            } catch (error) {
+              // AstroCookies.getAll() not available or failed, use parsed cookies
+              console.warn('AstroCookies.getAll() failed, using Cookie header:', error);
+            }
+            
+            // Return empty array if no cookies found
             return parsedCookies;
           },
           setAll(cookiesToSet) {

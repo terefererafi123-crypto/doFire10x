@@ -1,166 +1,77 @@
 import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { EmailField } from "./EmailField";
+import { useAuthForm } from "@/lib/hooks/useAuthForm";
+import { forgotPasswordService } from "@/lib/services/forgot-password.service";
 
-interface ForgotPasswordFormState {
-  email: string;
-  errors: {
-    email?: string;
-    submit?: string;
-  };
-  isLoading: boolean;
-  isSuccess: boolean;
-  successMessage?: string;
-  rateLimitCooldown?: number; // seconds remaining
-}
-
-const REQUEST_TIMEOUT_MS = 10000; // 10 seconds
 const RATE_LIMIT_COOLDOWN_MS = 60000; // 60 seconds
 
+interface ForgotPasswordFormData {
+  email: string;
+}
+
 export default function ForgotPasswordForm() {
-  const [state, setState] = React.useState<ForgotPasswordFormState>({
-    email: "",
-    errors: {},
-    isLoading: false,
-    isSuccess: false,
+  const form = useAuthForm<ForgotPasswordFormData>({
+    initialData: {
+      email: "",
+    },
+    rateLimitCooldownMs: RATE_LIMIT_COOLDOWN_MS,
   });
 
-  const rateLimitIntervalRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Cleanup interval on unmount
-  React.useEffect(() => {
-    return () => {
-      if (rateLimitIntervalRef.current) {
-        clearInterval(rateLimitIntervalRef.current);
-      }
-    };
-  }, []);
-
-  const validateEmail = (email: string): string | undefined => {
-    if (!email.trim()) {
-      return "Pole e-mail jest wymagane";
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return "Nieprawidłowy format adresu e-mail";
-    }
-
-    return undefined;
-  };
-
-  const handleEmailChange = (value: string) => {
-    setState((prev) => ({
-      ...prev,
-      email: value,
-      errors: prev.errors.email ? { ...prev.errors, email: undefined } : prev.errors,
-      isSuccess: false,
-    }));
-  };
-
-  const handleEmailBlur = () => {
-    const emailError = validateEmail(state.email);
-    if (emailError) {
-      setState((prev) => ({
-        ...prev,
-        errors: { ...prev.errors, email: emailError },
-      }));
-    }
-  };
-
-  const handleEmailFocus = () => {
-    setState((prev) => ({
-      ...prev,
-      errors: prev.errors.email ? { ...prev.errors, email: undefined } : prev.errors,
-    }));
-  };
+  // Track success state separately
+  const [isSuccess, setIsSuccess] = React.useState(false);
+  const [successMessage, setSuccessMessage] = React.useState<string | undefined>();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Check if rate limited
-    if (state.rateLimitCooldown && state.rateLimitCooldown > 0) {
+    if (form.rateLimiter.isRateLimited) {
       return;
     }
 
     // Validate email
-    const emailError = validateEmail(state.email);
-    if (emailError) {
-      setState((prev) => ({
-        ...prev,
-        errors: { email: emailError },
-      }));
+    if (!form.validateAll()) {
       return;
     }
 
-    // Clear previous errors
-    setState((prev) => ({
-      ...prev,
-      isLoading: true,
-      errors: {},
-      isSuccess: false,
-    }));
+    // Set loading state
+    form.setLoading(true);
+    form.clearErrors();
+    setIsSuccess(false);
 
     try {
-      // Create timeout promise
-      const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error("TIMEOUT")), REQUEST_TIMEOUT_MS);
-      });
+      // Use ForgotPasswordService
+      const result = await forgotPasswordService.sendResetEmail(form.state.data.email);
 
-      // TODO: Implement actual password reset email with Supabase
-      // const resetPromise = supabaseClient.auth.resetPasswordForEmail(state.email, {
-      //   redirectTo: `${window.location.origin}/reset-password`,
-      // });
+      if (!result.success) {
+        form.setSubmitError(result.error?.message || "Nie udało się wysłać linku.");
 
-      // const { error } = await Promise.race([resetPromise, timeoutPromise]);
-
-      // For now, simulate a delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Simulate error for demonstration
-      // In real implementation, handle Supabase errors:
-      // - 'Email not found' → "Jeśli konto istnieje, otrzymasz email z linkiem resetującym" (don't reveal if email exists)
-      // - 'Too many requests' → "Zbyt wiele prób. Spróbuj ponownie za kilka minut"
-
-      // Success - always show success message (don't reveal if email exists)
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        isSuccess: true,
-        successMessage: "Jeśli konto istnieje, otrzymasz email z linkiem resetującym hasło.",
-      }));
-    } catch (error) {
-      // Handle timeout or network errors
-      let errorMessage = "Nie udało się wysłać linku. Sprawdź połączenie z internetem i spróbuj ponownie.";
-
-      if (error instanceof Error) {
-        if (error.message === "TIMEOUT") {
-          errorMessage = "Żądanie trwa zbyt długo. Spróbuj ponownie.";
-        } else if (
-          error.message?.toLowerCase().includes("network") ||
-          error.message?.toLowerCase().includes("fetch")
-        ) {
-          errorMessage = "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie.";
+        if (result.error?.isRateLimited) {
+          form.rateLimiter.startCooldown();
         }
+
+        return;
       }
 
+      // Success - always show success message (don't reveal if email exists)
+      form.setLoading(false);
+      setIsSuccess(true);
+      setSuccessMessage("Jeśli konto istnieje, otrzymasz email z linkiem resetującym hasło.");
+    } catch (error) {
       console.error("Forgot password error:", error);
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        errors: {
-          submit: errorMessage,
-        },
-      }));
+      form.setSubmitError(
+        "Nie udało się wysłać linku. Sprawdź połączenie z internetem i spróbuj ponownie."
+      );
     }
   };
 
   const isSubmitDisabled =
-    state.isLoading ||
-    !state.email.trim() ||
-    !!state.errors.email ||
-    state.isSuccess ||
-    (state.rateLimitCooldown !== undefined && state.rateLimitCooldown > 0);
+    form.state.isLoading ||
+    !form.state.data.email.trim() ||
+    !!form.state.errors.email ||
+    isSuccess ||
+    form.rateLimiter.isRateLimited;
 
   return (
     <div className="w-full">
@@ -171,12 +82,15 @@ export default function ForgotPasswordForm() {
         aria-label="Formularz odzyskiwania hasła"
       >
         <EmailField
-          value={state.email}
-          onChange={handleEmailChange}
-          onBlur={handleEmailBlur}
-          onFocus={handleEmailFocus}
-          error={state.errors.email}
-          disabled={state.isLoading || state.isSuccess}
+          value={form.state.data.email}
+          onChange={(value) => {
+            form.setFieldValue("email", value);
+            setIsSuccess(false);
+          }}
+          onBlur={() => form.validateField("email")}
+          onFocus={() => form.clearFieldError("email")}
+          error={form.state.errors.email}
+          disabled={form.state.isLoading || isSuccess}
           autoFocus={true}
         />
 
@@ -187,25 +101,25 @@ export default function ForgotPasswordForm() {
           </p>
         </div>
 
-        {state.errors.submit && (
+        {form.state.errors.submit && (
           <div
             role="alert"
             className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm font-medium text-destructive"
             aria-live="assertive"
             aria-atomic="true"
           >
-            {state.errors.submit}
+            {form.state.errors.submit}
           </div>
         )}
 
-        {state.isSuccess && state.successMessage && (
+        {isSuccess && successMessage && (
           <div
             role="alert"
             className="rounded-md border border-green-500/50 bg-green-500/10 p-3 text-sm font-medium text-green-700 dark:text-green-400"
             aria-live="polite"
             aria-atomic="true"
           >
-            {state.successMessage}
+            {successMessage}
           </div>
         )}
 
@@ -213,10 +127,10 @@ export default function ForgotPasswordForm() {
           type="submit"
           disabled={isSubmitDisabled}
           className="w-full transition-all"
-          aria-busy={state.isLoading}
+          aria-busy={form.state.isLoading}
           aria-disabled={isSubmitDisabled}
         >
-          {state.isLoading ? (
+          {form.state.isLoading ? (
             <>
               <span className="mr-2" aria-hidden="true">Wysyłanie...</span>
               <span
@@ -225,10 +139,10 @@ export default function ForgotPasswordForm() {
               />
               <span className="sr-only">Wysyłanie linku resetującego hasło</span>
             </>
-          ) : state.rateLimitCooldown && state.rateLimitCooldown > 0 ? (
+          ) : form.rateLimiter.isRateLimited ? (
             <>
               <span aria-live="polite" aria-atomic="true">
-                Spróbuj ponownie za {state.rateLimitCooldown}s
+                Spróbuj ponownie za {form.rateLimiter.cooldownSeconds}s
               </span>
             </>
           ) : (

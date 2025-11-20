@@ -8,11 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useOnboardingForm } from "@/lib/hooks/useOnboardingForm";
 import { useOnboardingApi } from "@/lib/hooks/useOnboardingApi";
 import { useApiErrorHandler } from "@/lib/hooks/useApiErrorHandler";
-import { mapApiErrorsToFormErrors, investmentErrorMessages } from "@/lib/utils/error-mapper";
+import { investmentErrorMessages } from "@/lib/utils/error-mapper";
+import { handleOnboardingError } from "@/lib/utils/onboarding-error-handler";
 import type {
   CreateProfileCommand,
   CreateInvestmentCommand,
-  ApiError,
 } from "@/types";
 
 type ProfileFormData = CreateProfileCommand;
@@ -231,53 +231,46 @@ export function OnboardingContainer() {
           }));
         }
       } catch (error) {
-        // Handle network errors
-        if (error instanceof TypeError && error.message === "Failed to fetch") {
-          setState((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiError: "Brak połączenia z serwerem. Sprawdź połączenie internetowe.",
-          }));
-          return;
-        }
-
-        const apiError = error as ApiError;
-
-        if (apiError.error?.code === "bad_request" && apiError.error?.fields) {
-          // Validation errors from API
-          const formErrors = mapApiErrorsToFormErrors(apiError.error.fields);
-          setState((prev) => ({
-            ...prev,
-            profileErrors: formErrors,
-            isLoading: false,
-            apiError: "Popraw błędy w formularzu",
-          }));
-        } else if (apiError.error?.code === "unauthorized" || apiError.error?.code === "forbidden") {
-          // Unauthorized/Forbidden - handled by GlobalErrorBanner
-          setState((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiError: null, // Don't show local error, GlobalErrorBanner will handle it
-          }));
-          // GlobalErrorBanner will handle redirect
-        } else if (apiError.error?.code === "conflict") {
-          // Profile already exists - switch to edit mode and try again
-          setIsEditingProfile(true);
-          setState((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiError: "Profil już istnieje. Zaktualizowano tryb edycji - spróbuj ponownie.",
-          }));
-        } else {
-          // Other errors
-          setState((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiError:
-              apiError.error?.message ||
-              "Wystąpił błąd serwera. Spróbuj ponownie.",
-          }));
-        }
+        handleOnboardingError({
+          error,
+          onNetworkError: (message) => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+          onValidationError: (errors, message) => {
+            setState((prev) => ({
+              ...prev,
+              profileErrors: errors,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+          onAuthError: () => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: null, // Don't show local error, GlobalErrorBanner will handle it
+            }));
+          },
+          onConflictError: (message) => {
+            setIsEditingProfile(true);
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+          onOtherError: (message) => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+        });
       }
     } else if (state.currentStep === 2) {
       // Validate investment form
@@ -295,47 +288,50 @@ export function OnboardingContainer() {
         // Success - redirect to dashboard
         window.location.href = "/dashboard";
       } catch (error) {
-        // Handle network errors
-        if (error instanceof TypeError && error.message === "Failed to fetch") {
-          setState((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiError: "Brak połączenia z serwerem. Sprawdź połączenie internetowe.",
-          }));
-          return;
-        }
-
-        const apiError = error as ApiError;
-
         // Use useApiErrorHandler for investment form errors
-        investmentErrorHandler.handleApiError(apiError);
-        
-        if (apiError.error?.code === "bad_request" && apiError.error?.fields) {
-          // Validation errors are handled by useApiErrorHandler
-          setState((prev) => ({
-            ...prev,
-            investmentErrors: investmentErrorHandler.fieldErrors,
-            isLoading: false,
-            apiError: "Popraw błędy w formularzu",
-          }));
-        } else if (apiError.error?.code === "unauthorized" || apiError.error?.code === "forbidden") {
-          // Unauthorized/Forbidden - handled by GlobalErrorBanner
-          setState((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiError: null, // Don't show local error, GlobalErrorBanner will handle it
-          }));
-          // GlobalErrorBanner will handle redirect
-        } else {
-          // Other errors (5xx, 429, etc.)
-          setState((prev) => ({
-            ...prev,
-            isLoading: false,
-            apiError:
-              apiError.error?.message ||
-              "Wystąpił błąd serwera. Spróbuj ponownie.",
-          }));
+        if (error && typeof error === "object" && "error" in error) {
+          investmentErrorHandler.handleApiError(error as Parameters<typeof investmentErrorHandler.handleApiError>[0]);
         }
+
+        handleOnboardingError({
+          error,
+          onNetworkError: (message) => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+          onValidationError: (errors, message) => {
+            setState((prev) => ({
+              ...prev,
+              investmentErrors: investmentErrorHandler.fieldErrors,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+          onAuthError: () => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: null, // Don't show local error, GlobalErrorBanner will handle it
+            }));
+          },
+          onConflictError: (message) => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+          onOtherError: (message) => {
+            setState((prev) => ({
+              ...prev,
+              isLoading: false,
+              apiError: message,
+            }));
+          },
+        });
       }
     }
   }, [

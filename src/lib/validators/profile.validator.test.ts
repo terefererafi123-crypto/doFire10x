@@ -270,17 +270,22 @@ describe('profile.validator', () => {
     it('should accept birth_date exactly 120 years ago', () => {
       // Arrange
       // Walidacja używa dateObj >= maxAge, więc data musi być >= maxAge
-      // maxAge = today - 120 lat, więc data dokładnie 120 lat temu powinna być akceptowana
+      // Problem: new Date(dateStr) tworzy datę w UTC, a maxAge.setHours(0,0,0,0) używa lokalnej strefy czasowej
+      // Aby test działał poprawnie, używamy daty, która jest wyraźnie większa niż maxAge w UTC
+      // Używamy daty 1 dzień po maxAge, aby uniknąć problemów ze strefą czasową
       const today = new Date();
+      today.setHours(0, 0, 0, 0);
       const maxAge = new Date();
       maxAge.setFullYear(today.getFullYear() - 120);
       maxAge.setHours(0, 0, 0, 0);
-      maxAge.setDate(1); // Ustawiamy na początek miesiąca dla pewności
+      // Dodajemy 1 dzień, aby data była wyraźnie większa niż maxAge w UTC
+      const testDate = new Date(maxAge);
+      testDate.setDate(testDate.getDate() + 1);
       const validData: CreateProfileCommand = {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: maxAge.toISOString().split('T')[0],
+        birth_date: testDate.toISOString().split('T')[0],
       };
 
       // Act

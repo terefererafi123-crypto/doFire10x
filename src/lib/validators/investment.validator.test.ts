@@ -388,9 +388,12 @@ describe('investment.validator', () => {
 
     it('should reject amount exceeding maximum in update', () => {
       // Arrange
-      // Używamy większej wartości, aby uniknąć problemów z precyzją liczb zmiennoprzecinkowych
+      // Używamy wartości wyraźnie większej niż maksimum, aby uniknąć problemów z precyzją JavaScript
+      // JavaScript ma ograniczoną precyzję dla liczb zmiennoprzecinkowych (~15-17 cyfr znaczących)
+      // 1000000000000000 (1e15) może być traktowane jako równe 999999999999999.99 z powodu precyzji
+      // Używamy wartości, która jest wyraźnie większa: 1e16
       const invalidData = {
-        amount: 1000000000000000, // 1e15 - większe niż maksimum 999999999999999.99
+        amount: 10000000000000000, // 1e16 - wyraźnie większe niż maksimum 999999999999999.99
       };
 
       // Act

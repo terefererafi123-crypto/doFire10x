@@ -5,9 +5,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../db/database.types.ts";
 import type { PortfolioAggDto } from "../../types.ts";
 import { toPortfolioAggDto } from "../../types.ts";
-import type { Tables } from "../../db/database.types.ts";
-
-type DbPortfolioAggRow = Tables<"v_investments_agg">;
 
 /**
  * Retrieves portfolio aggregation data for a specific user.

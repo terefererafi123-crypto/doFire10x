@@ -5,7 +5,6 @@ import type {
   OpenRouterConfig,
   ChatCompletionParams,
   ChatCompletionResponse,
-  Message,
   ResponseFormat,
   Model,
 } from "./openrouter.types.ts";

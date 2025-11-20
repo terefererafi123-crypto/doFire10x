@@ -204,7 +204,7 @@ export function EditInvestmentModal({ investment, open, onOpenChange, onSuccess 
 
       // Refresh list after modal closes
       onSuccess();
-    } catch (err) {
+    } catch {
       setSubmitError("Wystąpił błąd podczas aktualizacji inwestycji");
       setIsSubmitting(false);
     }

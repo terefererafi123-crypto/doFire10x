@@ -1,7 +1,6 @@
 import * as React from "react";
 import { X, AlertCircle, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { ErrorMessage } from "./ErrorMessage";
 import { cn } from "@/lib/utils";
 import type { ApiError } from "@/types";
 

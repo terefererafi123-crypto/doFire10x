@@ -206,9 +206,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
   let body: unknown;
   try {
     body = await request.json();
-  } catch (error) {
-    console.warn(
-      `Invalid JSON in request body for POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+    } catch {
+      console.warn(
+        `Invalid JSON in request body for POST /v1/investments${requestId ? ` [Request-ID: ${requestId}]` : ""}`
     );
     return errorResponse(
       {

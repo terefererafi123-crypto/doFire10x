@@ -13,7 +13,7 @@ import {
 } from "../../../../lib/services/investment.service";
 import { investmentIdParamSchema, validateUpdateInvestment } from "../../../../lib/validators/investment.validator";
 import { jsonResponse, errorResponse } from "../../../../lib/api/response";
-import type { ApiError, InvestmentDto } from "../../../../types";
+import type { InvestmentDto } from "../../../../types";
 
 export const prerender = false;
 
@@ -220,9 +220,9 @@ export const PATCH: APIRoute = async ({ params, locals, request }) => {
   let body: unknown;
   try {
     body = await request.json();
-  } catch (error) {
-    console.warn(
-      `Invalid JSON in request body for PATCH /v1/investments/{id}${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+    } catch {
+      console.warn(
+        `Invalid JSON in request body for PATCH /v1/investments/{id}${requestId ? ` [Request-ID: ${requestId}]` : ""}`
     );
     return errorResponse(
       {

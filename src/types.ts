@@ -45,8 +45,10 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">;
 
 /** Insert/Update helpers from Supabase typegen (never expose user_id in commands) */
 type DbProfileInsert = TablesInsert<"profiles">;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DbProfileUpdate = TablesUpdate<"profiles">;
 type DbInvestmentInsert = TablesInsert<"investments">;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 type DbInvestmentUpdate = TablesUpdate<"investments">;
 
 /** Enum passthrough */

@@ -141,9 +141,9 @@ export const POST: APIRoute = async ({ locals, request }) => {
   let body: unknown;
   try {
     body = await request.json();
-  } catch (error) {
-    console.warn(
-      `Invalid JSON in request body for POST /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+    } catch {
+      console.warn(
+        `Invalid JSON in request body for POST /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
     );
     return errorResponse(
       {
@@ -363,9 +363,9 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
   let body: unknown;
   try {
     body = await request.json();
-  } catch (error) {
-    console.warn(
-      `Invalid JSON in request body for PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+    } catch {
+      console.warn(
+        `Invalid JSON in request body for PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
     );
     return errorResponse(
       {

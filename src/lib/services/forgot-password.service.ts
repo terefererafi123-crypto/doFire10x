@@ -15,9 +15,10 @@ export class ForgotPasswordService {
 
   /**
    * Sends password reset email
-   * @param email User email
+   * @param email User email (currently unused, TODO: implement)
    * @returns ForgotPasswordResult with success status and error details
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async sendResetEmail(email: string): Promise<ForgotPasswordResult> {
     try {
       // TODO: Implement actual password reset email with Supabase

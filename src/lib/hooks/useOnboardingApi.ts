@@ -259,7 +259,7 @@ export function useOnboardingApi() {
 
       const data = await response.json();
       return (data.items || []).length > 0;
-    } catch (error) {
+    } catch {
       clearTimeout(timeoutId);
       // On error, assume no investments
       return false;

@@ -3,7 +3,7 @@
 
 import type { PortfolioAggDto, AiHintDto } from "../../types.ts";
 import { matchRules, type Locale } from "./ai-hint-rules.ts";
-import { parseAcceptLanguage, getLocalizedHint, getDefaultHint } from "./ai-hint-locales.ts";
+import { getLocalizedHint, getDefaultHint } from "./ai-hint-locales.ts";
 
 /**
  * Generates an AI Hint based on portfolio aggregation data and locale.

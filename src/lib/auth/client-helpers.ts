@@ -26,7 +26,7 @@ export async function getAuthToken(): Promise<string | null> {
         if (parsedSession.access_token) {
           return parsedSession.access_token;
         }
-      } catch (e) {
+      } catch {
         // Ignore parse errors
       }
     }

@@ -23,6 +23,8 @@ interface ImportMetaEnv {
   readonly OPENROUTER_RETRY_DELAY?: string;
 }
 
+// ImportMeta is used by TypeScript for import.meta.env
+// eslint-disable-next-line @typescript-eslint/no-namespace
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }

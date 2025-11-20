@@ -14,10 +14,10 @@ export class ResetPasswordService {
 
   /**
    * Resets user password
-   * @param newPassword New password
+   * @param _newPassword New password (currently unused, TODO: implement)
    * @returns ResetPasswordResult with success status and error details
    */
-  async resetPassword(newPassword: string): Promise<ResetPasswordResult> {
+  async resetPassword(_newPassword: string): Promise<ResetPasswordResult> {
     try {
       // TODO: Implement actual password reset with Supabase
       // const updatePromise = supabaseClient.auth.updateUser({

@@ -47,7 +47,7 @@ export const POST: APIRoute = async ({ request }) => {
     let body: Partial<ChatCompletionParams>;
     try {
       body = await request.json();
-    } catch (error) {
+    } catch {
       return errorResponse(
         {
           code: "bad_request",

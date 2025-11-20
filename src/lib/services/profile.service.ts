@@ -4,9 +4,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../../db/database.types.ts";
 import type { CreateProfileCommand, ProfileDto, UpdateProfileCommand } from "../../types.ts";
-import type { Tables, TablesUpdate } from "../../db/database.types.ts";
-
-type DbProfileRow = Tables<"profiles">;
+import type { TablesUpdate } from "../../db/database.types.ts";
 
 /**
  * Custom error thrown when a profile is not found or access is denied.

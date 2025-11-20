@@ -180,7 +180,7 @@ export function InvestmentsList() {
 
                             // Refresh list
                             fetchInvestments();
-                          } catch (err) {
+                          } catch {
                             setError("Wystąpił błąd podczas usuwania inwestycji");
                           }
                         }

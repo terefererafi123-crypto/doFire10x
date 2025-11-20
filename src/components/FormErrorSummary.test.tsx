@@ -184,7 +184,7 @@ describe("FormErrorSummary", () => {
 
   it("should have accessible button styling", async () => {
     // Arrange
-    const user = userEvent.setup();
+    userEvent.setup();
     render(<FormErrorSummary errors={{ amount: "Kwota musi być większa od zera" }} />);
 
     // Act

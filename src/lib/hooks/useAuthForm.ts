@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { useRateLimiter } from "./useRateLimiter";
 
 export interface AuthFormErrors {
@@ -171,7 +171,10 @@ export function useAuthForm<T extends Record<string, unknown>>(options: UseAuthF
 
   // Get validator functions (use custom or default)
   const emailValidator = validators.email || validateEmail;
-  const passwordValidator = validators.password || ((p: string) => validatePassword(p, minPasswordLength));
+  const passwordValidator = useMemo(
+    () => validators.password || ((p: string) => validatePassword(p, minPasswordLength)),
+    [validators.password, minPasswordLength]
+  );
   const confirmPasswordValidator = validators.confirmPassword || validateConfirmPassword;
 
   const setFieldValue = useCallback((field: keyof T, value: unknown) => {
@@ -193,6 +196,7 @@ export function useAuthForm<T extends Record<string, unknown>>(options: UseAuthF
 
   const clearFieldError = useCallback((field: keyof AuthFormErrors) => {
     setState((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [field]: _, ...newErrors } = prev.errors;
       return { ...prev, errors: newErrors };
     });

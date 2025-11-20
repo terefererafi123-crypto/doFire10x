@@ -57,6 +57,7 @@ export function EditInvestmentModal({ investment, open, onOpenChange, onSuccess 
     // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors((prev) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { [field]: _, ...newErrors } = prev;
         return newErrors;
       });

@@ -50,6 +50,7 @@ export function useApiErrorHandler(errorMessages?: ErrorMessageMap) {
    */
   const clearFieldError = useCallback((fieldName: string) => {
     setFieldErrors((prev) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [fieldName]: _, ...updated } = prev;
       return updated;
     });

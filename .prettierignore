@@ -1,0 +1,10 @@
+# Ignore coverage files
+coverage/
+
+# Ignore AI documentation
+.ai/
+
+# Ignore Astro files with ES6 imports in script tags (Prettier parsing issues)
+src/pages/forgot-password.astro
+src/pages/onboarding.astro
+

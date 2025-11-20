@@ -173,6 +173,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
     - Nieprawidłowy format UUID w `{id}`
 
 - **500 Internal Server Error** - Błąd serwera:
+
   ```json
   {
     "error": {

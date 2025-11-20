@@ -41,6 +41,7 @@ export function useGlobalError() {
   if (context === undefined) {
     // Return a safe default instead of throwing to prevent component crashes
     // This can happen during SSR or if the provider hasn't mounted yet
+    // eslint-disable-next-line no-console
     console.warn("useGlobalError called outside GlobalErrorProvider, using default no-op implementation");
     return {
       error: null,

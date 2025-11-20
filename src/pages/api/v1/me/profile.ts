@@ -196,7 +196,9 @@ export const POST: APIRoute = async ({ locals, request }) => {
         }
       } else if (err.code === "unrecognized_keys") {
         // Handle unknown fields (from .strict() mode)
-        const unknownKeys = (err && typeof err === "object" && "keys" in err && Array.isArray(err.keys) ? err.keys : []) as string[];
+        const unknownKeys = (
+          err && typeof err === "object" && "keys" in err && Array.isArray(err.keys) ? err.keys : []
+        ) as string[];
         unknownKeys.forEach((key: string) => {
           fields[key] = "unknown_field";
         });
@@ -413,7 +415,9 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
         }
       } else if (err.code === "unrecognized_keys") {
         // Handle unknown fields (from .strict() mode)
-        const unknownKeys = (err && typeof err === "object" && "keys" in err && Array.isArray(err.keys) ? err.keys : []) as string[];
+        const unknownKeys = (
+          err && typeof err === "object" && "keys" in err && Array.isArray(err.keys) ? err.keys : []
+        ) as string[];
         unknownKeys.forEach((key: string) => {
           fields[key] = "unknown_field";
         });

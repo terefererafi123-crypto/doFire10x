@@ -66,5 +66,11 @@ export default tseslint.config(
   jsxA11yConfig,
   reactConfig,
   eslintPluginAstro.configs["flat/recommended"],
-  eslintPluginPrettier
+  eslintPluginPrettier,
+  {
+    files: ["src/pages/forgot-password.astro", "src/pages/onboarding.astro"],
+    rules: {
+      "prettier/prettier": "off",
+    },
+  }
 );

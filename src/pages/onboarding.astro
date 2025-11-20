@@ -11,7 +11,8 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
   <OnboardingContainer client:only="react" />
 </AppLayout>
 
-<script>
+<!-- eslint-disable prettier/prettier -->
+<script type="module">
   // Client-side redirect check for users who already have a profile
   import { supabaseClient } from "../db/supabase.client";
 
@@ -64,12 +65,25 @@ import { OnboardingContainer } from "../components/onboarding/OnboardingContaine
             } else {
               console.warn("Onboarding: setSession() succeeded but getSession() still returns null");
               // Use session from sessionStorage directly as fallback
+              // Create a minimal session object with just the tokens we need
               session = {
                 access_token: parsedSession.access_token,
                 refresh_token: parsedSession.refresh_token,
                 expires_at: parsedSession.expires_at,
                 // We need user info, but we can use the token for API calls
-              } as any;
+                user: null,
+                expires_in: parsedSession.expires_at
+                  ? Math.floor((parsedSession.expires_at * 1000 - Date.now()) / 1000)
+                  : 3600,
+                token_type: "bearer",
+              } as {
+                access_token: string;
+                refresh_token: string;
+                expires_at: number | null;
+                user: null;
+                expires_in: number;
+                token_type: string;
+              };
               console.log("Onboarding: Using session from sessionStorage directly (fallback)");
             }
           }

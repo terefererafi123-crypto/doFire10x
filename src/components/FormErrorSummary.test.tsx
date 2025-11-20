@@ -7,7 +7,12 @@ describe('FormErrorSummary', () => {
   beforeEach(() => {
     // Mock scrollIntoView
     Element.prototype.scrollIntoView = vi.fn();
-    HTMLElement.prototype.focus = vi.fn();
+    // Mock focus using Object.defineProperty because focus is read-only
+    Object.defineProperty(HTMLElement.prototype, 'focus', {
+      value: vi.fn(),
+      writable: true,
+      configurable: true,
+    });
   });
 
   afterEach(() => {

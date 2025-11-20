@@ -269,14 +269,18 @@ describe('profile.validator', () => {
 
     it('should accept birth_date exactly 120 years ago', () => {
       // Arrange
-      const exactly120 = new Date();
-      exactly120.setFullYear(exactly120.getFullYear() - 120);
-      exactly120.setDate(1); // Ustawiamy na początek miesiąca, żeby być pewnym
+      // Walidacja używa dateObj >= maxAge, więc data musi być >= maxAge
+      // maxAge = today - 120 lat, więc data dokładnie 120 lat temu powinna być akceptowana
+      const today = new Date();
+      const maxAge = new Date();
+      maxAge.setFullYear(today.getFullYear() - 120);
+      maxAge.setHours(0, 0, 0, 0);
+      maxAge.setDate(1); // Ustawiamy na początek miesiąca dla pewności
       const validData: CreateProfileCommand = {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: exactly120.toISOString().split('T')[0],
+        birth_date: maxAge.toISOString().split('T')[0],
       };
 
       // Act

@@ -70,8 +70,24 @@ jobs:
       - name: Generowanie podsumowania coverage
         id: coverage-summary
         run: |
-          if [ -f "coverage/coverage-summary.json" ]; then
-            COVERAGE=$(node -e "try { const data = require('./coverage/coverage-summary.json'); console.log(data.total?.lines?.pct?.toFixed(2) || 'N/A'); } catch(e) { console.log('N/A'); }")
+          if [ -f "coverage/coverage-final.json" ]; then
+            COVERAGE=$(node -e "
+              const data = require('./coverage/coverage-final.json');
+              const files = Object.values(data);
+              let stats = { statements: { total: 0, covered: 0 } };
+              files.forEach(file => {
+                if (file.s) {
+                  Object.values(file.s).forEach(v => {
+                    stats.statements.total++;
+                    if (v > 0) stats.statements.covered++;
+                  });
+                }
+              });
+              const pct = stats.statements.total > 0 
+                ? ((stats.statements.covered / stats.statements.total) * 100).toFixed(2)
+                : 'N/A';
+              console.log(pct);
+            ")
             echo "coverage=$COVERAGE" >> $GITHUB_ENV
             echo "coverage_found=true" >> $GITHUB_ENV
           else

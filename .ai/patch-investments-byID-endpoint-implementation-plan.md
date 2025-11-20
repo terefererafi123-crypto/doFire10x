@@ -526,3 +526,4 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 
 
 
+

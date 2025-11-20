@@ -701,3 +701,4 @@ Oznacza to, że inwestycja z datą dokładnie równą `acquired_at_from` lub `ac
 
 
 
+

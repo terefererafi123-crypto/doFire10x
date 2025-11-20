@@ -319,3 +319,4 @@ Diagram jest w pełni zgodny z:
 
 Diagram skupia się na ścieżkach biznesowych i doświadczeniu użytkownika, a nie na szczegółach technicznych implementacji.
 
+

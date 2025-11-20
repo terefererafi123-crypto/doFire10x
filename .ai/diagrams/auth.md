@@ -352,3 +352,4 @@ Diagram pokazuje interakcje między czterema głównymi aktorami:
 
 Wszystkie przepływy uwzględniają obsługę błędów, walidację danych i zgodność z wymaganiami US-001 i US-007 z dokumentu PRD.
 
+

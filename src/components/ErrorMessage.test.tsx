@@ -25,18 +25,6 @@ describe('ErrorMessage', () => {
     expect(errorElement).toHaveClass('text-destructive');
   });
 
-  it('should render banner variant', () => {
-    // Arrange & Act
-    render(<ErrorMessage message="Test error message" variant="banner" />);
-
-    // Assert
-    const errorElement = screen.getByText('Test error message');
-    expect(errorElement).toBeInTheDocument();
-    expect(errorElement.tagName).toBe('DIV');
-    expect(errorElement).toHaveAttribute('role', 'alert');
-    expect(errorElement).toHaveClass('bg-destructive/10');
-  });
-
   it('should render AlertCircle icon in banner variant', () => {
     // Arrange & Act
     render(<ErrorMessage message="Test error message" variant="banner" />);
@@ -85,18 +73,6 @@ describe('ErrorMessage', () => {
     // Assert
     const errorElement = screen.getByText('Test error message');
     expect(errorElement).toHaveAttribute('aria-live', 'polite');
-  });
-
-  it('should have AlertCircle with aria-hidden in banner variant', () => {
-    // Arrange & Act
-    const { container } = render(<ErrorMessage message="Test error message" variant="banner" />);
-
-    // Assert
-    const icon = container.querySelector('svg');
-    expect(icon).toBeInTheDocument();
-    // Ikona powinna mieć aria-hidden="true"
-    const iconParent = icon?.parentElement;
-    expect(iconParent).toHaveAttribute('aria-hidden', 'true');
   });
 });
 

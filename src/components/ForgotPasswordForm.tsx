@@ -81,7 +81,6 @@ export default function ForgotPasswordForm() {
           onFocus={() => clearErrors("email")}
           error={emailError}
           disabled={isSubmitting || isSuccess}
-          autoFocus={true}
         />
 
         <div className="text-sm text-muted-foreground">

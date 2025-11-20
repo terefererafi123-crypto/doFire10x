@@ -99,7 +99,6 @@ export default function RegisterForm() {
           onFocus={() => form.clearFieldError("email")}
           error={form.state.errors.email}
           disabled={form.state.isLoading || isSuccess}
-          autoFocus={true}
         />
 
         <PasswordField

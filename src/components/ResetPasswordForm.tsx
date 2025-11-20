@@ -97,7 +97,6 @@ export default function ResetPasswordForm() {
           onFocus={() => form.clearFieldError("password")}
           error={form.state.errors.password}
           disabled={form.state.isLoading || isSuccess}
-          autoFocus={true}
           placeholder="Minimum 6 znaków"
           showStrengthIndicator={true}
         />

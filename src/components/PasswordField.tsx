@@ -14,7 +14,6 @@ export interface PasswordFieldProps {
   label?: string;
   required?: boolean;
   disabled?: boolean;
-  autoFocus?: boolean;
   placeholder?: string;
   showStrengthIndicator?: boolean;
 }
@@ -31,13 +30,13 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
       label = "Hasło",
       required = true,
       disabled = false,
-      autoFocus = false,
       placeholder,
       showStrengthIndicator = false,
     },
     ref
   ) => {
-    const fieldId = id || React.useId();
+    const generatedId = React.useId();
+    const fieldId = id || generatedId;
     const errorId = `${fieldId}-error`;
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -73,7 +72,6 @@ export const PasswordField = React.forwardRef<HTMLInputElement, PasswordFieldPro
             onFocus={onFocus}
             required={required}
             disabled={disabled}
-            autoFocus={autoFocus}
             placeholder={placeholder}
             autoComplete="current-password"
             aria-invalid={error ? "true" : "false"}

@@ -105,7 +105,6 @@ export default function LoginForm() {
           onFocus={() => clearErrors("email")}
           error={emailError}
           disabled={isSubmitting}
-          autoFocus={true}
         />
 
         <PasswordField

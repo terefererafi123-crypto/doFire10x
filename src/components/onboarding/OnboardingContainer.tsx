@@ -5,6 +5,7 @@ import { InvestmentForm } from "./InvestmentForm";
 import { NavigationButtons } from "./NavigationButtons";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { GlobalErrorProviderWrapper } from "@/components/GlobalErrorProviderWrapper";
 import { useOnboardingForm } from "@/lib/hooks/useOnboardingForm";
 import { useOnboardingApi } from "@/lib/hooks/useOnboardingApi";
 import { useApiErrorHandler } from "@/lib/hooks/useApiErrorHandler";
@@ -27,7 +28,7 @@ interface OnboardingState {
   apiError: string | null;
 }
 
-export function OnboardingContainer() {
+function OnboardingContainerInner() {
   const { validateProfileForm, validateInvestmentForm } = useOnboardingForm();
   const { createProfile, createInvestment, getProfile, updateProfile, hasInvestments } = useOnboardingApi();
   const investmentErrorHandler = useApiErrorHandler(investmentErrorMessages);
@@ -401,5 +402,13 @@ export function OnboardingContainer() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export function OnboardingContainer() {
+  return (
+    <GlobalErrorProviderWrapper>
+      <OnboardingContainerInner />
+    </GlobalErrorProviderWrapper>
   );
 }

@@ -3,6 +3,7 @@ import { DashboardHeader } from "./DashboardHeader";
 import { DashboardGrid } from "./DashboardGrid";
 import { LoadingSkeleton } from "./LoadingSkeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { GlobalErrorProviderWrapper } from "@/components/GlobalErrorProviderWrapper";
 import { Component, type ReactNode } from "react";
 
 interface ErrorBoundaryState {
@@ -78,8 +79,10 @@ function DashboardContentInner() {
 
 export function DashboardContent() {
   return (
-    <DashboardErrorBoundary>
-      <DashboardContentInner />
-    </DashboardErrorBoundary>
+    <GlobalErrorProviderWrapper>
+      <DashboardErrorBoundary>
+        <DashboardContentInner />
+      </DashboardErrorBoundary>
+    </GlobalErrorProviderWrapper>
   );
 }

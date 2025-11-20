@@ -26,7 +26,7 @@ export function useDashboard() {
         globalErrorContext.setError(error);
       }
     },
-    [isMounted, globalErrorContext.setError]
+    [isMounted, globalErrorContext]
   );
   const [state, setState] = useState<DashboardState>({
     metrics: null,
@@ -35,13 +35,8 @@ export function useDashboard() {
     error: null,
   });
 
-  // Load metrics on mount
-  useEffect(() => {
-    loadMetrics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const loadMetrics = async () => {
+  // Owinąć loadMetrics w useCallback z odpowiednimi zależnościami
+  const loadMetrics = useCallback(async () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
     try {
@@ -212,7 +207,12 @@ export function useDashboard() {
               },
       }));
     }
-  };
+  }, [setGlobalError]);
+
+  // Load metrics on mount
+  useEffect(() => {
+    loadMetrics();
+  }, [loadMetrics]);
 
   // recalculateMetrics is an alias for loadMetrics
   const recalculateMetrics = loadMetrics;

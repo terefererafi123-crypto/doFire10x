@@ -5,6 +5,7 @@
 Widok walidacji i błędów nie jest osobnym widokiem, ale systemem obsługi błędów zintegrowanym z formularzami inwestycji oraz globalnym systemem obsługi błędów aplikacji. System zapewnia spójne wyświetlanie komunikatów błędów walidacji pól formularzy oraz globalnych błędów autoryzacji i serwera.
 
 **Główne cele:**
+
 - Wyświetlanie błędów walidacji pól formularzy inwestycji (inline errors)
 - Mapowanie kodów błędów API na czytelne komunikaty po polsku
 - Globalna obsługa błędów autoryzacji (401/403) z przekierowaniem do logowania
@@ -12,6 +13,7 @@ Widok walidacji i błędów nie jest osobnym widokiem, ale systemem obsługi bł
 - Integracja z formularzami w `/investments` i onboarding krok 2
 
 **Zakres:**
+
 - Formularz dodawania/edycji inwestycji (`/investments`)
 - Formularz pierwszej inwestycji (onboarding krok 2)
 - Globalne błędy autoryzacji i serwera (Layout)
@@ -19,6 +21,7 @@ Widok walidacji i błędów nie jest osobnym widokiem, ale systemem obsługi bł
 ## 2. Routing widoku
 
 **Uwaga:** Widok walidacji i błędów nie ma własnej ścieżki routingu. Jest zintegrowany z:
+
 - `/investments` - formularz dodawania/edycji inwestycji
 - `/onboarding` - formularz pierwszej inwestycji (krok 2)
 - Layout aplikacji - globalne błędy (401/403, 5xx, 429)
@@ -54,12 +57,14 @@ ErrorDisplay (React) - komponent pomocniczy
 **Opis:** Globalny baner wyświetlany u góry strony dla błędów autoryzacji, serwera i rate limiting. Jest częścią Layout aplikacji i wyświetla się automatycznie przy wykryciu odpowiednich błędów.
 
 **Główne elementy:**
+
 - Kontener banera z odpowiednim kolorem (czerwony dla błędów, żółty dla ostrzeżeń)
 - Komunikat błędu dostosowany do typu błędu
 - Przycisk akcji (np. "Zaloguj ponownie" dla 401/403)
 - Możliwość zamknięcia banera (dla błędów 5xx/429)
 
 **Obsługiwane interakcje:**
+
 - Wyświetlanie banera przy błędzie 401/403 (sesja wygasła)
 - Wyświetlanie banera przy błędzie 5xx (błąd serwera)
 - Wyświetlanie banera przy błędzie 429 (rate limiting)
@@ -67,15 +72,18 @@ ErrorDisplay (React) - komponent pomocniczy
 - Zamknięcie banera (dla błędów 5xx/429)
 
 **Obsługiwana walidacja:**
+
 - Brak walidacji (komponent wyświetla tylko komunikaty)
 
 **Typy:**
+
 - `GlobalErrorBannerProps`:
   - `error: ApiError | null` - błąd do wyświetlenia
   - `onDismiss?: () => void` - callback do zamknięcia banera
   - `onRedirect?: () => void` - callback do przekierowania
 
 **Propsy:**
+
 - `error: ApiError | null` - błąd API do wyświetlenia
 - `onDismiss?: () => void` - opcjonalny callback do zamknięcia banera
 - `onRedirect?: () => void` - opcjonalny callback do przekierowania
@@ -85,6 +93,7 @@ ErrorDisplay (React) - komponent pomocniczy
 **Opis:** Uniwersalny komponent pola formularza z obsługą błędów walidacji. Używany w formularzach inwestycji do wyświetlania pól z etykietami, walidacją i komunikatami błędów.
 
 **Główne elementy:**
+
 - Label z opcjonalną gwiazdką dla pól wymaganych
 - Input/Select/Textarea (w zależności od typu pola)
 - Komunikat błędu wyświetlany pod polem (inline error)
@@ -92,16 +101,19 @@ ErrorDisplay (React) - komponent pomocniczy
 - Wizualne oznaczenie błędu (czerwona ramka, ikona błędu)
 
 **Obsługiwane interakcje:**
+
 - Wyświetlanie błędu walidacji pod polem
 - Zmiana stylu pola przy błędzie (czerwona ramka)
 - Powiązanie komunikatu błędu z polem przez `aria-describedby`
 - Automatyczne fokusowanie pola z błędem (opcjonalne)
 
 **Obsługiwana walidacja:**
+
 - Wyświetlanie błędów walidacji z API (field-wise errors)
 - Wyświetlanie błędów walidacji po stronie klienta (przed wysłaniem)
 
 **Typy:**
+
 - `FormFieldProps<T>`:
   - `label: string` - etykieta pola
   - `name: string` - nazwa pola (dla formularza)
@@ -112,6 +124,7 @@ ErrorDisplay (React) - komponent pomocniczy
   - `className?: string` - dodatkowe klasy CSS
 
 **Propsy:**
+
 - `label: string` - etykieta pola
 - `name: string` - nazwa pola
 - `required?: boolean` - czy pole jest wymagane
@@ -125,24 +138,29 @@ ErrorDisplay (React) - komponent pomocniczy
 **Opis:** Komponent wyświetlający komunikat błędu. Używany zarówno w FormField (inline errors) jak i w GlobalErrorBanner (globalne błędy).
 
 **Główne elementy:**
+
 - Tekst komunikatu błędu
 - Opcjonalna ikona błędu
 - Stylowanie odpowiednie do kontekstu (inline vs banner)
 
 **Obsługiwane interakcje:**
+
 - Wyświetlanie komunikatu błędu
 - Brak interakcji użytkownika (tylko wyświetlanie)
 
 **Obsługiwana walidacja:**
+
 - Brak walidacji (komponent wyświetla tylko komunikat)
 
 **Typy:**
+
 - `ErrorMessageProps`:
   - `message: string` - komunikat błędu
   - `variant?: "inline" | "banner"` - wariant wyświetlania
   - `className?: string` - dodatkowe klasy CSS
 
 **Propsy:**
+
 - `message: string` - komunikat błędu
 - `variant?: "inline" | "banner"` - wariant (domyślnie "inline")
 - `className?: string` - dodatkowe klasy CSS
@@ -152,25 +170,30 @@ ErrorDisplay (React) - komponent pomocniczy
 **Opis:** Opcjonalny komponent wyświetlający podsumowanie wszystkich błędów formularza u góry formularza. Pomaga użytkownikowi szybko zobaczyć wszystkie błędy bez przewijania.
 
 **Główne elementy:**
+
 - Lista wszystkich błędów formularza
 - Linki do pól z błędami (scroll do pola)
 - Komunikat "Proszę poprawić następujące błędy"
 
 **Obsługiwane interakcje:**
+
 - Wyświetlanie listy błędów
 - Scroll do pola z błędem po kliknięciu w link
 - Automatyczne ukrywanie po poprawieniu wszystkich błędów
 
 **Obsługiwana walidacja:**
+
 - Wyświetlanie wszystkich błędów z obiektu `fields` z odpowiedzi API
 
 **Typy:**
+
 - `FormErrorSummaryProps`:
   - `errors: Record<string, string>` - obiekt z błędami (nazwa pola -> kod błędu)
   - `onFieldClick?: (fieldName: string) => void` - callback do scroll do pola
   - `className?: string` - dodatkowe klasy CSS
 
 **Propsy:**
+
 - `errors: Record<string, string>` - obiekt z błędami
 - `onFieldClick?: (fieldName: string) => callback` - callback do scroll do pola
 - `className?: string` - dodatkowe klasy CSS
@@ -180,6 +203,7 @@ ErrorDisplay (React) - komponent pomocniczy
 **Opis:** Formularz dodawania/edycji inwestycji z integracją obsługi błędów walidacji. Używany w `/investments` (jako modal) i w onboarding krok 2.
 
 **Główne elementy:**
+
 - FormField dla każdego pola (type, amount, acquired_at, notes)
 - FormErrorSummary (opcjonalne)
 - Przyciski akcji (Zapisz, Anuluj)
@@ -187,6 +211,7 @@ ErrorDisplay (React) - komponent pomocniczy
 - Integracja z API (POST /v1/investments, PATCH /v1/investments/{id})
 
 **Obsługiwane interakcje:**
+
 - Wypełnianie formularza
 - Walidacja po stronie klienta (przed wysłaniem)
 - Wysyłanie formularza do API
@@ -195,11 +220,13 @@ ErrorDisplay (React) - komponent pomocniczy
 - Reset formularza po sukcesie
 
 **Obsługiwana walidacja:**
+
 - Walidacja po stronie klienta (zod schema)
 - Walidacja po stronie serwera (błędy z API)
 - Mapowanie kodów błędów API na komunikaty po polsku
 
 **Typy:**
+
 - `InvestmentFormProps`:
   - `initialData?: Partial<CreateInvestmentCommand>` - dane początkowe (dla edycji)
   - `onSubmit: (data: CreateInvestmentCommand | UpdateInvestmentCommand) => Promise<void>` - callback po sukcesie
@@ -208,6 +235,7 @@ ErrorDisplay (React) - komponent pomocniczy
   - `errors?: Record<string, string>` - błędy z API
 
 **Propsy:**
+
 - `initialData?: Partial<CreateInvestmentCommand>` - dane początkowe
 - `onSubmit: (data) => Promise<void>` - callback po sukcesie
 - `onCancel?: () => void` - callback anulowania
@@ -221,41 +249,41 @@ ErrorDisplay (React) - komponent pomocniczy
 Mapa kodów błędów API na komunikaty po polsku. Używana do tłumaczenia kodów błędów z API na czytelne komunikaty dla użytkownika.
 
 ```typescript
-type ErrorMessageMap = Record<string, string>
+type ErrorMessageMap = Record<string, string>;
 
 const investmentErrorMessages: ErrorMessageMap = {
   // Błędy walidacji amount
-  "amount_must_be_positive": "Kwota musi być większa od zera",
-  "must_be_gt_zero": "Kwota musi być większa od zera",
-  "exceeds_maximum_value": "Kwota przekracza maksymalną wartość",
-  
+  amount_must_be_positive: "Kwota musi być większa od zera",
+  must_be_gt_zero: "Kwota musi być większa od zera",
+  exceeds_maximum_value: "Kwota przekracza maksymalną wartość",
+
   // Błędy walidacji acquired_at
-  "acquired_at_cannot_be_future": "Data nabycia nie może być z przyszłości",
-  "invalid_date_format": "Nieprawidłowy format daty. Oczekiwany format: YYYY-MM-DD",
-  "invalid_date": "Nieprawidłowa data",
-  
+  acquired_at_cannot_be_future: "Data nabycia nie może być z przyszłości",
+  invalid_date_format: "Nieprawidłowy format daty. Oczekiwany format: YYYY-MM-DD",
+  invalid_date: "Nieprawidłowa data",
+
   // Błędy walidacji type
-  "must_be_one_of_etf_bond_stock_cash": "Typ musi być jednym z: ETF, Obligacja, Akcja, Gotówka",
-  "invalid_enum_value": "Nieprawidłowa wartość",
-  
+  must_be_one_of_etf_bond_stock_cash: "Typ musi być jednym z: ETF, Obligacja, Akcja, Gotówka",
+  invalid_enum_value: "Nieprawidłowa wartość",
+
   // Błędy walidacji notes
-  "notes_cannot_be_empty": "Notatki nie mogą być puste (jeśli podane)",
-  "must_be_at_least_1_character": "Notatki muszą mieć co najmniej 1 znak",
-  "must_not_exceed_1000_characters": "Notatki nie mogą przekraczać 1000 znaków",
-  
+  notes_cannot_be_empty: "Notatki nie mogą być puste (jeśli podane)",
+  must_be_at_least_1_character: "Notatki muszą mieć co najmniej 1 znak",
+  must_not_exceed_1000_characters: "Notatki nie mogą przekraczać 1000 znaków",
+
   // Ogólne błędy
-  "invalid_type": "Nieprawidłowy typ danych",
-  "invalid_format": "Nieprawidłowy format",
-  "invalid_value": "Nieprawidłowa wartość",
-  "unknown_field": "Nieznane pole",
-  "constraint_violation": "Naruszenie ograniczenia",
-  "must_be_valid_uuid": "Nieprawidłowy format identyfikatora",
-  
+  invalid_type: "Nieprawidłowy typ danych",
+  invalid_format: "Nieprawidłowy format",
+  invalid_value: "Nieprawidłowa wartość",
+  unknown_field: "Nieznane pole",
+  constraint_violation: "Naruszenie ograniczenia",
+  must_be_valid_uuid: "Nieprawidłowy format identyfikatora",
+
   // Błędy query params
-  "must_be_between_1_and_200": "Wartość musi być między 1 a 200",
-  "invalid_cursor_format": "Nieprawidłowy format kursora",
-  "must_be_one_of_acquired_at_desc_acquired_at_asc_amount_desc_amount_asc": "Nieprawidłowa wartość sortowania",
-}
+  must_be_between_1_and_200: "Wartość musi być między 1 a 200",
+  invalid_cursor_format: "Nieprawidłowy format kursora",
+  must_be_one_of_acquired_at_desc_acquired_at_asc_amount_desc_amount_asc: "Nieprawidłowa wartość sortowania",
+};
 ```
 
 ### ApiErrorResponse
@@ -265,10 +293,10 @@ Typ reprezentujący odpowiedź błędu z API. Zgodny z typem `ApiError` z `src/t
 ```typescript
 interface ApiErrorResponse {
   error: {
-    code: "bad_request" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "too_many_requests" | "internal"
-    message: string
-    fields?: Record<string, string> // Kody błędów dla poszczególnych pól
-  }
+    code: "bad_request" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "too_many_requests" | "internal";
+    message: string;
+    fields?: Record<string, string>; // Kody błędów dla poszczególnych pól
+  };
 }
 ```
 
@@ -278,7 +306,7 @@ Typ reprezentujący błędy walidacji formularza. Mapuje nazwy pól na komunikat
 
 ```typescript
 interface FormValidationErrors {
-  [fieldName: string]: string // Nazwa pola -> komunikat błędu (po polsku)
+  [fieldName: string]: string; // Nazwa pola -> komunikat błędu (po polsku)
 }
 ```
 
@@ -288,9 +316,9 @@ Typ reprezentujący stan globalnego błędu w aplikacji.
 
 ```typescript
 interface GlobalErrorState {
-  error: ApiError | null
-  dismissed: boolean
-  redirecting: boolean
+  error: ApiError | null;
+  dismissed: boolean;
+  redirecting: boolean;
 }
 ```
 
@@ -302,12 +330,13 @@ Błędy walidacji w formularzach są zarządzane lokalnie w komponencie formular
 
 ```typescript
 // W InvestmentForm
-const [fieldErrors, setFieldErrors] = useState<FormValidationErrors>({})
-const [isSubmitting, setIsSubmitting] = useState(false)
-const [apiError, setApiError] = useState<ApiError | null>(null)
+const [fieldErrors, setFieldErrors] = useState<FormValidationErrors>({});
+const [isSubmitting, setIsSubmitting] = useState(false);
+const [apiError, setApiError] = useState<ApiError | null>(null);
 ```
 
 **Przepływ obsługi błędów:**
+
 1. Użytkownik wypełnia formularz
 2. Walidacja po stronie klienta (zod) - błędy wyświetlane natychmiast
 3. Wysyłanie formularza do API
@@ -323,11 +352,12 @@ Globalne błędy (401/403, 5xx, 429) są zarządzane w Layout lub przez globalny
 const [globalError, setGlobalError] = useState<GlobalErrorState>({
   error: null,
   dismissed: false,
-  redirecting: false
-})
+  redirecting: false,
+});
 ```
 
 **Przepływ obsługi globalnych błędów:**
+
 1. Wykrycie błędu 401/403 w dowolnym wywołaniu API
 2. Ustawienie globalnego błędu w stanie
 3. Wyświetlenie GlobalErrorBanner
@@ -340,28 +370,28 @@ Hook pomocniczy do obsługi błędów API w formularzach:
 
 ```typescript
 function useApiErrorHandler() {
-  const [fieldErrors, setFieldErrors] = useState<FormValidationErrors>({})
-  const [apiError, setApiError] = useState<ApiError | null>(null)
-  
+  const [fieldErrors, setFieldErrors] = useState<FormValidationErrors>({});
+  const [apiError, setApiError] = useState<ApiError | null>(null);
+
   const handleApiError = (error: ApiError, errorMessages: ErrorMessageMap) => {
     // Mapowanie błędów z API na komunikaty po polsku
     if (error.error.fields) {
-      const mappedErrors: FormValidationErrors = {}
+      const mappedErrors: FormValidationErrors = {};
       Object.entries(error.error.fields).forEach(([field, code]) => {
-        mappedErrors[field] = errorMessages[code] || error.error.message
-      })
-      setFieldErrors(mappedErrors)
+        mappedErrors[field] = errorMessages[code] || error.error.message;
+      });
+      setFieldErrors(mappedErrors);
     } else {
-      setApiError(error)
+      setApiError(error);
     }
-  }
-  
+  };
+
   const clearErrors = () => {
-    setFieldErrors({})
-    setApiError(null)
-  }
-  
-  return { fieldErrors, apiError, handleApiError, clearErrors }
+    setFieldErrors({});
+    setApiError(null);
+  };
+
+  return { fieldErrors, apiError, handleApiError, clearErrors };
 }
 ```
 
@@ -370,16 +400,19 @@ function useApiErrorHandler() {
 ### Endpointy używane przez system walidacji
 
 #### POST /v1/investments
+
 - **Opis:** Tworzenie nowej inwestycji
 - **Błędy walidacji:** 400 Bad Request z `fields` object
 - **Obsługa:** Mapowanie kodów błędów z `fields` na komunikaty i wyświetlenie w FormField
 
 #### PATCH /v1/investments/{id}
+
 - **Opis:** Aktualizacja inwestycji
 - **Błędy walidacji:** 400 Bad Request z `fields` object
 - **Obsługa:** Mapowanie kodów błędów z `fields` na komunikaty i wyświetlenie w FormField
 
 #### GET /v1/auth/session
+
 - **Opis:** Weryfikacja sesji użytkownika
 - **Błędy:** 401 Unauthorized
 - **Obsługa:** Wyświetlenie GlobalErrorBanner i przekierowanie do `/login`
@@ -407,7 +440,7 @@ Kody błędów z API są mapowane na komunikaty po polsku przy użyciu `ErrorMes
 
 ```typescript
 function mapErrorCode(code: string, errorMessages: ErrorMessageMap): string {
-  return errorMessages[code] || "Wystąpił błąd walidacji"
+  return errorMessages[code] || "Wystąpił błąd walidacji";
 }
 ```
 
@@ -534,6 +567,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 **Scenariusz:** Użytkownik wprowadza nieprawidłowe dane (np. kwota = 0, data z przyszłości)
 
 **Obsługa:**
+
 - API zwraca 400 Bad Request z obiektem `fields`
 - Kody błędów są mapowane na komunikaty po polsku
 - Błędy wyświetlane pod odpowiednimi polami (FormField)
@@ -541,6 +575,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 - Formularz pozostaje otwarty, użytkownik może poprawić błędy
 
 **Przykład:**
+
 ```json
 {
   "error": {
@@ -559,6 +594,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 **Scenariusz:** Sesja użytkownika wygasła lub token jest nieprawidłowy
 
 **Obsługa:**
+
 - Wyświetlenie GlobalErrorBanner z komunikatem "Sesja wygasła – zaloguj się ponownie"
 - Automatyczne przekierowanie do `/login` po 3 sekundach
 - Opcjonalnie: przycisk "Zaloguj ponownie" dla natychmiastowego przekierowania
@@ -569,6 +605,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 **Scenariusz:** Nieoczekiwany błąd serwera (500, 502, 503, etc.)
 
 **Obsługa:**
+
 - Wyświetlenie GlobalErrorBanner lub Toast z komunikatem "Problem po naszej stronie – spróbuj ponownie"
 - Możliwość zamknięcia banera (dla GlobalErrorBanner)
 - Formularz pozostaje otwarty, użytkownik może spróbować ponownie
@@ -578,6 +615,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 **Scenariusz:** Zbyt wiele żądań w krótkim czasie
 
 **Obsługa:**
+
 - Wyświetlenie Toast z komunikatem "Za dużo zapytań – spróbuj ponownie za chwilę"
 - Opcjonalnie: wyświetlenie czasu do następnej próby (jeśli dostępny w nagłówku Retry-After)
 - Formularz pozostaje otwarty, użytkownik może spróbować ponownie po chwili
@@ -587,6 +625,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 **Scenariusz:** Brak połączenia z internetem lub timeout
 
 **Obsługa:**
+
 - Wyświetlenie Toast z komunikatem "Brak połączenia z internetem. Sprawdź połączenie i spróbuj ponownie"
 - Formularz pozostaje otwarty, użytkownik może spróbować ponownie
 
@@ -595,6 +634,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 **Scenariusz:** Błąd, który nie pasuje do żadnej kategorii
 
 **Obsługa:**
+
 - Wyświetlenie Toast z ogólnym komunikatem "Wystąpił nieoczekiwany błąd. Spróbuj ponownie"
 - Logowanie błędu do konsoli (dla debugowania)
 - Formularz pozostaje otwarty, użytkownik może spróbować ponownie
@@ -711,6 +751,7 @@ API wykonuje dodatkową walidację i zwraca błędy w formacie `ApiError`:
 ---
 
 **Uwagi końcowe:**
+
 - Wszystkie komunikaty błędów powinny być po polsku
 - Komponenty powinny być dostępne (ARIA, keyboard navigation)
 - Stylowanie powinno być spójne z resztą aplikacji (Tailwind + shadcn/ui)

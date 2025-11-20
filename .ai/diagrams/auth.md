@@ -55,6 +55,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 ### 2. Główni aktorzy i ich interakcje
 
 **Aktorzy:**
+
 1. **Przeglądarka (Browser)** - Frontend React/Astro
    - Wysyła żądania autentykacji
    - Przechowuje sesję w localStorage
@@ -79,6 +80,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 ### 3. Procesy weryfikacji i odświeżania tokenów
 
 **Weryfikacja tokenu:**
+
 1. Przeglądarka wysyła żądanie z Authorization header (Bearer token)
 2. Middleware przechwytuje żądanie i tworzy Supabase client z tokenem
 3. Endpoint API używa getAuthenticatedUser() do weryfikacji
@@ -87,6 +89,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 6. Jeśli token nieprawidłowy/wygasły → zwraca 401/403
 
 **Odświeżanie tokenu:**
+
 1. Supabase client automatycznie wykrywa zbliżające się wygaśnięcie tokenu
 2. Przed wygaśnięciem wysyła żądanie odświeżenia do Supabase Auth
 3. Supabase Auth weryfikuje refresh token
@@ -97,6 +100,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 ### 4. Opis kroków autentykacji
 
 **Rejestracja:**
+
 1. Użytkownik wypełnia formularz rejestracji (email, hasło, potwierdzenie)
 2. Przeglądarka waliduje dane po stronie klienta
 3. Wywołanie signUp() z Supabase Auth
@@ -107,6 +111,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 8. Redirect do onboarding (brak profilu) lub dashboard
 
 **Logowanie:**
+
 1. Użytkownik wypełnia formularz logowania (email, hasło)
 2. Przeglądarka waliduje dane
 3. Wywołanie signInWithPassword() z Supabase Auth
@@ -117,6 +122,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 8. Redirect do dashboard
 
 **Odzyskiwanie hasła:**
+
 1. Użytkownik wypełnia formularz (email)
 2. Wywołanie resetPasswordForEmail() z Supabase Auth
 3. Supabase Auth generuje token resetujący
@@ -124,6 +130,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 5. Link zawiera token w hash fragment
 
 **Resetowanie hasła:**
+
 1. Użytkownik klika link w emailu
 2. Przeglądarka przekierowuje do /reset-password z tokenem w URL
 3. Supabase automatycznie parsuje token z hash fragment
@@ -134,6 +141,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 8. Redirect do dashboard
 
 **Weryfikacja sesji w middleware:**
+
 1. Przeglądarka wysyła żądanie z Authorization header
 2. Middleware przechwytuje żądanie
 3. Tworzy Supabase client z tokenem z header
@@ -143,6 +151,7 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 7. Jeśli token nieprawidłowy → zwraca 401/403
 
 **Dostęp do chronionych zasobów:**
+
 1. Przeglądarka pobiera token z localStorage
 2. Wysyła żądanie z Authorization: Bearer token
 3. Middleware weryfikuje token
@@ -157,14 +166,14 @@ Na podstawie analizy PRD (US-001, US-007) oraz auth-spec.md zidentyfikowano nast
 ```mermaid
 sequenceDiagram
     autonumber
-    
+
     participant Browser as Przeglądarka
     participant Middleware as Middleware Astro
     participant API as Astro API
     participant Supabase as Supabase Auth
-    
+
     Note over Browser,Supabase: Przepływ rejestracji użytkownika
-    
+
     Browser->>Supabase: signUp(email, password)
     activate Supabase
     Supabase->>Supabase: Weryfikacja danych<br/>Hashowanie hasła
@@ -195,9 +204,9 @@ sequenceDiagram
     end
     deactivate Supabase
     deactivate Browser
-    
+
     Note over Browser,Supabase: Przepływ logowania użytkownika
-    
+
     Browser->>Supabase: signInWithPassword(email, password)
     activate Supabase
     Supabase->>Supabase: Weryfikacja danych logowania
@@ -223,9 +232,9 @@ sequenceDiagram
     end
     deactivate Supabase
     deactivate Browser
-    
+
     Note over Browser,Supabase: Przepływ odzyskiwania hasła
-    
+
     Browser->>Supabase: resetPasswordForEmail(email)
     activate Supabase
     Supabase->>Supabase: Generowanie tokenu resetującego
@@ -233,9 +242,9 @@ sequenceDiagram
     Supabase-->>Browser: Success (email wysłany)
     Browser->>Browser: Komunikat "Sprawdź email"
     deactivate Supabase
-    
+
     Note over Browser,Supabase: Przepływ resetowania hasła
-    
+
     Browser->>Browser: Kliknięcie linku w emailu<br/>Redirect do /reset-password#token
     Browser->>Browser: Parsowanie tokenu z hash fragment
     Browser->>Supabase: updateUser({ password: newPassword })
@@ -253,9 +262,9 @@ sequenceDiagram
         Browser->>Browser: Wyświetlenie komunikatu błędu
     end
     deactivate Supabase
-    
+
     Note over Browser,Supabase: Przepływ weryfikacji sesji i dostępu do zasobów
-    
+
     Browser->>Browser: Pobranie tokenu z localStorage
     Browser->>API: GET /api/v1/investments<br/>Authorization: Bearer token
     activate API
@@ -280,9 +289,9 @@ sequenceDiagram
         deactivate API
     end
     deactivate Supabase
-    
+
     Note over Browser,Supabase: Przepływ automatycznego odświeżania tokenu
-    
+
     Browser->>Browser: Wykrycie zbliżającego się<br/>wygaśnięcia tokenu
     Browser->>Supabase: refreshSession()
     activate Supabase
@@ -297,9 +306,9 @@ sequenceDiagram
         Browser->>Browser: Redirect do /login
     end
     deactivate Supabase
-    
+
     Note over Browser,Supabase: Przepływ wylogowania
-    
+
     Browser->>Supabase: signOut()
     activate Supabase
     Supabase->>Supabase: Unieważnienie tokenów
@@ -307,9 +316,9 @@ sequenceDiagram
     Browser->>Browser: Usunięcie sesji<br/>z localStorage
     Browser->>Browser: Redirect do /login
     deactivate Supabase
-    
+
     Note over Browser,Supabase: Obsługa błędów 401/403 w endpointach API
-    
+
     Browser->>API: GET /api/v1/investments<br/>Brak tokenu lub nieprawidłowy token
     activate API
     API->>Middleware: Przekazanie żądania
@@ -345,11 +354,10 @@ Diagram przedstawia kompleksowy przepływ autentykacji w aplikacji DoFIRE, obejm
 8. **Obsługę błędów** - komunikaty 401/403 i przekierowania
 
 Diagram pokazuje interakcje między czterema głównymi aktorami:
+
 - **Przeglądarka** - frontend React/Astro zarządzający sesją w localStorage
 - **Middleware Astro** - warstwa pośrednia tworząca Supabase client z tokenem
 - **Astro API** - endpointy backendowe weryfikujące autentykację
 - **Supabase Auth** - serwis autentykacji zarządzający tokenami i sesjami
 
 Wszystkie przepływy uwzględniają obsługę błędów, walidację danych i zgodność z wymaganiami US-001 i US-007 z dokumentu PRD.
-
-

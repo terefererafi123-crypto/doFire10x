@@ -244,7 +244,9 @@ export type Result<T> = Ok<T> | Err;
  * Type guards (lightweight)
  * ----------------------------------------------------------*/
 
-export const isApiError = (v: unknown): v is ApiError => typeof v === "object" && v !== null && "error" in (v as any);
+export const isApiError = (v: unknown): v is ApiError => {
+  return typeof v === "object" && v !== null && "error" in v;
+};
 
 /* ------------------------------------------------------------
  * Mapping helpers (example optional utilities)

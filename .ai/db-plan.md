@@ -5,10 +5,11 @@
 Baza danych dla aplikacji DoFIRE została zaprojektowana pod Supabase (PostgreSQL 14+) z wykorzystaniem Row Level Security (RLS) do ochrony danych użytkowników. Schemat obejmuje dwie główne tabele: `profiles` (dane użytkownika) i `investments` (rejestr inwestycji), oraz widok agregujący `v_investments_agg` do obliczeń wskaźników FIRE.
 
 **Konwencje:**
+
 - Nazwy tabel i kolumn w konwencji `snake_case`
 - Wszystkie kwoty w PLN przechowywane jako `numeric(16,2)`
 - Procenty przechowywane jako `numeric(5,2)`
-- Wszystkie tabele pos  iadają pola `created_at` i `updated_at` z automatyczną aktualizacją
+- Wszystkie tabele pos iadają pola `created_at` i `updated_at` z automatyczną aktualizacją
 - Wszystkie relacje z `auth.users` wykorzystują `ON DELETE CASCADE`
 
 ---
@@ -24,12 +25,14 @@ CREATE TYPE asset_type AS ENUM ('etf', 'bond', 'stock', 'cash');
 ```
 
 **Wartości:**
+
 - `etf` - Exchange Traded Fund
 - `bond` - Obligacja
 - `stock` - Akcja
 - `cash` - Gotówka
 
 **Uwagi:**
+
 - W przyszłości można dodać nowe wartości za pomocą: `ALTER TYPE asset_type ADD VALUE 'crypto';`
 - ENUM zapewnia spójność danych i walidację na poziomie bazy
 
@@ -44,47 +47,50 @@ Tabela przechowująca dane użytkownika wymagane do obliczeń FIRE. Relacja 1:1 
 **Uwaga:** Tabela `auth.users` jest zarządzana przez Supabase Auth i już istnieje w systemie. Tabela `profiles` rozszerza `auth.users` o dodatkowe dane potrzebne do obliczeń FIRE.
 
 **Zależności:**
+
 - Wymaga istniejącej tabeli `auth.users` (już istnieje w Supabase)
 - Nie zależy od innych tabel ani typów w naszym schemacie
 - Może być utworzona jako pierwsza tabela (nie wymaga ENUM `asset_type`)
 
-
-
 **Kolumny:**
 
-
-| Nazwa | Typ | Nullable | Domyślna wartość | Opis |
-|-------|-----|----------|------------------|------|
-| `id` | `uuid` | NOT NULL | `gen_random_uuid()` | Klucz podstawowy (UUID) |
-| `user_id` | `uuid` | NOT NULL | - | Klucz obcy do `auth.users.id` (UNIQUE) |
-| `monthly_expense` | `numeric(16,2)` | NOT NULL | `0.00` | Miesięczne wydatki użytkownika (PLN) |
-| `withdrawal_rate_pct` | `numeric(5,2)` | NOT NULL | `4.00` | Roczna stopa wypłaty (procent) |
-| `expected_return_pct` | `numeric(5,2)` | NOT NULL | `7.00` | Oczekiwana roczna stopa zwrotu (procent) |
-| `birth_date` | `date` | NULL | - | Data urodzenia użytkownika (opcjonalna) |
-| `created_at` | `timestamptz` | NOT NULL | `now()` | Data i czas utworzenia rekordu |
-| `updated_at` | `timestamptz` | NOT NULL | `now()` | Data i czas ostatniej aktualizacji |
+| Nazwa                 | Typ             | Nullable | Domyślna wartość    | Opis                                     |
+| --------------------- | --------------- | -------- | ------------------- | ---------------------------------------- |
+| `id`                  | `uuid`          | NOT NULL | `gen_random_uuid()` | Klucz podstawowy (UUID)                  |
+| `user_id`             | `uuid`          | NOT NULL | -                   | Klucz obcy do `auth.users.id` (UNIQUE)   |
+| `monthly_expense`     | `numeric(16,2)` | NOT NULL | `0.00`              | Miesięczne wydatki użytkownika (PLN)     |
+| `withdrawal_rate_pct` | `numeric(5,2)`  | NOT NULL | `4.00`              | Roczna stopa wypłaty (procent)           |
+| `expected_return_pct` | `numeric(5,2)`  | NOT NULL | `7.00`              | Oczekiwana roczna stopa zwrotu (procent) |
+| `birth_date`          | `date`          | NULL     | -                   | Data urodzenia użytkownika (opcjonalna)  |
+| `created_at`          | `timestamptz`   | NOT NULL | `now()`             | Data i czas utworzenia rekordu           |
+| `updated_at`          | `timestamptz`   | NOT NULL | `now()`             | Data i czas ostatniej aktualizacji       |
 
 **Klucze:**
+
 - **Klucz podstawowy:** `profiles_pkey` na `id`
 - **Klucz obcy:** `profiles_user_id_fkey` na `user_id` → `auth.users(id) ON DELETE CASCADE`
 - **Unikalność:** `profiles_user_id_key` na `user_id` (zapewnia relację 1:1)
 
 **Ograniczenia CHECK:**
+
 - `profiles_monthly_expense_non_negative` - `monthly_expense >= 0`
 - `profiles_withdrawal_rate_range` - `withdrawal_rate_pct >= 0 AND withdrawal_rate_pct <= 100`
 - `profiles_expected_return_range` - `expected_return_pct >= -100 AND expected_return_pct <= 1000`
 - `profiles_birth_date_valid` - `birth_date IS NULL OR (birth_date < current_date AND birth_date >= current_date - interval '120 years')`
 
 **Indeksy:**
+
 - `profiles_user_id_idx` na `user_id` (dla szybkiego wyszukiwania po user_id)
 
 **RLS:**
+
 - Polityka SELECT: `user_id = auth.uid()`
 - Polityka INSERT: `user_id = auth.uid()`
 - Polityka UPDATE: `user_id = auth.uid()`
 - Polityka DELETE: `user_id = auth.uid()`
 
 **Uwagi:**
+
 - `monthly_expense` może wynosić 0 (dopuszczalne dla użytkowników bez wydatków)
 - `birth_date` jest opcjonalne - jeśli NULL, obliczenia wieku nie będą możliwe
 - `withdrawal_rate_pct` domyślnie 4% (reguła 4%)
@@ -97,44 +103,50 @@ Tabela przechowująca dane użytkownika wymagane do obliczeń FIRE. Relacja 1:1 
 Tabela przechowująca rejestr inwestycji użytkownika. Relacja 1:N z `auth.users` (poprzez `user_id`).
 
 **Zależności:**
+
 - Wymaga istniejącej tabeli `auth.users` (już istnieje w Supabase)
 - Wymaga istniejącego typu ENUM `asset_type` (musi być utworzony przed tą tabelą)
 - Może być utworzona po utworzeniu ENUM i tabeli `profiles` (kolejność `profiles` i `investments` może być dowolna, obie zależą tylko od `auth.users`)
 
 **Kolumny:**
 
-| Nazwa | Typ | Nullable | Domyślna wartość | Opis |
-|-------|-----|----------|------------------|------|
-| `id` | `uuid` | NOT NULL | `gen_random_uuid()` | Klucz podstawowy (UUID) |
-| `user_id` | `uuid` | NOT NULL | - | Klucz obcy do `auth.users.id` |
-| `type` | `asset_type` | NOT NULL | - | Typ aktywa (ENUM) |
-| `amount` | `numeric(16,2)` | NOT NULL | - | Kwota inwestycji (PLN) |
-| `acquired_at` | `date` | NOT NULL | - | Data nabycia inwestycji |
-| `notes` | `text` | NULL | - | Opcjonalne notatki (max 1000 znaków) |
-| `created_at` | `timestamptz` | NOT NULL | `now()` | Data i czas utworzenia rekordu |
-| `updated_at` | `timestamptz` | NOT NULL | `now()` | Data i czas ostatniej aktualizacji |
+| Nazwa         | Typ             | Nullable | Domyślna wartość    | Opis                                 |
+| ------------- | --------------- | -------- | ------------------- | ------------------------------------ |
+| `id`          | `uuid`          | NOT NULL | `gen_random_uuid()` | Klucz podstawowy (UUID)              |
+| `user_id`     | `uuid`          | NOT NULL | -                   | Klucz obcy do `auth.users.id`        |
+| `type`        | `asset_type`    | NOT NULL | -                   | Typ aktywa (ENUM)                    |
+| `amount`      | `numeric(16,2)` | NOT NULL | -                   | Kwota inwestycji (PLN)               |
+| `acquired_at` | `date`          | NOT NULL | -                   | Data nabycia inwestycji              |
+| `notes`       | `text`          | NULL     | -                   | Opcjonalne notatki (max 1000 znaków) |
+| `created_at`  | `timestamptz`   | NOT NULL | `now()`             | Data i czas utworzenia rekordu       |
+| `updated_at`  | `timestamptz`   | NOT NULL | `now()`             | Data i czas ostatniej aktualizacji   |
 
 **Klucze:**
+
 - **Klucz podstawowy:** `investments_pkey` na `id`
 - **Klucz obcy:** `investments_user_id_fkey` na `user_id` → `auth.users(id) ON DELETE CASCADE`
 
 **Ograniczenia CHECK:**
+
 - `investments_amount_positive` - `amount > 0`
 - `investments_acquired_at_not_future` - `acquired_at <= current_date`
 - `investments_notes_valid` - `notes IS NULL OR (btrim(notes) <> '' AND char_length(notes) <= 1000)`
 
 **Indeksy:**
+
 - `investments_user_id_idx` na `user_id` (dla szybkiego wyszukiwania po user_id)
 - `investments_acquired_at_idx` na `acquired_at` (dla sortowania i filtrowania po dacie)
 - `investments_type_idx` na `type` (dla agregacji po typie aktywa)
 
 **RLS:**
+
 - Polityka SELECT: `user_id = auth.uid()`
 - Polityka INSERT: `user_id = auth.uid()`
 - Polityka UPDATE: `user_id = auth.uid()`
 - Polityka DELETE: `user_id = auth.uid()`
 
 **Uwagi:**
+
 - `amount` musi być większe od 0 (walidacja na poziomie bazy)
 - `acquired_at` nie może być datą przyszłą (walidacja na poziomie bazy)
 - `notes` może być NULL lub niepustym tekstem o maksymalnej długości 1000 znaków
@@ -150,20 +162,21 @@ Widok agregujący sumy i udziały procentowe dla każdego typu aktywa w portfelu
 
 **Kolumny:**
 
-| Nazwa | Typ | Opis |
-|-------|-----|------|
-| `user_id` | `uuid` | Identyfikator użytkownika |
-| `total_amount` | `numeric(16,2)` | Suma wszystkich inwestycji |
-| `sum_stock` | `numeric(16,2)` | Suma inwestycji typu 'stock' |
-| `sum_etf` | `numeric(16,2)` | Suma inwestycji typu 'etf' |
-| `sum_bond` | `numeric(16,2)` | Suma inwestycji typu 'bond' |
-| `sum_cash` | `numeric(16,2)` | Suma inwestycji typu 'cash' |
-| `share_stock` | `numeric(5,2)` | Procentowy udział akcji (0-100) |
-| `share_etf` | `numeric(5,2)` | Procentowy udział ETF (0-100) |
-| `share_bond` | `numeric(5,2)` | Procentowy udział obligacji (0-100) |
-| `share_cash` | `numeric(5,2)` | Procentowy udział gotówki (0-100) |
+| Nazwa          | Typ             | Opis                                |
+| -------------- | --------------- | ----------------------------------- |
+| `user_id`      | `uuid`          | Identyfikator użytkownika           |
+| `total_amount` | `numeric(16,2)` | Suma wszystkich inwestycji          |
+| `sum_stock`    | `numeric(16,2)` | Suma inwestycji typu 'stock'        |
+| `sum_etf`      | `numeric(16,2)` | Suma inwestycji typu 'etf'          |
+| `sum_bond`     | `numeric(16,2)` | Suma inwestycji typu 'bond'         |
+| `sum_cash`     | `numeric(16,2)` | Suma inwestycji typu 'cash'         |
+| `share_stock`  | `numeric(5,2)`  | Procentowy udział akcji (0-100)     |
+| `share_etf`    | `numeric(5,2)`  | Procentowy udział ETF (0-100)       |
+| `share_bond`   | `numeric(5,2)`  | Procentowy udział obligacji (0-100) |
+| `share_cash`   | `numeric(5,2)`  | Procentowy udział gotówki (0-100)   |
 
 **Definicja SQL:**
+
 ```sql
 CREATE VIEW v_investments_agg AS
 SELECT
@@ -198,10 +211,12 @@ GROUP BY user_id;
 ```
 
 **RLS:**
+
 - Widok dziedziczy polityki RLS z tabeli `investments`
 - Użytkownik może zobaczyć tylko swoje własne agregacje
 
 **Uwagi:**
+
 - Jeśli użytkownik nie ma żadnych inwestycji, widok nie zwróci wiersza dla tego użytkownika (GROUP BY nie tworzy wierszy dla brakujących danych)
 - W aplikacji należy obsłużyć przypadek, gdy widok nie zwraca danych (total_amount będzie NULL w zapytaniu z LEFT JOIN, lub brak wiersza w zapytaniu bez JOIN)
 - Udziały procentowe są obliczane z użyciem CASE WHEN, aby uniknąć dzielenia przez zero
@@ -209,7 +224,7 @@ GROUP BY user_id;
 - Widok jest zoptymalizowany do szybkich zapytań agregujących
 - Aby uzyskać dane dla użytkowników bez inwestycji, można użyć LEFT JOIN z tabelą profiles:
   ```sql
-  SELECT 
+  SELECT
     p.user_id,
     COALESCE(v.total_amount, 0) AS total_amount,
     COALESCE(v.share_stock, 0) AS share_stock,
@@ -237,6 +252,7 @@ $$ LANGUAGE plpgsql;
 ```
 
 **Użycie:**
+
 - Trigger na tabeli `profiles`
 - Trigger na tabeli `investments`
 
@@ -275,6 +291,7 @@ CREATE TRIGGER investments_updated_at_trigger
 Wszystkie tabele użytkownika (`profiles`, `investments`) mają włączone RLS z prostą polityką właściciela:
 
 **Polityka SELECT:**
+
 ```sql
 CREATE POLICY "<table>_select_policy" ON <table>
   FOR SELECT
@@ -282,6 +299,7 @@ CREATE POLICY "<table>_select_policy" ON <table>
 ```
 
 **Polityka INSERT:**
+
 ```sql
 CREATE POLICY "<table>_insert_policy" ON <table>
   FOR INSERT
@@ -289,6 +307,7 @@ CREATE POLICY "<table>_insert_policy" ON <table>
 ```
 
 **Polityka UPDATE:**
+
 ```sql
 CREATE POLICY "<table>_update_policy" ON <table>
   FOR UPDATE
@@ -297,6 +316,7 @@ CREATE POLICY "<table>_update_policy" ON <table>
 ```
 
 **Polityka DELETE:**
+
 ```sql
 CREATE POLICY "<table>_delete_policy" ON <table>
   FOR DELETE
@@ -306,14 +326,17 @@ CREATE POLICY "<table>_delete_policy" ON <table>
 ### 6.2. Uprawnienia
 
 **Rola `anon`:**
+
 - Brak uprawnień do tabel i widoków (REVOKE ALL)
 
 **Rola `authenticated`:**
+
 - Uprawnienia do SELECT, INSERT, UPDATE, DELETE na `profiles` (z RLS)
 - Uprawnienia do SELECT, INSERT, UPDATE, DELETE na `investments` (z RLS)
 - Uprawnienia do SELECT na `v_investments_agg` (z RLS)
 
 **Rola `service_role`:**
+
 - Pełne uprawnienia do wszystkich tabel i widoków (bez RLS)
 
 ---
@@ -356,15 +379,15 @@ auth.users (Supabase - już istnieje)
 
 ### 8.1. Indeksy podstawowe
 
-| Tabela | Indeks | Kolumny | Typ | Opis |
-|--------|--------|---------|-----|------|
-| `profiles` | `profiles_pkey` | `id` | PRIMARY KEY | Klucz podstawowy |
-| `profiles` | `profiles_user_id_key` | `user_id` | UNIQUE | Zapewnia relację 1:1 |
-| `profiles` | `profiles_user_id_idx` | `user_id` | B-tree | Szybkie wyszukiwanie po user_id |
-| `investments` | `investments_pkey` | `id` | PRIMARY KEY | Klucz podstawowy |
-| `investments` | `investments_user_id_idx` | `user_id` | B-tree | Szybkie wyszukiwanie po user_id |
-| `investments` | `investments_acquired_at_idx` | `acquired_at` | B-tree | Sortowanie i filtrowanie po dacie |
-| `investments` | `investments_type_idx` | `type` | B-tree | Agregacja po typie aktywa |
+| Tabela        | Indeks                        | Kolumny       | Typ         | Opis                              |
+| ------------- | ----------------------------- | ------------- | ----------- | --------------------------------- |
+| `profiles`    | `profiles_pkey`               | `id`          | PRIMARY KEY | Klucz podstawowy                  |
+| `profiles`    | `profiles_user_id_key`        | `user_id`     | UNIQUE      | Zapewnia relację 1:1              |
+| `profiles`    | `profiles_user_id_idx`        | `user_id`     | B-tree      | Szybkie wyszukiwanie po user_id   |
+| `investments` | `investments_pkey`            | `id`          | PRIMARY KEY | Klucz podstawowy                  |
+| `investments` | `investments_user_id_idx`     | `user_id`     | B-tree      | Szybkie wyszukiwanie po user_id   |
+| `investments` | `investments_acquired_at_idx` | `acquired_at` | B-tree      | Sortowanie i filtrowanie po dacie |
+| `investments` | `investments_type_idx`        | `type`        | B-tree      | Agregacja po typie aktywa         |
 
 ### 8.2. Uwagi dotyczące indeksów
 
@@ -380,12 +403,14 @@ auth.users (Supabase - już istnieje)
 ### 9.1. Ograniczenia CHECK
 
 **Tabela profiles:**
+
 - `monthly_expense >= 0` - wydatki nie mogą być ujemne
 - `withdrawal_rate_pct >= 0 AND withdrawal_rate_pct <= 100` - stopa wypłaty w zakresie 0-100%
 - `expected_return_pct >= -100 AND expected_return_pct <= 1000` - stopa zwrotu w realistycznym zakresie
 - `birth_date` - data musi być w przeszłości i nie starsza niż 120 lat
 
 **Tabela investments:**
+
 - `amount > 0` - kwota musi być większa od zera
 - `acquired_at <= current_date` - data nabycia nie może być przyszła
 - `notes` - jeśli podane, musi być niepustym tekstem o maksymalnej długości 1000 znaków
@@ -393,6 +418,7 @@ auth.users (Supabase - już istnieje)
 ### 9.2. Walidacja po stronie aplikacji
 
 Oprócz ograniczeń CHECK na poziomie bazy, aplikacja powinna również walidować:
+
 - Format danych przed wysłaniem do bazy
 - Komunikaty błędów przyjazne dla użytkownika
 - Obsługa błędów 401/403 (autoryzacja)
@@ -685,6 +711,7 @@ if (share_stock + share_etf < 40) {
 ### 16.1. Pliki migracji
 
 Migracje powinny być przechowywane w katalogu `supabase/migrations/` w formacie:
+
 - `YYYYMMDDHHMMSS_description.sql`
 
 ### 16.2. Przykładowa struktura
@@ -716,4 +743,3 @@ Schemat bazy danych DoFIRE został zaprojektowany jako proste, skalowalne i bezp
 - **Bezpieczeństwo:** Pełna izolacja danych użytkowników przez RLS
 
 Schemat jest gotowy do implementacji i zgodny z wymaganiami PRD oraz best practices PostgreSQL i Supabase.
-

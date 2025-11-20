@@ -120,7 +120,7 @@ export const updateInvestmentSchema = z
     amount: z
       .number()
       .positive("Amount must be greater than zero")
-      .max(999999999999999.99, "Amount exceeds maximum value")
+      .max(999999999999999, "Amount exceeds maximum value")
       .optional(),
     acquired_at: z
       .string()

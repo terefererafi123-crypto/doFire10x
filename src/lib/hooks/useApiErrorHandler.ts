@@ -50,8 +50,7 @@ export function useApiErrorHandler(errorMessages?: ErrorMessageMap) {
    */
   const clearFieldError = useCallback((fieldName: string) => {
     setFieldErrors((prev) => {
-      const updated = { ...prev };
-      delete updated[fieldName];
+      const { [fieldName]: _, ...updated } = prev;
       return updated;
     });
   }, []);

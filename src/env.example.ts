@@ -9,22 +9,20 @@ declare global {
       supabase: SupabaseClient<Database>;
     }
   }
-}
-
-interface ImportMetaEnv {
-  readonly SUPABASE_URL: string;
-  readonly SUPABASE_KEY: string;
-  readonly OPENROUTER_API_KEY: string;
-  readonly OPENROUTER_BASE_URL?: string;
-  readonly OPENROUTER_REFERER?: string;
-  readonly OPENROUTER_APP_TITLE?: string;
-  readonly OPENROUTER_TIMEOUT?: string;
-  readonly OPENROUTER_MAX_RETRIES?: string;
-  readonly OPENROUTER_RETRY_DELAY?: string;
-}
-
-// ImportMeta is used by TypeScript for import.meta.env
-// eslint-disable-next-line @typescript-eslint/no-namespace
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
+  // ImportMeta is used by TypeScript for import.meta.env
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ImportMeta {
+    interface ImportMetaEnv {
+      readonly SUPABASE_URL: string;
+      readonly SUPABASE_KEY: string;
+      readonly OPENROUTER_API_KEY: string;
+      readonly OPENROUTER_BASE_URL?: string;
+      readonly OPENROUTER_REFERER?: string;
+      readonly OPENROUTER_APP_TITLE?: string;
+      readonly OPENROUTER_TIMEOUT?: string;
+      readonly OPENROUTER_MAX_RETRIES?: string;
+      readonly OPENROUTER_RETRY_DELAY?: string;
+    }
+    readonly env: ImportMetaEnv;
+  }
 }

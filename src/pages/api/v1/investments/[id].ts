@@ -220,9 +220,9 @@ export const PATCH: APIRoute = async ({ params, locals, request }) => {
   let body: unknown;
   try {
     body = await request.json();
-    } catch {
-      console.warn(
-        `Invalid JSON in request body for PATCH /v1/investments/{id}${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+  } catch {
+    console.warn(
+      `Invalid JSON in request body for PATCH /v1/investments/{id}${requestId ? ` [Request-ID: ${requestId}]` : ""}`
     );
     return errorResponse(
       {
@@ -273,7 +273,9 @@ export const PATCH: APIRoute = async ({ params, locals, request }) => {
       } else if (err.code === "unrecognized_keys") {
         // Handle unknown fields (from .strict() mode)
         // Zod returns unrecognized_keys as an array in the error
-        const unknownKeys = (err as any).keys || [];
+        const unknownKeys = (
+          err && typeof err === "object" && "keys" in err && Array.isArray(err.keys) ? err.keys : []
+        ) as string[];
         unknownKeys.forEach((key: string) => {
           fields[key] = "unknown_field";
         });

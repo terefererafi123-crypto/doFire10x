@@ -64,9 +64,9 @@ export async function getInvestmentById(id: string, supabase: SupabaseClient<Dat
   // RLS automatically filters by user_id = auth.uid()
   const { data, error } = await supabase.from("investments").select("*").eq("id", id).single();
 
-  if (error) {
+  if (error && typeof error === "object" && "code" in error) {
     // If error is "not found" (PGRST116), return null
-    if (error.code === "PGRST116") {
+    if ((error as { code?: string }).code === "PGRST116") {
       return null;
     }
     // Other errors are unexpected and should be thrown
@@ -415,9 +415,9 @@ export async function updateInvestment(
     .select()
     .single();
 
-  if (error) {
+  if (error && typeof error === "object" && "code" in error) {
     // PGRST116 means no rows returned (shouldn't happen after verification, but handle it)
-    if (error.code === "PGRST116") {
+    if ((error as { code?: string }).code === "PGRST116") {
       throw new InvestmentNotFoundError(investmentId);
     }
     // Other errors are unexpected
@@ -457,15 +457,21 @@ function buildInvestmentInsertPayload(command: CreateInvestmentCommand, userId: 
  * @param error - Supabase error object
  * @returns Appropriate error instance or null if error cannot be mapped
  */
-function mapSupabaseError(error: any): Error | null {
+function mapSupabaseError(error: unknown): Error | null {
   // Postgres error codes
   // 23514 = CHECK constraint violation
   // 22P02 = invalid input syntax (e.g., invalid date format)
   // 42501 = insufficient privilege (shouldn't happen with RLS, but handle it)
 
-  if (error.code === "23514") {
+  if (!error || typeof error !== "object") {
+    return null;
+  }
+
+  const supabaseError = error as { code?: string; message?: string };
+
+  if (supabaseError.code === "23514") {
     // CHECK constraint violation - could be amount <= 0 or acquired_at > current_date
-    const message = error.message || "Constraint violation";
+    const message = supabaseError.message || "Constraint violation";
     // Try to determine which field caused the violation
     let field: string | undefined;
     if (message.includes("amount") || message.includes("positive")) {
@@ -476,12 +482,12 @@ function mapSupabaseError(error: any): Error | null {
     return new ConstraintViolationError(message, field, error);
   }
 
-  if (error.code === "22P02") {
+  if (supabaseError.code === "22P02") {
     // Invalid input syntax
     return new ConstraintViolationError("Invalid input format", undefined, error);
   }
 
-  if (error.code === "42501") {
+  if (supabaseError.code === "42501") {
     // Insufficient privilege
     return new DatabaseError("Access denied", error);
   }

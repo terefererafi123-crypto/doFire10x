@@ -5,12 +5,14 @@
 Endpoint `POST /v1/investments` umożliwia autoryzowanemu użytkownikowi dodanie nowej inwestycji do swojego portfela. Operacja zapisuje rekord w tabeli `public.investments`, automatycznie przypisując `user_id` z tokenu Supabase. RLS gwarantuje, że użytkownicy widzą i modyfikują jedynie własne dane.
 
 **Cele funkcjonalne:**
+
 - Walidacja wejścia zgodnie ze specyfikacją API oraz ograniczeniami bazy (`asset_type`, `amount > 0`, `acquired_at <= current_date`, długość `notes`).
 - Uzupełnienie danych serwerowych (`id`, `created_at`, `updated_at`, `user_id`) podczas tworzenia rekordu.
 - Zwrócenie kompletnego `InvestmentDto` z kodem `201 Created`.
 - Spójna obsługa błędów walidacji i błędów Supabase (mapowanie na `400/401/500`).
 
 **Powiązane zasoby:**
+
 - Tabela: `public.investments`
 - Typ ENUM: `asset_type` (`etf`, `bond`, `stock`, `cash`)
 - Widok agregujący `v_investments_agg` (pośrednio aktualizowany po dodaniu rekordu)
@@ -30,23 +32,25 @@ Endpoint `POST /v1/investments` umożliwia autoryzowanemu użytkownikowi dodanie
   ```json
   {
     "type": "bond",
-    "amount": 5000.00,
+    "amount": 5000.0,
     "acquired_at": "2025-01-10",
     "notes": "COI 4-letnie"
   }
   ```
 
 **Pola:**
-- `type` *(string, wymagane)* – jedna z wartości ENUM `etf|bond|stock|cash`
-- `amount` *(number, wymagane)* – wartość dodatnia (`> 0`), skończona, z maks. dwoma miejscami po przecinku (walidacja aplikacyjna + CHECK w DB)
-- `acquired_at` *(string, wymagane)* – data w formacie `YYYY-MM-DD`, nie późniejsza niż dzień bieżący
-- `notes` *(string | null, opcjonalne)* – po trimie długość 1–1000 znaków; puste lub whitespace traktowane jako `null`
+
+- `type` _(string, wymagane)_ – jedna z wartości ENUM `etf|bond|stock|cash`
+- `amount` _(number, wymagane)_ – wartość dodatnia (`> 0`), skończona, z maks. dwoma miejscami po przecinku (walidacja aplikacyjna + CHECK w DB)
+- `acquired_at` _(string, wymagane)_ – data w formacie `YYYY-MM-DD`, nie późniejsza niż dzień bieżący
+- `notes` _(string | null, opcjonalne)_ – po trimie długość 1–1000 znaków; puste lub whitespace traktowane jako `null`
 
 ---
 
 ## 3. Wykorzystywane typy
 
 - **Command/DTO z `src/types.ts`:**
+
   ```typescript
   type CreateInvestmentCommand = {
     type: AssetType;
@@ -57,7 +61,9 @@ Endpoint `POST /v1/investments` umożliwia autoryzowanemu użytkownikowi dodanie
 
   type InvestmentDto = Omit<Tables<"investments">, "user_id">;
   ```
+
 - **Walidacja (Zod) – nowy schemat w `src/lib/validation/investments.ts`:**
+
   ```typescript
   const createInvestmentSchema = z.object({
     type: z.enum(["etf", "bond", "stock", "cash"]),
@@ -86,7 +92,8 @@ Endpoint `POST /v1/investments` umożliwia autoryzowanemu użytkownikowi dodanie
       .transform((val) => (val && val.length > 0 ? val : undefined)),
   });
   ```
-  *Notatka:* Utrzymuj pojedynczą definicję schematu – eksportuj zarówno schemat, jak i wyprowadzony typ `CreateInvestmentInput`.
+
+  _Notatka:_ Utrzymuj pojedynczą definicję schematu – eksportuj zarówno schemat, jak i wyprowadzony typ `CreateInvestmentInput`.
 
 - **Usługa domenowa:** utworzyć `src/lib/services/investments.service.ts` z funkcją `createInvestment`, która przyjmuje kontekst Supabase (`SupabaseClient<Database>`) i `CreateInvestmentCommand`.
 
@@ -180,4 +187,3 @@ Endpoint `POST /v1/investments` umożliwia autoryzowanemu użytkownikowi dodanie
 ---
 
 > Po wdrożeniu endpointu przetestuj przypadki: poprawny zapis, amount <= 0, data w przyszłości, notes = whitespace, brak tokenu, powtarzające się żądania z tym samym payloadem.
-

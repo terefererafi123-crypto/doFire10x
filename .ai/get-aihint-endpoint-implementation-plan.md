@@ -5,6 +5,7 @@
 Endpoint `GET /v1/me/ai-hint` zwraca zwięzłą podpowiedź dotyczącą portfela inwestycyjnego użytkownika na podstawie deterministycznych reguł PRD. Podpowiedź jest generowana na podstawie procentowych udziałów różnych typów aktywów z widoku `v_investments_agg`. Endpoint obsługuje lokalizację komunikatów (polski/angielski) na podstawie nagłówka `Accept-Language`.
 
 **Główne funkcjonalności:**
+
 - Pobranie zagregowanych danych portfela z widoku `v_investments_agg`
 - Zastosowanie deterministycznych reguł PRD do oceny struktury portfela
 - Generowanie zlokalizowanej podpowiedzi (max ~160 znaków)
@@ -26,41 +27,40 @@ Endpoint `GET /v1/me/ai-hint` zwraca zwięzłą podpowiedź dotyczącą portfela
 ### 3.1. DTOs (Data Transfer Objects)
 
 **`AiHintDto`** (z `src/types.ts`):
+
 ```typescript
 export interface AiHintDto {
-  hint: string // zlokalizowana podpowiedź (<= ~160 chars)
-  rules_matched: AiRuleId[]
+  hint: string; // zlokalizowana podpowiedź (<= ~160 chars)
+  rules_matched: AiRuleId[];
   shares: {
-    stock: number
-    etf: number
-    bond: number
-    cash: number
-  }
+    stock: number;
+    etf: number;
+    bond: number;
+    cash: number;
+  };
 }
 ```
 
 **`AiRuleId`** (z `src/types.ts`):
+
 ```typescript
-export type AiRuleId =
-  | "stock_plus_etf_ge_80"
-  | "bond_ge_50"
-  | "cash_ge_30"
-  | "stock_plus_etf_lt_40"
+export type AiRuleId = "stock_plus_etf_ge_80" | "bond_ge_50" | "cash_ge_30" | "stock_plus_etf_lt_40";
 ```
 
 **`PortfolioAggDto`** (z `src/types.ts`):
+
 ```typescript
 export interface PortfolioAggDto {
-  user_id: string
-  total_amount: number
-  sum_stock: number
-  sum_etf: number
-  sum_bond: number
-  sum_cash: number
-  share_stock: number
-  share_etf: number
-  share_bond: number
-  share_cash: number
+  user_id: string;
+  total_amount: number;
+  sum_stock: number;
+  sum_etf: number;
+  sum_bond: number;
+  sum_cash: number;
+  share_stock: number;
+  share_etf: number;
+  share_bond: number;
+  share_cash: number;
 }
 ```
 
@@ -71,16 +71,18 @@ Brak - endpoint jest tylko do odczytu (GET).
 ### 3.3. Typy pomocnicze
 
 **Lokalizacja:**
+
 ```typescript
-type Locale = "pl-PL" | "en-US" | "en"
+type Locale = "pl-PL" | "en-US" | "en";
 ```
 
 **Reguły AI Hint:**
+
 ```typescript
 interface AiHintRule {
-  id: AiRuleId
-  condition: (shares: PortfolioAggDto) => boolean
-  getHint: (locale: Locale) => string
+  id: AiRuleId;
+  condition: (shares: PortfolioAggDto) => boolean;
+  getHint: (locale: Locale) => string;
 }
 ```
 
@@ -89,6 +91,7 @@ interface AiHintRule {
 ### 4.1. Sukces (200 OK)
 
 **Struktura odpowiedzi:**
+
 ```json
 {
   "hint": "Wysokie ryzyko – duży udział akcji i ETF.",
@@ -103,6 +106,7 @@ interface AiHintRule {
 ```
 
 **Pola odpowiedzi:**
+
 - `hint` (string, wymagane): Zlokalizowana podpowiedź o strukturze portfela (max ~160 znaków)
 - `rules_matched` (string[], wymagane): Lista identyfikatorów reguł, które zostały dopasowane (kolejność priorytetowa)
 - `shares` (object, wymagane): Obiekt zawierający procentowe udziały każdego typu aktywa
@@ -112,6 +116,7 @@ interface AiHintRule {
   - `cash` (number): Udział gotówki w procentach (0-100)
 
 **Uwagi:**
+
 - Jeśli użytkownik nie ma żadnych inwestycji, wszystkie udziały będą równe 0, a podpowiedź będzie dotyczyć braku inwestycji
 - Reguły są sprawdzane w kolejności priorytetowej - pierwsza dopasowana reguła decyduje o podpowiedzi
 - Suma udziałów powinna wynosić 100% (z tolerancją zaokrągleń)
@@ -119,6 +124,7 @@ interface AiHintRule {
 ### 4.2. Błędy
 
 **401 Unauthorized:**
+
 ```json
 {
   "error": {
@@ -127,10 +133,12 @@ interface AiHintRule {
   }
 }
 ```
+
 - Występuje gdy brak tokenu JWT lub token jest nieprawidłowy
 - Middleware autoryzacji powinien zwrócić ten błąd przed dotarciem do handlera
 
 **500 Internal Server Error:**
+
 ```json
 {
   "error": {
@@ -139,6 +147,7 @@ interface AiHintRule {
   }
 }
 ```
+
 - Występuje przy nieoczekiwanych błędach bazy danych lub serwera
 - Powinien być logowany z pełnym kontekstem (X-Request-Id)
 
@@ -175,8 +184,9 @@ interface AiHintRule {
 ### 5.2. Interakcje z bazą danych
 
 **Zapytanie do widoku `v_investments_agg`:**
+
 ```sql
-SELECT 
+SELECT
   user_id,
   total_amount,
   sum_stock,
@@ -192,6 +202,7 @@ WHERE user_id = $1
 ```
 
 **Obsługa przypadku braku danych:**
+
 - Jeśli użytkownik nie ma żadnych inwestycji, widok nie zwróci wiersza
 - W takim przypadku należy zwrócić `PortfolioAggDto` z zerowymi wartościami:
   ```typescript
@@ -234,6 +245,7 @@ Reguły są sprawdzane w kolejności priorytetowej (pierwsza dopasowana decyduje
    - EN: "Low equity — limited growth potential."
 
 **Przypadek domyślny:**
+
 - Jeśli żadna reguła nie jest dopasowana, zwróć neutralną podpowiedź:
   - PL: "Portfel zrównoważony."
   - EN: "Balanced portfolio."
@@ -250,7 +262,7 @@ Reguły są sprawdzane w kolejności priorytetowej (pierwsza dopasowana decyduje
 ### 6.2. Walidacja danych wejściowych
 
 - **Brak danych wejściowych:** Endpoint nie przyjmuje parametrów, więc walidacja wejściowa nie jest wymagana
-- **Nagłówek Accept-Language:** 
+- **Nagłówek Accept-Language:**
   - Opcjonalny nagłówek
   - Obsługiwane wartości: `pl-PL`, `pl`, `en-US`, `en`
   - Domyślnie: `en` (angielski)
@@ -272,16 +284,17 @@ Reguły są sprawdzane w kolejności priorytetowej (pierwsza dopasowana decyduje
 
 ### 7.1. Scenariusze błędów i kody statusu
 
-| Scenariusz | Kod statusu | Struktura odpowiedzi |
-|------------|-------------|---------------------|
-| Brak tokenu JWT | 401 | `{ error: { code: "unauthorized", message: "Authentication required" } }` |
-| Nieprawidłowy/wygasły token | 401 | `{ error: { code: "unauthorized", message: "Invalid or expired token" } }` |
-| Błąd połączenia z bazą danych | 500 | `{ error: { code: "internal", message: "Database connection error" } }` |
-| Nieoczekiwany błąd serwera | 500 | `{ error: { code: "internal", message: "An unexpected error occurred" } }` |
+| Scenariusz                    | Kod statusu | Struktura odpowiedzi                                                       |
+| ----------------------------- | ----------- | -------------------------------------------------------------------------- |
+| Brak tokenu JWT               | 401         | `{ error: { code: "unauthorized", message: "Authentication required" } }`  |
+| Nieprawidłowy/wygasły token   | 401         | `{ error: { code: "unauthorized", message: "Invalid or expired token" } }` |
+| Błąd połączenia z bazą danych | 500         | `{ error: { code: "internal", message: "Database connection error" } }`    |
+| Nieoczekiwany błąd serwera    | 500         | `{ error: { code: "internal", message: "An unexpected error occurred" } }` |
 
 ### 7.2. Logowanie błędów
 
 **Struktura logu błędu:**
+
 ```typescript
 {
   timestamp: string,
@@ -298,6 +311,7 @@ Reguły są sprawdzane w kolejności priorytetowej (pierwsza dopasowana decyduje
 ```
 
 **Zasady logowania:**
+
 - Wszystkie błędy 500 powinny być logowane z pełnym stack trace (tylko w dev/staging)
 - Błędy 401 mogą być logowane na poziomie INFO (nie są krytyczne)
 - Użyj `X-Request-Id` z nagłówka requestu dla korelacji logów
@@ -306,14 +320,17 @@ Reguły są sprawdzane w kolejności priorytetowej (pierwsza dopasowana decyduje
 ### 7.3. Obsługa edge cases
 
 **Brak inwestycji:**
+
 - Jeśli użytkownik nie ma żadnych inwestycji, zwróć zeroed `PortfolioAggDto`
 - Podpowiedź powinna być neutralna lub informować o braku inwestycji (zależnie od wymagań UX)
 
 **Nieprawidłowe wartości udziałów:**
+
 - Jeśli suma udziałów nie wynosi 100% (z powodu zaokrągleń), znormalizuj wartości
 - Jeśli udział jest ujemny lub > 100, traktuj jako błąd danych i zwróć 500
 
 **Brak danych w widoku:**
+
 - Widok `v_investments_agg` nie zwraca wierszy dla użytkowników bez inwestycji
 - Obsłuż to jako przypadek normalny (nie błąd) - zwróć zeroed wartości
 
@@ -442,6 +459,7 @@ Reguły są sprawdzane w kolejności priorytetowej (pierwsza dopasowana decyduje
 ### Przykład 1: Pobranie AI hint (polski)
 
 **Request:**
+
 ```http
 GET /v1/me/ai-hint
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -449,6 +467,7 @@ Accept-Language: pl-PL
 ```
 
 **Response 200:**
+
 ```json
 {
   "hint": "Wysokie ryzyko – duży udział akcji i ETF.",
@@ -465,6 +484,7 @@ Accept-Language: pl-PL
 ### Przykład 2: Pobranie AI hint (angielski)
 
 **Request:**
+
 ```http
 GET /v1/me/ai-hint
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -472,6 +492,7 @@ Accept-Language: en-US
 ```
 
 **Response 200:**
+
 ```json
 {
   "hint": "High risk — large share of stocks and ETFs.",
@@ -488,6 +509,7 @@ Accept-Language: en-US
 ### Przykład 3: Użytkownik bez inwestycji
 
 **Request:**
+
 ```http
 GET /v1/me/ai-hint
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
@@ -495,6 +517,7 @@ Accept-Language: pl-PL
 ```
 
 **Response 200:**
+
 ```json
 {
   "hint": "Portfel zrównoważony.",
@@ -511,11 +534,13 @@ Accept-Language: pl-PL
 ### Przykład 4: Brak autoryzacji
 
 **Request:**
+
 ```http
 GET /v1/me/ai-hint
 ```
 
 **Response 401:**
+
 ```json
 {
   "error": {
@@ -551,7 +576,3 @@ GET /v1/me/ai-hint
 - Reguły są łatwe do dodania - wystarczy dodać nową regułę do tablicy w kolejności priorytetowej
 - Lokalizacje są łatwe do rozszerzenia - dodaj nowy język do mapy lokalizacji
 - Struktura odpowiedzi jest zgodna z typem `AiHintDto` z `src/types.ts`
-
-
-
-

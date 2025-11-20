@@ -13,7 +13,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
   - `{id}` - UUID inwestycji (wymagany parametr ścieżki)
 - **Headers:**
   - Wymagane: `Authorization: Bearer <JWT>` (Supabase session token)
-  - Opcjonalne: 
+  - Opcjonalne:
     - `Accept-Language` (np. `pl-PL`, `en-US`) - dla lokalizacji komunikatów błędów
     - `X-Request-Id` - identyfikator żądania do korelacji logów
     - `Content-Type: application/json`
@@ -31,7 +31,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
   - `type`: musi być jednym z wartości ENUM: `"etf" | "bond" | "stock" | "cash"` (walidacja zgodna z `asset_type` ENUM w bazie)
   - `amount`: liczba > 0, max 9 999 999 999 999.99 (zgodnie z `numeric(16,2)` w bazie)
   - `acquired_at`: data w formacie ISO YYYY-MM-DD, musi być ≤ `current_date` (nie może być datą przyszłą), walidacja względem czasu bazy danych
-  - `notes`: 
+  - `notes`:
     - Może być `null` lub string
     - Jeśli string: po trim() musi mieć długość 1-1000 znaków (niepusty po usunięciu białych znaków)
     - Jeśli `null` - dozwolone (usuwa notatki)
@@ -47,24 +47,28 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 ### DTOs i Command Modele
 
 1. **`UpdateInvestmentCommand`** (z `src/types.ts`):
+
    ```typescript
-   export type UpdateInvestmentCommand = Partial<CreateInvestmentCommand>
+   export type UpdateInvestmentCommand = Partial<CreateInvestmentCommand>;
    ```
+
    - Częściowa aktualizacja, wszystkie pola opcjonalne
    - Bazuje na `CreateInvestmentCommand`:
      ```typescript
      export type CreateInvestmentCommand = {
-       type: NonNullable<DbInvestmentInsert["type"]>
-       amount: NonNullable<DbInvestmentInsert["amount"]>
-       acquired_at: NonNullable<DbInvestmentInsert["acquired_at"]>
-       notes?: DbInvestmentInsert["notes"]
-     }
+       type: NonNullable<DbInvestmentInsert["type"]>;
+       amount: NonNullable<DbInvestmentInsert["amount"]>;
+       acquired_at: NonNullable<DbInvestmentInsert["acquired_at"]>;
+       notes?: DbInvestmentInsert["notes"];
+     };
      ```
 
 2. **`InvestmentDto`** (z `src/types.ts`):
+
    ```typescript
-   export type InvestmentDto = Omit<DbInvestmentRow, "user_id">
+   export type InvestmentDto = Omit<DbInvestmentRow, "user_id">;
    ```
+
    - DTO odpowiedzi, bez `user_id` (kontekst użytkownika z auth)
    - Zawiera: `id`, `type`, `amount`, `acquired_at`, `notes`, `created_at`, `updated_at`
 
@@ -76,10 +80,10 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
    ```typescript
    export interface ApiError {
      error: {
-       code: "bad_request" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "too_many_requests" | "internal"
-       message: string
-       fields?: Record<string, string>
-     }
+       code: "bad_request" | "unauthorized" | "forbidden" | "not_found" | "conflict" | "too_many_requests" | "internal";
+       message: string;
+       fields?: Record<string, string>;
+     };
    }
    ```
 
@@ -102,7 +106,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
   {
     "id": "ef2a...",
     "type": "etf",
-    "amount": 12000.00,
+    "amount": 12000.0,
     "acquired_at": "2024-11-01",
     "notes": "IKZE - zaktualizowane",
     "created_at": "2024-11-01T10:11:12Z",
@@ -116,6 +120,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 ### Błędy
 
 - **400 Bad Request** - Błędy walidacji:
+
   ```json
   {
     "error": {
@@ -128,6 +133,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
     }
   }
   ```
+
   - Zwracany gdy:
     - Request body jest puste (brak pól do aktualizacji)
     - Nieprawidłowy format JSON
@@ -135,6 +141,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
     - Nieznane pola w body
 
 - **401 Unauthorized** - Brak autoryzacji:
+
   ```json
   {
     "error": {
@@ -143,12 +150,14 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
     }
   }
   ```
+
   - Zwracany gdy:
     - Brak tokena `Authorization`
     - Nieprawidłowy/wygasły token JWT
     - Token nie może być zweryfikowany przez Supabase
 
 - **404 Not Found** - Inwestycja nie znaleziona:
+
   ```json
   {
     "error": {
@@ -157,6 +166,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
     }
   }
   ```
+
   - Zwracany gdy:
     - Inwestycja o podanym `id` nie istnieje
     - Inwestycja istnieje, ale nie należy do aktualnie zalogowanego użytkownika (RLS)
@@ -171,6 +181,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
     }
   }
   ```
+
   - Zwracany gdy:
     - Błąd połączenia z Supabase
     - Nieoczekiwany błąd bazy danych
@@ -195,7 +206,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
           .select("id")
           .eq("id", investmentId)
           .eq("user_id", userId)
-          .single()
+          .single();
         ```
      2. Jeśli brak rekordu lub błąd RLS → zwraca błąd domenowy `InvestmentNotFoundError`
      3. Buduje `DbInvestmentUpdate` z przekazanych pól (whitelist + `updated_at` zostanie zaktualizowane przez trigger):
@@ -208,9 +219,9 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
           .from("investments")
           .update(updatePayload)
           .eq("id", investmentId)
-          .eq("user_id", userId)  // dodatkowa warstwa bezpieczeństwa
+          .eq("user_id", userId) // dodatkowa warstwa bezpieczeństwa
           .select()
-          .single()
+          .single();
         ```
      5. Obsługuje błędy Supabase:
         - `PGRST116` (no rows returned) → `InvestmentNotFoundError`
@@ -287,7 +298,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
    - Timeout zapytania
    - Błąd constraint CHECK (powinien być przechwycony przez walidację, ale jako fallback)
    - Inne nieoczekiwane błędy Supabase
-   - **Obsługa**: 
+   - **Obsługa**:
      - Sprawdź `error.code` z Supabase
      - `PGRST116` (no rows) → `404` (już obsłużone wyżej)
      - Inne → `500` z generycznym komunikatem
@@ -316,7 +327,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
     investmentId: investmentId,
     error: error.message,
     // NIE loguj: amount, notes (dane wrażliwe)
-  })
+  });
   ```
 - **Poziomy logowania**:
   - `error` - błędy 4xx/5xx
@@ -330,7 +341,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 - **Indeksy**: Wykorzystaj istniejące indeksy:
   - `investments_pkey` (PK na `id`) - O(1) dostęp do rekordu
   - `investments_user_id_idx` - przyspiesza filtrowanie po `user_id` (RLS)
-- **Minimalizacja roundtripów**: 
+- **Minimalizacja roundtripów**:
   - Połącz UPDATE z `select().single()` dla zwrócenia wyniku w jednym zapytaniu (zamiast SELECT + UPDATE + SELECT)
   - Walidację przeprowadź przed zapytaniem, by uniknąć zbędnych roundtripów do bazy
 - **Trigger `updated_at`**: Automatyczna aktualizacja `updated_at` przez trigger `investments_updated_at_trigger` (nie wymaga ręcznej aktualizacji w kodzie)
@@ -361,27 +372,31 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 ### Krok 2: Definicja walidacji (Zod)
 
 1. **Utwórz schemat walidacji** w `src/lib/services/investment.service.ts` lub osobnym pliku `src/lib/validators/investment.validator.ts`:
-   ```typescript
-   import { z } from "zod"
-   import type { UpdateInvestmentCommand } from "@/types"
 
-   export const UpdateInvestmentSchema = z.object({
-     type: z.enum(["etf", "bond", "stock", "cash"]).optional(),
-     amount: z.number().positive().max(999999999999999.99).optional(),
-     acquired_at: z.string()
-       .regex(/^\d{4}-\d{2}-\d{2}$/)
-       .refine((date) => {
-         const dateObj = new Date(date)
-         const today = new Date()
-         today.setHours(0, 0, 0, 0)
-         return dateObj <= today
-       }, { message: "acquired_at cannot be a future date" })
-       .optional(),
-     notes: z.string().trim().min(1).max(1000).nullable().optional(),
-   }).refine(
-     (data) => Object.keys(data).length > 0,
-     { message: "At least one field must be provided" }
-   )
+   ```typescript
+   import { z } from "zod";
+   import type { UpdateInvestmentCommand } from "@/types";
+
+   export const UpdateInvestmentSchema = z
+     .object({
+       type: z.enum(["etf", "bond", "stock", "cash"]).optional(),
+       amount: z.number().positive().max(999999999999999.99).optional(),
+       acquired_at: z
+         .string()
+         .regex(/^\d{4}-\d{2}-\d{2}$/)
+         .refine(
+           (date) => {
+             const dateObj = new Date(date);
+             const today = new Date();
+             today.setHours(0, 0, 0, 0);
+             return dateObj <= today;
+           },
+           { message: "acquired_at cannot be a future date" }
+         )
+         .optional(),
+       notes: z.string().trim().min(1).max(1000).nullable().optional(),
+     })
+     .refine((data) => Object.keys(data).length > 0, { message: "At least one field must be provided" });
    ```
 
 2. **Helper konwersji**: Funkcja mapująca wynik Zod do `UpdateInvestmentCommand`
@@ -389,19 +404,23 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 ### Krok 3: Implementacja serwisu
 
 1. **Zdefiniuj niestandardowe błędy** w `src/lib/services/investment.service.ts`:
+
    ```typescript
    export class InvestmentNotFoundError extends Error {
      constructor(investmentId: string) {
-       super(`Investment not found: ${investmentId}`)
-       this.name = "InvestmentNotFoundError"
-    }
+       super(`Investment not found: ${investmentId}`);
+       this.name = "InvestmentNotFoundError";
+     }
    }
 
    export class DatabaseError extends Error {
-     constructor(message: string, public originalError?: unknown) {
-       super(message)
-       this.name = "DatabaseError"
-    }
+     constructor(
+       message: string,
+       public originalError?: unknown
+     ) {
+       super(message);
+       this.name = "DatabaseError";
+     }
    }
    ```
 
@@ -421,8 +440,9 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 ### Krok 4: Implementacja handlera PATCH
 
 1. **W `src/pages/api/v1/investments/[id].ts`**:
+
    ```typescript
-   export const prerender = false
+   export const prerender = false;
 
    export async function PATCH(context: APIContext) {
      // 1. Autoryzacja
@@ -483,6 +503,7 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
 ### Krok 7: Weryfikacja lokalna
 
 1. **Lint i formatowanie**:
+
    ```bash
    pnpm lint
    pnpm lint:fix
@@ -523,7 +544,3 @@ Endpoint obsługuje częściowe aktualizacje (partial update), co oznacza, że k
    - [ ] Testy przechodzą
    - [ ] Lint bez błędów
    - [ ] Zgodność z regułami implementacji (backend.mdc, astro.mdc)
-
-
-
-

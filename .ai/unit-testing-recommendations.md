@@ -9,12 +9,14 @@ Dokumentacja wskazująca, które elementy projektu warto przetestować z wykorzy
 #### 1. `src/lib/utils/fire-calculations.ts`
 
 **Dlaczego:**
+
 - **Czyste funkcje** - łatwe do testowania, brak zależności zewnętrznych
 - **Krytyczna logika biznesowa** - błędy w obliczeniach FIRE mogą prowadzić do błędnych decyzji finansowych
 - **Wiele przypadków brzegowych** - wymaga testowania edge cases (zero, wartości ujemne, dzielenie przez zero)
 - **Deterministyczne** - te same wejścia zawsze dają te same wyjścia
 
 **Co testować:**
+
 ```typescript
 // calculateAge()
 - Poprawne obliczanie wieku z dokładnością do miesięcy
@@ -35,18 +37,19 @@ Dokumentacja wskazująca, które elementy projektu warto przetestować z wykorzy
 ```
 
 **Przykładowe testy:**
+
 ```typescript
-describe('calculateYearsToFire', () => {
-  it('should calculate years correctly for standard scenario', () => {
+describe("calculateYearsToFire", () => {
+  it("should calculate years correctly for standard scenario", () => {
     const result = calculateYearsToFire(1000000, 100000, 7);
     expect(result).toBeCloseTo(33.8, 1);
   });
 
-  it('should return null when investedTotal is 0', () => {
+  it("should return null when investedTotal is 0", () => {
     expect(calculateYearsToFire(1000000, 0, 7)).toBeNull();
   });
 
-  it('should return null when expectedReturnPct is -100', () => {
+  it("should return null when expectedReturnPct is -100", () => {
     expect(calculateYearsToFire(1000000, 100000, -100)).toBeNull();
   });
 });
@@ -55,12 +58,14 @@ describe('calculateYearsToFire', () => {
 #### 2. `src/lib/utils/formatting.ts`
 
 **Dlaczego:**
+
 - **Czyste funkcje** - łatwe do testowania
 - **Krytyczne dla UX** - błędy formatowania psują doświadczenie użytkownika
 - **Lokalizacja** - wymaga testowania formatowania polskiego (PLN, przecinki, spacje)
 - **Różne przypadki** - duże liczby, małe liczby, zera, wartości ujemne
 
 **Co testować:**
+
 ```typescript
 // formatCurrency()
 - Formatowanie polskich złotych (PLN)
@@ -96,12 +101,14 @@ describe('calculateYearsToFire', () => {
 #### 3. `src/lib/validators/profile.validator.ts`
 
 **Dlaczego:**
+
 - **Bezpieczeństwo danych** - walidacja zapobiega wprowadzeniu nieprawidłowych danych
 - **Zod schemas** - łatwe do testowania, deterministyczne
 - **Wiele reguł walidacji** - wymaga testowania każdej reguły osobno
 - **Edge cases** - wartości graniczne, formaty dat
 
 **Co testować:**
+
 ```typescript
 // validateCreateProfile()
 ✅ Poprawne dane (happy path)
@@ -124,11 +131,13 @@ describe('calculateYearsToFire', () => {
 #### 4. `src/lib/validators/investment.validator.ts`
 
 **Dlaczego:**
+
 - **Bezpieczeństwo danych** - podobnie jak profile validator
 - **Złożona logika** - transformacje, preprocessory, superRefine
 - **Różne scenariusze** - create vs update, query params
 
 **Co testować:**
+
 ```typescript
 // validateCreateInvestment()
 ✅ Poprawne dane (happy path)
@@ -154,11 +163,13 @@ describe('calculateYearsToFire', () => {
 #### 5. `src/lib/utils/error-mapper.ts`
 
 **Dlaczego:**
+
 - **Mapowanie błędów API** - krytyczne dla UX, użytkownik musi widzieć zrozumiałe komunikaty
 - **Czysta funkcja** - łatwa do testowania
 - **Pokrycie wszystkich kodów błędów** - wymaga testowania każdego kodu
 
 **Co testować:**
+
 ```typescript
 // mapApiErrorCode()
 ✅ Wszystkie kody błędów z investmentErrorMessages
@@ -184,11 +195,13 @@ describe('calculateYearsToFire', () => {
 #### 6. `src/lib/hooks/useOnboardingForm.ts`
 
 **Dlaczego:**
+
 - **Logika walidacji po stronie klienta** - ważna dla UX (natychmiastowa walidacja)
 - **Duplikacja logiki** - walidacja jest również po stronie serwera, testy zapewniają spójność
 - **Wiele przypadków** - wymaga testowania wszystkich reguł walidacji
 
 **Co testować:**
+
 ```typescript
 // validateProfileForm()
 ✅ Poprawne dane (happy path)
@@ -218,11 +231,13 @@ describe('calculateYearsToFire', () => {
 #### 7. Proste komponenty prezentacyjne
 
 **Dlaczego ograniczone testowanie:**
+
 - **Komponenty Shadcn/UI** - już przetestowane przez społeczność
 - **Czyste komponenty prezentacyjne** - mało logiki biznesowej
 - **Wysoki koszt utrzymania** - testy UI są kruche i wymagają częstych aktualizacji
 
 **Co warto testować:**
+
 ```typescript
 // Tylko komponenty z logiką biznesową:
 
@@ -244,11 +259,13 @@ describe('calculateYearsToFire', () => {
 #### 8. Komponenty złożone (Dashboard, Onboarding)
 
 **Dlaczego ograniczone testowanie:**
+
 - **Wysoka złożoność** - wymagają mockowania wielu zależności
 - **Lepsze testy integracyjne** - E2E testy lepiej sprawdzają przepływ użytkownika
 - **Koszt vs korzyść** - unit testy są drogie w utrzymaniu dla złożonych komponentów
 
 **Co warto testować:**
+
 ```typescript
 // Tylko krytyczna logika:
 
@@ -271,11 +288,13 @@ describe('calculateYearsToFire', () => {
 #### 9. `src/lib/utils/api-error-handler.ts`
 
 **Dlaczego:**
+
 - **Logika routingu błędów** - decyduje, które błędy są obsługiwane globalnie
 - **Czysta funkcja** - łatwa do testowania
 - **Krytyczna dla UX** - błędy muszą być obsługiwane poprawnie
 
 **Co testować:**
+
 ```typescript
 // shouldHandleGlobally()
 ✅ 401 Unauthorized → true
@@ -311,15 +330,18 @@ describe('calculateYearsToFire', () => {
 ## 🛠️ Rekomendowane narzędzia
 
 ### Dla funkcji czystych (Priorytet 1-2):
+
 - **Vitest** lub **Jest** - szybkie, łatwe w konfiguracji
 - **TypeScript** - type safety w testach
 
 ### Dla hooków i komponentów (Priorytet 3-4):
+
 - **Vitest** + **@testing-library/react** - testowanie React
 - **@testing-library/react-hooks** - testowanie hooków
 - **@testing-library/user-event** - symulacja interakcji użytkownika
 
 ### Dla testów integracyjnych:
+
 - **Playwright** lub **Cypress** - E2E testy dla złożonych przepływów
 
 ---
@@ -354,9 +376,9 @@ src/
 ## 🎯 Metryki sukcesu
 
 **Cel pokrycia testami:**
+
 - **Funkcje czyste (Priorytet 1-2):** 90-100% pokrycia
 - **Hooks (Priorytet 3):** 70-80% pokrycia
 - **Komponenty (Priorytet 4):** 50-60% pokrycia (tylko krytyczna logika)
 
 **Zasada:** Testuj to, co jest **łatwe do testowania** i **krytyczne dla działania aplikacji**.
-

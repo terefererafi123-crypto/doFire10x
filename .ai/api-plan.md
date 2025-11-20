@@ -4,15 +4,15 @@
 
 ## 1. Resources
 
-| Resource | Backing DB object | Description |
-|---|---|---|
-| `profiles` | table `public.profiles` | Per-user FIRE inputs (monthly expense, withdrawal rate, expected return, birth date). 1:1 with `auth.users`. |
-| `investments` | table `public.investments` | User’s investment ledger (type, amount, acquired_at, notes). 1:N with `auth.users`. |
-| `portfolio-agg` | view `public.v_investments_agg` | Aggregated totals and percentage shares by asset type for each user. Read-only. |
-| `metrics` | computed at runtime | FIRE calculations based on `profiles` + `v_investments_agg`. |
-| `ai-hint` | computed at runtime | Deterministic hint derived from `v_investments_agg` shares, per PRD rules. |
-| `auth/session` | Supabase Auth | Magic-link login handled on client; server trusts Supabase JWT. |
-| `health` | — | Liveness and minimal environment info. |
+| Resource        | Backing DB object               | Description                                                                                                  |
+| --------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `profiles`      | table `public.profiles`         | Per-user FIRE inputs (monthly expense, withdrawal rate, expected return, birth date). 1:1 with `auth.users`. |
+| `investments`   | table `public.investments`      | User’s investment ledger (type, amount, acquired_at, notes). 1:N with `auth.users`.                          |
+| `portfolio-agg` | view `public.v_investments_agg` | Aggregated totals and percentage shares by asset type for each user. Read-only.                              |
+| `metrics`       | computed at runtime             | FIRE calculations based on `profiles` + `v_investments_agg`.                                                 |
+| `ai-hint`       | computed at runtime             | Deterministic hint derived from `v_investments_agg` shares, per PRD rules.                                   |
+| `auth/session`  | Supabase Auth                   | Magic-link login handled on client; server trusts Supabase JWT.                                              |
+| `health`        | —                               | Liveness and minimal environment info.                                                                       |
 
 > **Notes:** All user-scoped resources are implicitly filtered by `auth.uid()` due to RLS. Clients NEVER send `user_id` in payloads.
 
@@ -21,37 +21,43 @@
 ### 2.1 Profiles
 
 #### GET `/v1/me/profile`
+
 - **Description:** Fetch the caller’s profile.
 - **Auth:** Bearer JWT from Supabase (`authenticated` role). RLS `user_id = auth.uid()`.
 - **Response 200 JSON:**
+
 ```json
 {
   "id": "c0a1dba8-...",
   "user_id": "3b9c...",
-  "monthly_expense": 4500.00,
-  "withdrawal_rate_pct": 4.00,
-  "expected_return_pct": 7.00,
+  "monthly_expense": 4500.0,
+  "withdrawal_rate_pct": 4.0,
+  "expected_return_pct": 7.0,
   "birth_date": "1992-05-12",
   "created_at": "2025-01-02T09:00:12Z",
   "updated_at": "2025-01-02T09:00:12Z"
 }
 ```
+
 - **Errors:**
   - `401 unauthorized` (missing/invalid token)
   - `404 not_found` (no profile yet)
 
 #### POST `/v1/me/profile`
+
 - **Description:** Create profile for the caller (idempotent – upsert blocked if exists).
 - **Request JSON:**
+
 ```json
 {
-  "monthly_expense": 4500.00,
-  "withdrawal_rate_pct": 4.00,
-  "expected_return_pct": 7.00,
+  "monthly_expense": 4500.0,
+  "withdrawal_rate_pct": 4.0,
+  "expected_return_pct": 7.0,
   "birth_date": "1992-05-12"
 }
 ```
-- **Validation:** 
+
+- **Validation:**
   - `monthly_expense >= 0`
   - `0 <= withdrawal_rate_pct <= 100`
   - `-100 <= expected_return_pct <= 1000`
@@ -62,16 +68,19 @@
   - `400 bad_request` (validation error with field-wise messages)
 
 #### PATCH `/v1/me/profile`
+
 - **Description:** Partial update of the caller’s profile.
 - **Request JSON (any subset):**
+
 ```json
 {
-  "monthly_expense": 5200.00,
-  "withdrawal_rate_pct": 3.80,
-  "expected_return_pct": 6.50,
+  "monthly_expense": 5200.0,
+  "withdrawal_rate_pct": 3.8,
+  "expected_return_pct": 6.5,
   "birth_date": "1991-03-01"
 }
 ```
+
 - **Responses:**
   - `200 ok` → updated profile
   - `404 not_found` (no profile yet)
@@ -80,22 +89,24 @@
 ### 2.2 Investments
 
 #### GET `/v1/investments`
+
 - **Description:** List investments for the caller with pagination, filtering, and sorting.
-- **Query params:**  
-  - `limit` (int, 1–200; default 25)  
-  - `cursor` (string; opaque next-cursor)  
-  - `type` (`etf|bond|stock|cash`, optional)  
-  - `acquired_at_from` (`YYYY-MM-DD`, optional)  
-  - `acquired_at_to` (`YYYY-MM-DD`, optional)  
-  - `sort` (one of: `acquired_at_desc`*default*, `acquired_at_asc`, `amount_desc`, `amount_asc`)
+- **Query params:**
+  - `limit` (int, 1–200; default 25)
+  - `cursor` (string; opaque next-cursor)
+  - `type` (`etf|bond|stock|cash`, optional)
+  - `acquired_at_from` (`YYYY-MM-DD`, optional)
+  - `acquired_at_to` (`YYYY-MM-DD`, optional)
+  - `sort` (one of: `acquired_at_desc`_default_, `acquired_at_asc`, `amount_desc`, `amount_asc`)
 - **Response 200 JSON:**
+
 ```json
 {
   "items": [
     {
       "id": "ef2a...",
       "type": "etf",
-      "amount": 12000.00,
+      "amount": 12000.0,
       "acquired_at": "2024-11-01",
       "notes": "IKZE",
       "created_at": "2024-11-01T10:11:12Z",
@@ -105,19 +116,23 @@
   "next_cursor": "eyJvZmZzZXQiOjI1fQ=="
 }
 ```
+
 - **Errors:** `401 unauthorized`
 
 #### POST `/v1/investments`
+
 - **Description:** Create a new investment.
 - **Request JSON:**
+
 ```json
 {
   "type": "bond",
-  "amount": 5000.00,
+  "amount": 5000.0,
   "acquired_at": "2025-01-10",
   "notes": "COI 4-letnie"
 }
 ```
+
 - **Validation:**
   - `type` in ENUM (`etf|bond|stock|cash`)
   - `amount > 0`
@@ -128,62 +143,70 @@
   - `400 bad_request` (field-wise errors)
 
 #### GET `/v1/investments/{id}`
+
 - **Description:** Fetch single investment by id (must belong to caller).
 - **Responses:**
   - `200 ok` → investment JSON
   - `404 not_found`
 
 #### PATCH `/v1/investments/{id}`
+
 - **Description:** Partial update (type/amount/acquired_at/notes).
 - **Validation:** same as POST.
 - **Responses:** `200 ok` or `404 not_found` or `400 bad_request`.
 
 #### DELETE `/v1/investments/{id}`
+
 - **Description:** Hard delete (as per PRD). Confirmation is a UI concern.
 - **Responses:** `204 no_content` or `404 not_found`.
 
 ### 2.3 Portfolio Aggregation (read-only)
 
 #### GET `/v1/me/portfolio-agg`
+
 - **Description:** Fetch aggregated totals and shares for the caller (from `v_investments_agg`). Returns zeroed values if the user has no investments.
 - **Response 200 JSON:**
+
 ```json
 {
   "user_id": "3b9c...",
-  "total_amount": 34000.00,
-  "sum_stock": 12000.00,
-  "sum_etf": 14000.00,
-  "sum_bond": 6000.00,
-  "sum_cash": 2000.00,
+  "total_amount": 34000.0,
+  "sum_stock": 12000.0,
+  "sum_etf": 14000.0,
+  "sum_bond": 6000.0,
+  "sum_cash": 2000.0,
   "share_stock": 35.29,
   "share_etf": 41.18,
   "share_bond": 17.65,
   "share_cash": 5.88
 }
 ```
+
 - **Errors:** `401 unauthorized`
 
 ### 2.4 FIRE Metrics (runtime compute)
 
 #### GET `/v1/me/metrics`
-- **Description:** Compute FIRE metrics from the caller’s `profile` + `portfolio-agg` at **request time** (no persistence). Supports *what-if* overrides via query.
-- **Query params (optional what‑if):**  
-  - `monthly_expense` (number)  
-  - `withdrawal_rate_pct` (number)  
-  - `expected_return_pct` (number)  
-  - `invested_total` (number – overrides aggregated total)  
+
+- **Description:** Compute FIRE metrics from the caller’s `profile` + `portfolio-agg` at **request time** (no persistence). Supports _what-if_ overrides via query.
+- **Query params (optional what‑if):**
+  - `monthly_expense` (number)
+  - `withdrawal_rate_pct` (number)
+  - `expected_return_pct` (number)
+  - `invested_total` (number – overrides aggregated total)
 - **Response 200 JSON:**
+
 ```json
 {
   "inputs": {
-    "monthly_expense": 4500.00,
-    "withdrawal_rate_pct": 4.00,
-    "expected_return_pct": 7.00,
-    "invested_total": 34000.00
+    "monthly_expense": 4500.0,
+    "withdrawal_rate_pct": 4.0,
+    "expected_return_pct": 7.0,
+    "invested_total": 34000.0
   },
   "derived": {
-    "annual_expense": 54000.00,
-    "fire_target": 1350000.00,
+    "annual_expense": 54000.0,
+    "fire_target": 1350000.0,
     "fire_progress": 0.0252
   },
   "time_to_fire": {
@@ -194,6 +217,7 @@
   }
 }
 ```
+
 - **Edge cases & errors:**
   - If `invested_total <= 0` → `years_to_fire` is `null`, include `"note": "Years to FIRE undefined for zero investments."`
   - If `expected_return_pct <= -100` → `400 bad_request`
@@ -202,8 +226,10 @@
 ### 2.5 AI Hint (deterministic)
 
 #### GET `/v1/me/ai-hint`
+
 - **Description:** Returns a concise portfolio hint based on PRD rules using shares from `/portfolio-agg`.
 - **Response 200 JSON:**
+
 ```json
 {
   "hint": "High risk — large share of stocks and ETFs.",
@@ -216,6 +242,7 @@
   }
 }
 ```
+
 - **Localization:** `Accept-Language` respected (`pl-PL` -> Polish strings).
 - **Errors:** `401 unauthorized`
 
@@ -224,18 +251,23 @@
 > **Client-first.** Login via Supabase magic link is handled on the frontend. The backend trusts Supabase JWT and never issues tokens.
 
 #### GET `/v1/auth/session`
+
 - **Description:** Echo endpoint to verify token and return user id and roles.
 - **Response 200 JSON:**
+
 ```json
 { "user_id": "3b9c...", "roles": ["authenticated"], "iat": 1731172800 }
 ```
+
 - **Errors:** `401 unauthorized`
 
 ### 2.7 Health
 
 #### GET `/v1/health`
+
 - **Description:** Liveness probe and minimal diagnostics.
 - **Response 200 JSON:**
+
 ```json
 { "status": "ok", "time": "2025-11-10T10:00:00Z", "db": "reachable" }
 ```
@@ -247,9 +279,9 @@
 - **Transport:** HTTPS only; reject plain HTTP.
 - **Scheme:** `Authorization: Bearer <Supabase-JWT>` validated by Supabase middleware (Edge Function) or server using JWKS.
 - **RLS:** All data paths rely on Postgres Row Level Security: `USING (user_id = auth.uid())` for `SELECT`, `WITH CHECK (user_id = auth.uid())` for `INSERT/UPDATE/DELETE`.
-- **Roles:** 
-  - `anon`: no table/view access.  
-  - `authenticated`: full CRUD on `profiles`/`investments` under RLS; SELECT `v_investments_agg`.  
+- **Roles:**
+  - `anon`: no table/view access.
+  - `authenticated`: full CRUD on `profiles`/`investments` under RLS; SELECT `v_investments_agg`.
   - `service_role`: unrestricted (backend only; never exposed to browser).
 - **Idempotency:** Support `Idempotency-Key` header for `POST /investments` and `POST /me/profile` to avoid duplicates.
 - **CORS:** Restrict to known origins (frontend).
@@ -263,12 +295,14 @@
 ### 4.1 Field Validation (mirrors DB CHECKs)
 
 **profiles**
+
 - `monthly_expense`: number, `>= 0`.
 - `withdrawal_rate_pct`: number, `0–100` inclusive.
 - `expected_return_pct`: number, `-100–1000` inclusive; reject `<= -100` for metrics division edge.
 - `birth_date`: ISO date in past and not earlier than 120 years.
 
 **investments**
+
 - `type`: enum in `["etf","bond","stock","cash"]`.
 - `amount`: number, `> 0`.
 - `acquired_at`: ISO date, `<= today` (use DB `current_date` as source of truth).
@@ -292,20 +326,28 @@
   - Else if `share_stock + share_etf < 40` → “Low equity — limited growth potential.”
 - **Pagination model:** cursor-based; `next_cursor` encodes `(last_sort_value, last_id)` to ensure stable ordering.
 - **Sorting:** default `acquired_at DESC` using `investments_acquired_at_idx` and `investments_user_id_idx` for RLS-filtered scans.
-- **Error contract:** 
+- **Error contract:**
+
 ```json
-{ "error": { "code": "bad_request", "message": "Kwota musi być większa od zera", "fields": { "amount": "must_be_gt_zero" } } }
+{
+  "error": {
+    "code": "bad_request",
+    "message": "Kwota musi być większa od zera",
+    "fields": { "amount": "must_be_gt_zero" }
+  }
+}
 ```
-  - Messages localized via `Accept-Language` (fallback English).
+
+- Messages localized via `Accept-Language` (fallback English).
 
 ---
 
 ## 5. Performance & Security Considerations
 
-- **Indices leveraged:**  
-  - `investments_user_id_idx` (RLS filtered lookups)  
-  - `investments_acquired_at_idx` (date filters/sorts)  
-  - `investments_type_idx` (type filters)  
+- **Indices leveraged:**
+  - `investments_user_id_idx` (RLS filtered lookups)
+  - `investments_acquired_at_idx` (date filters/sorts)
+  - `investments_type_idx` (type filters)
   - `profiles_user_id_idx` (single-row retrieval)
 - **N+1 avoidance:** Aggregations via single query to `v_investments_agg`.
 - **HTTP caching:** `GET` endpoints emit `ETag`/`Last-Modified`. Clients may use `If-None-Match` for `/me/profile`, `/investments` (w/o cursor filters), `/me/portfolio-agg`, `/me/ai-hint`, `/me/metrics` (for identical inputs). Avoid caching where inputs vary.
@@ -319,7 +361,7 @@
 
 ## 6. OpenAPI Sketch (concise)
 
-- OpenAPI 3.1 document can be derived from the above; tags: `Profile`, `Investments`, `Portfolio`, `Metrics`, `AI`, `Auth`, `Health`.  
+- OpenAPI 3.1 document can be derived from the above; tags: `Profile`, `Investments`, `Portfolio`, `Metrics`, `AI`, `Auth`, `Health`.
 - Schemas: `Profile`, `Investment`, `PortfolioAgg`, `Metrics`, `AIHint`, `Error`.
 
 ---
@@ -327,20 +369,35 @@
 ## 7. Examples
 
 ### Create investment
+
 `POST /v1/investments`
+
 ```http
 Idempotency-Key: 2b4f3b8a-5b9a-4d5a-9b3b-9a12f8d0e001
 ```
+
 Request
+
 ```json
-{ "type": "etf", "amount": 12000.00, "acquired_at": "2024-11-01", "notes": "IKZE" }
+{ "type": "etf", "amount": 12000.0, "acquired_at": "2024-11-01", "notes": "IKZE" }
 ```
+
 Response 201
+
 ```json
-{ "id":"ef2a...", "type":"etf", "amount":12000.00, "acquired_at":"2024-11-01", "notes":"IKZE", "created_at":"...", "updated_at":"..." }
+{
+  "id": "ef2a...",
+  "type": "etf",
+  "amount": 12000.0,
+  "acquired_at": "2024-11-01",
+  "notes": "IKZE",
+  "created_at": "...",
+  "updated_at": "..."
+}
 ```
 
 ### Recalculate metrics (what-if)
+
 `GET /v1/me/metrics?monthly_expense=5000&withdrawal_rate_pct=3.5&expected_return_pct=6`
 
 ---

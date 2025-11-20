@@ -5,6 +5,7 @@
 Widok onboarding jest kreatorem 2-krokowym, który umożliwia nowemu użytkownikowi skonfigurowanie profilu finansowego i dodanie pierwszej inwestycji. Widok prowadzi użytkownika przez proces inicjalizacji konta, zapewniając płynne przejście do dashboardu z pełnymi danymi.
 
 **Główne cele:**
+
 - Umożliwienie definicji profilu finansowego (krok 1)
 - Umożliwienie dodania pierwszej inwestycji (krok 2)
 - Zapewnienie walidacji zgodnej z regułami API
@@ -18,6 +19,7 @@ Widok onboarding jest kreatorem 2-krokowym, który umożliwia nowemu użytkownik
 **Plik:** `src/pages/onboarding.astro`
 
 **Uwagi:**
+
 - Widok wymaga autoryzacji (użytkownik musi być zalogowany)
 - W przypadku błędu 404 profilu z API, użytkownik powinien być automatycznie przekierowany do tego widoku
 - Po pomyślnym zakończeniu obu kroków, użytkownik jest przekierowywany do `/dashboard`
@@ -56,20 +58,25 @@ OnboardingPage (Astro)
 **Opis:** Główny plik strony Astro, który renderuje layout i inicjalizuje komponent React OnboardingContainer.
 
 **Główne elementy:**
+
 - Layout wrapper (używa Layout.astro)
 - Import i renderowanie OnboardingContainer jako komponentu React
 - Przekazanie Supabase client z context.locals
 
 **Obsługiwane interakcje:**
+
 - Brak bezpośrednich interakcji (statyczny wrapper)
 
 **Obsługiwana walidacja:**
+
 - Brak walidacji na poziomie Astro
 
 **Typy:**
+
 - Brak specyficznych typów (używa standardowych typów Astro)
 
 **Propsy:**
+
 - Brak propsów (komponent Astro)
 
 ### OnboardingContainer (React)
@@ -77,6 +84,7 @@ OnboardingPage (Astro)
 **Opis:** Główny komponent React zarządzający stanem całego procesu onboarding. Kontroluje aktualny krok, dane formularzy, walidację i komunikację z API.
 
 **Główne elementy:**
+
 - State management dla aktualnego kroku (1 lub 2)
 - State management dla danych formularzy (profileData, investmentData)
 - State management dla błędów walidacji i API
@@ -87,6 +95,7 @@ OnboardingPage (Astro)
 - Obsługa przekierowania po zakończeniu
 
 **Obsługiwane interakcje:**
+
 - Przejście do następnego kroku (po walidacji i zapisaniu)
 - Powrót do poprzedniego kroku
 - Zapisanie danych profilu (krok 1)
@@ -94,17 +103,20 @@ OnboardingPage (Astro)
 - Wyświetlanie błędów walidacji i API
 
 **Obsługiwana walidacja:**
+
 - Walidacja przed przejściem do następnego kroku
 - Walidacja przed zapisaniem danych
 - Wyświetlanie błędów walidacji z API
 
 **Typy:**
+
 - `OnboardingStep`: `1 | 2`
 - `ProfileFormData`: `CreateProfileCommand`
 - `InvestmentFormData`: `CreateInvestmentCommand`
 - `OnboardingState`: obiekt zawierający wszystkie stany
 
 **Propsy:**
+
 - `supabaseClient`: `SupabaseClient<Database>` (wymagany)
 
 ### Stepper (React)
@@ -112,20 +124,25 @@ OnboardingPage (Astro)
 **Opis:** Komponent wyświetlający pasek postępu i aktualny krok w procesie onboarding.
 
 **Główne elementy:**
+
 - Wizualny pasek postępu (progres bar)
 - Wskaźnik aktualnego kroku (np. "Krok 1/2", "Krok 2/2")
 - Wizualne oznaczenie ukończonych kroków
 
 **Obsługiwane interakcje:**
+
 - Brak interakcji (tylko wyświetlanie)
 
 **Obsługiwana walidacja:**
+
 - Brak walidacji
 
 **Typy:**
+
 - `StepperProps`: `{ currentStep: OnboardingStep; totalSteps: number }`
 
 **Propsy:**
+
 - `currentStep`: `OnboardingStep` (wymagany)
 - `totalSteps`: `number` (opcjonalny, domyślnie 2)
 
@@ -134,6 +151,7 @@ OnboardingPage (Astro)
 **Opis:** Formularz do wprowadzania danych profilu finansowego (krok 1). Zawiera pola: monthly_expense, withdrawal_rate_pct, expected_return_pct, birth_date.
 
 **Główne elementy:**
+
 - Input dla `monthly_expense` (number, >= 0)
 - Input dla `withdrawal_rate_pct` (number, 0-100)
 - Input dla `expected_return_pct` (number, -100 do 1000)
@@ -142,21 +160,25 @@ OnboardingPage (Astro)
 - Oznaczenia pól wymaganych (gwiazdka)
 
 **Obsługiwane interakcje:**
+
 - Wprowadzanie danych w polach formularza
 - Walidacja w czasie rzeczywistym (onBlur lub onChange)
 - Wyświetlanie błędów walidacji
 
 **Obsługiwana walidacja:**
+
 - `monthly_expense`: wymagane, >= 0, liczba skończona
 - `withdrawal_rate_pct`: wymagane, 0-100, liczba skończona
 - `expected_return_pct`: wymagane, -100 do 1000, liczba skończona
 - `birth_date`: opcjonalne, format YYYY-MM-DD, data w przeszłości, nie starsza niż 120 lat
 
 **Typy:**
+
 - `ProfileFormData`: `CreateProfileCommand`
 - `ProfileFormErrors`: `Record<string, string>`
 
 **Propsy:**
+
 - `data`: `ProfileFormData` (wymagany)
 - `errors`: `ProfileFormErrors` (wymagany)
 - `onChange`: `(field: keyof ProfileFormData, value: unknown) => void` (wymagany)
@@ -167,6 +189,7 @@ OnboardingPage (Astro)
 **Opis:** Formularz do wprowadzania danych pierwszej inwestycji (krok 2). Zawiera pola: type, amount, acquired_at, notes (opcjonalne).
 
 **Główne elementy:**
+
 - Select dla `type` (enum: etf, bond, stock, cash)
 - Input dla `amount` (number, > 0)
 - Input dla `acquired_at` (date picker, ISO format YYYY-MM-DD, <= dziś)
@@ -176,21 +199,25 @@ OnboardingPage (Astro)
 - Oznaczenie pola `notes` jako opcjonalne
 
 **Obsługiwane interakcje:**
+
 - Wprowadzanie danych w polach formularza
 - Walidacja w czasie rzeczywistym (onBlur lub onChange)
 - Wyświetlanie błędów walidacji
 
 **Obsługiwana walidacja:**
+
 - `type`: wymagane, enum (etf, bond, stock, cash)
 - `amount`: wymagane, > 0, liczba skończona, max 999999999999.99
 - `acquired_at`: wymagane, format YYYY-MM-DD, data <= dziś
 - `notes`: opcjonalne, 1-1000 znaków po trim, lub null
 
 **Typy:**
+
 - `InvestmentFormData`: `CreateInvestmentCommand`
 - `InvestmentFormErrors`: `Record<string, string>`
 
 **Propsy:**
+
 - `data`: `InvestmentFormData` (wymagany)
 - `errors`: `InvestmentFormErrors` (wymagany)
 - `onChange`: `(field: keyof InvestmentFormData, value: unknown) => void` (wymagany)
@@ -201,23 +228,28 @@ OnboardingPage (Astro)
 **Opis:** Komponent zawierający przyciski nawigacji między krokami.
 
 **Główne elementy:**
+
 - SecondaryButton "Wstecz" (widoczny tylko w kroku 2)
 - PrimaryButton "Dalej" (krok 1) lub "Zakończ i przejdź do dashboardu" (krok 2)
 - Stan disabled dla przycisków podczas ładowania
 
 **Obsługiwane interakcje:**
+
 - Kliknięcie "Wstecz" - powrót do kroku 1
 - Kliknięcie "Dalej" - walidacja i zapisanie profilu, przejście do kroku 2
 - Kliknięcie "Zakończ i przejdź do dashboardu" - walidacja, zapisanie inwestycji, przekierowanie
 
 **Obsługiwana walidacja:**
+
 - Przyciski są disabled podczas ładowania
 - Przycisk "Dalej" jest disabled jeśli formularz jest nieprawidłowy
 
 **Typy:**
+
 - `NavigationButtonsProps`: `{ currentStep: OnboardingStep; isLoading: boolean; onBack: () => void; onNext: () => void; isFormValid: boolean }`
 
 **Propsy:**
+
 - `currentStep`: `OnboardingStep` (wymagany)
 - `isLoading`: `boolean` (wymagany)
 - `onBack`: `() => void` (wymagany)
@@ -229,22 +261,27 @@ OnboardingPage (Astro)
 **Opis:** Komponent do wyświetlania komunikatów błędów z API (400, 409, 401, 500).
 
 **Główne elementy:**
+
 - Toast notification z komunikatem błędu
 - Automatyczne ukrywanie po określonym czasie
 - Różne style dla różnych typów błędów (error, warning)
 
 **Obsługiwane interakcje:**
+
 - Wyświetlanie komunikatu błędu
 - Ręczne zamknięcie (przycisk X)
 - Automatyczne zamknięcie po czasie
 
 **Obsługiwana walidacja:**
+
 - Brak walidacji
 
 **Typy:**
+
 - `ToastProps`: `{ message: string; type: 'error' | 'warning' | 'success'; onClose: () => void }`
 
 **Propsy:**
+
 - `message`: `string` (wymagany)
 - `type`: `'error' | 'warning' | 'success'` (wymagany)
 - `onClose`: `() => void` (wymagany)
@@ -288,7 +325,7 @@ interface ProfileFormViewModel {
     required: true;
     label: string;
     placeholder: string;
-    type: 'number';
+    type: "number";
     min: 0;
     step: 0.01;
   };
@@ -298,7 +335,7 @@ interface ProfileFormViewModel {
     required: true;
     label: string;
     placeholder: string;
-    type: 'number';
+    type: "number";
     min: 0;
     max: 100;
     step: 0.01;
@@ -309,7 +346,7 @@ interface ProfileFormViewModel {
     required: true;
     label: string;
     placeholder: string;
-    type: 'number';
+    type: "number";
     min: -100;
     max: 1000;
     step: 0.01;
@@ -320,7 +357,7 @@ interface ProfileFormViewModel {
     required: false;
     label: string;
     placeholder: string;
-    type: 'date';
+    type: "date";
     max: string; // dzisiejsza data
     min: string; // data sprzed 120 lat
   };
@@ -341,7 +378,7 @@ interface InvestmentFormViewModel {
     required: true;
     label: string;
     placeholder: string;
-    type: 'number';
+    type: "number";
     min: 0.01;
     step: 0.01;
     max: 999999999999.99;
@@ -352,7 +389,7 @@ interface InvestmentFormViewModel {
     required: true;
     label: string;
     placeholder: string;
-    type: 'date';
+    type: "date";
     max: string; // dzisiejsza data
   };
   notes: {
@@ -361,7 +398,7 @@ interface InvestmentFormViewModel {
     required: false;
     label: string;
     placeholder: string;
-    type: 'textarea';
+    type: "textarea";
     maxLength: 1000;
     rows: 3;
   };
@@ -371,6 +408,7 @@ interface InvestmentFormViewModel {
 ### Typy dla API
 
 Widok używa następujących typów z `src/types.ts`:
+
 - `CreateProfileCommand` - dla danych profilu
 - `CreateInvestmentCommand` - dla danych inwestycji
 - `ProfileDto` - dla odpowiedzi z API (POST /v1/me/profile)
@@ -393,9 +431,9 @@ const [profileData, setProfileData] = useState<ProfileFormData>({
   birth_date: undefined,
 });
 const [investmentData, setInvestmentData] = useState<InvestmentFormData>({
-  type: 'etf',
+  type: "etf",
   amount: 0,
-  acquired_at: new Date().toISOString().split('T')[0],
+  acquired_at: new Date().toISOString().split("T")[0],
   notes: undefined,
 });
 const [profileErrors, setProfileErrors] = useState<ProfileFormErrors>({});
@@ -413,16 +451,16 @@ function useOnboardingForm() {
   // Walidacja formularza profilu
   const validateProfileForm = useCallback((data: ProfileFormData): ProfileFormErrors => {
     const errors: ProfileFormErrors = {};
-    
+
     // Walidacja zgodna z regułami API
     if (data.monthly_expense < 0 || !isFinite(data.monthly_expense)) {
-      errors.monthly_expense = 'Miesięczne wydatki muszą być >= 0';
+      errors.monthly_expense = "Miesięczne wydatki muszą być >= 0";
     }
     if (data.withdrawal_rate_pct < 0 || data.withdrawal_rate_pct > 100 || !isFinite(data.withdrawal_rate_pct)) {
-      errors.withdrawal_rate_pct = 'Stopa wypłat musi być w zakresie 0-100';
+      errors.withdrawal_rate_pct = "Stopa wypłat musi być w zakresie 0-100";
     }
     if (data.expected_return_pct < -100 || data.expected_return_pct > 1000 || !isFinite(data.expected_return_pct)) {
-      errors.expected_return_pct = 'Oczekiwany zwrot musi być w zakresie -100 do 1000';
+      errors.expected_return_pct = "Oczekiwany zwrot musi być w zakresie -100 do 1000";
     }
     if (data.birth_date) {
       const date = new Date(data.birth_date);
@@ -431,47 +469,47 @@ function useOnboardingForm() {
       const maxAge = new Date();
       maxAge.setFullYear(today.getFullYear() - 120);
       maxAge.setHours(0, 0, 0, 0);
-      
+
       if (date >= today) {
-        errors.birth_date = 'Data urodzenia musi być w przeszłości';
+        errors.birth_date = "Data urodzenia musi być w przeszłości";
       } else if (date < maxAge) {
-        errors.birth_date = 'Data urodzenia nie może być starsza niż 120 lat';
+        errors.birth_date = "Data urodzenia nie może być starsza niż 120 lat";
       }
     }
-    
+
     return errors;
   }, []);
 
   // Walidacja formularza inwestycji
   const validateInvestmentForm = useCallback((data: InvestmentFormData): InvestmentFormErrors => {
     const errors: InvestmentFormErrors = {};
-    
+
     // Walidacja zgodna z regułami API
-    if (!data.type || !['etf', 'bond', 'stock', 'cash'].includes(data.type)) {
-      errors.type = 'Wybierz typ inwestycji';
+    if (!data.type || !["etf", "bond", "stock", "cash"].includes(data.type)) {
+      errors.type = "Wybierz typ inwestycji";
     }
     if (data.amount <= 0 || !isFinite(data.amount) || data.amount > 999999999999.99) {
-      errors.amount = 'Kwota musi być większa od 0 i mniejsza niż 999999999999.99';
+      errors.amount = "Kwota musi być większa od 0 i mniejsza niż 999999999999.99";
     }
     if (!data.acquired_at) {
-      errors.acquired_at = 'Data nabycia jest wymagana';
+      errors.acquired_at = "Data nabycia jest wymagana";
     } else {
       const date = new Date(data.acquired_at);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       date.setHours(0, 0, 0, 0);
-      
+
       if (date > today) {
-        errors.acquired_at = 'Data nabycia nie może być w przyszłości';
+        errors.acquired_at = "Data nabycia nie może być w przyszłości";
       }
     }
     if (data.notes !== undefined && data.notes !== null) {
       const trimmed = data.notes.trim();
       if (trimmed.length > 0 && trimmed.length > 1000) {
-        errors.notes = 'Notatki nie mogą przekraczać 1000 znaków';
+        errors.notes = "Notatki nie mogą przekraczać 1000 znaków";
       }
     }
-    
+
     return errors;
   }, []);
 
@@ -488,53 +526,63 @@ Hook do zarządzania wywołaniami API:
 
 ```typescript
 function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
-  const createProfile = useCallback(async (data: CreateProfileCommand): Promise<ProfileDto> => {
-    // Pobranie tokenu z Supabase
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-      throw new Error('Brak sesji');
-    }
+  const createProfile = useCallback(
+    async (data: CreateProfileCommand): Promise<ProfileDto> => {
+      // Pobranie tokenu z Supabase
+      const {
+        data: { session },
+      } = await supabaseClient.auth.getSession();
+      if (!session) {
+        throw new Error("Brak sesji");
+      }
 
-    const response = await fetch('/api/v1/me/profile', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify(data),
-    });
+      const response = await fetch("/api/v1/me/profile", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw error;
-    }
+      if (!response.ok) {
+        const error: ApiError = await response.json();
+        throw error;
+      }
 
-    return response.json();
-  }, [supabaseClient]);
+      return response.json();
+    },
+    [supabaseClient]
+  );
 
-  const createInvestment = useCallback(async (data: CreateInvestmentCommand): Promise<InvestmentDto> => {
-    // Pobranie tokenu z Supabase
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (!session) {
-      throw new Error('Brak sesji');
-    }
+  const createInvestment = useCallback(
+    async (data: CreateInvestmentCommand): Promise<InvestmentDto> => {
+      // Pobranie tokenu z Supabase
+      const {
+        data: { session },
+      } = await supabaseClient.auth.getSession();
+      if (!session) {
+        throw new Error("Brak sesji");
+      }
 
-    const response = await fetch('/api/v1/investments', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session.access_token}`,
-      },
-      body: JSON.stringify(data),
-    });
+      const response = await fetch("/api/v1/investments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(data),
+      });
 
-    if (!response.ok) {
-      const error: ApiError = await response.json();
-      throw error;
-    }
+      if (!response.ok) {
+        const error: ApiError = await response.json();
+        throw error;
+      }
 
-    return response.json();
-  }, [supabaseClient]);
+      return response.json();
+    },
+    [supabaseClient]
+  );
 
   return {
     createProfile,
@@ -550,6 +598,7 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 **Endpoint:** `POST /api/v1/me/profile`
 
 **Request:**
+
 - Headers:
   - `Authorization: Bearer <Supabase-JWT>` (wymagany)
   - `Content-Type: application/json` (wymagany)
@@ -564,6 +613,7 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
   ```
 
 **Response:**
+
 - 201 Created: `ProfileDto`
 - 400 Bad Request: `ApiError` z polami błędów walidacji
 - 401 Unauthorized: `ApiError`
@@ -571,6 +621,7 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 - 500 Internal Server Error: `ApiError`
 
 **Obsługa w komponencie:**
+
 - Wywołanie w kroku 1 po kliknięciu "Dalej"
 - Walidacja przed wysłaniem
 - Obsługa błędów walidacji (400) - wyświetlenie błędów w polach formularza
@@ -583,6 +634,7 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 **Endpoint:** `POST /api/v1/investments`
 
 **Request:**
+
 - Headers:
   - `Authorization: Bearer <Supabase-JWT>` (wymagany)
   - `Content-Type: application/json` (wymagany)
@@ -597,12 +649,14 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
   ```
 
 **Response:**
+
 - 201 Created: `InvestmentDto`
 - 400 Bad Request: `ApiError` z polami błędów walidacji
 - 401 Unauthorized: `ApiError`
 - 500 Internal Server Error: `ApiError`
 
 **Obsługa w komponencie:**
+
 - Wywołanie w kroku 2 po kliknięciu "Zakończ i przejdź do dashboardu"
 - Walidacja przed wysłaniem
 - Obsługa błędów walidacji (400) - wyświetlenie błędów w polach formularza
@@ -666,30 +720,35 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Walidacja formularza profilu (krok 1)
 
 **Pole: monthly_expense**
+
 - Wymagane: Tak
 - Typ: number
 - Warunki: >= 0, liczba skończona
 - Komunikat błędu: "Miesięczne wydatki muszą być >= 0"
 
 **Pole: withdrawal_rate_pct**
+
 - Wymagane: Tak
 - Typ: number
 - Warunki: 0-100, liczba skończona
 - Komunikat błędu: "Stopa wypłat musi być w zakresie 0-100"
 
 **Pole: expected_return_pct**
+
 - Wymagane: Tak
 - Typ: number
 - Warunki: -100 do 1000, liczba skończona
 - Komunikat błędu: "Oczekiwany zwrot musi być w zakresie -100 do 1000"
 
 **Pole: birth_date**
+
 - Wymagane: Nie
 - Typ: string (YYYY-MM-DD) lub null
 - Warunki: data w przeszłości, nie starsza niż 120 lat
 - Komunikat błędu: "Data urodzenia musi być w przeszłości" lub "Data urodzenia nie może być starsza niż 120 lat"
 
 **Walidacja przed przejściem do kroku 2:**
+
 - Wszystkie pola wymagane muszą być wypełnione
 - Wszystkie pola muszą przejść walidację
 - Brak błędów walidacji
@@ -697,30 +756,35 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Walidacja formularza inwestycji (krok 2)
 
 **Pole: type**
+
 - Wymagane: Tak
 - Typ: enum ('etf' | 'bond' | 'stock' | 'cash')
 - Warunki: musi być jednym z dozwolonych wartości
 - Komunikat błędu: "Wybierz typ inwestycji"
 
 **Pole: amount**
+
 - Wymagane: Tak
 - Typ: number
 - Warunki: > 0, liczba skończona, max 999999999999.99
 - Komunikat błędu: "Kwota musi być większa od 0 i mniejsza niż 999999999999.99"
 
 **Pole: acquired_at**
+
 - Wymagane: Tak
 - Typ: string (YYYY-MM-DD)
 - Warunki: data <= dziś
 - Komunikat błędu: "Data nabycia nie może być w przyszłości"
 
 **Pole: notes**
+
 - Wymagane: Nie
 - Typ: string lub null
 - Warunki: jeśli podane, 1-1000 znaków po trim
 - Komunikat błędu: "Notatki nie mogą przekraczać 1000 znaków"
 
 **Walidacja przed zapisaniem:**
+
 - Wszystkie pola wymagane muszą być wypełnione
 - Wszystkie pola muszą przejść walidację
 - Brak błędów walidacji
@@ -728,6 +792,7 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Mapowanie błędów API na komunikaty użytkownika
 
 **Kody błędów z API (fields):**
+
 - `must_be_gte_zero` → "Wartość musi być >= 0"
 - `must_be_lte_100` → "Wartość musi być <= 100"
 - `must_be_gte_minus_100` → "Wartość musi być >= -100"
@@ -745,13 +810,15 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Błędy walidacji lokalnej
 
 **Scenariusz:** Użytkownik wprowadza nieprawidłowe dane
+
 - **Obsługa:** Wyświetlenie komunikatu błędu pod odpowiednim polem
 - **Stan:** Formularz pozostaje aktywny, przycisk "Dalej" jest disabled
 
 ### Błędy walidacji API (400)
 
 **Scenariusz:** API zwraca błędy walidacji
-- **Obsługa:** 
+
+- **Obsługa:**
   - Mapowanie kodów błędów z `fields` na komunikaty użytkownika
   - Wyświetlenie błędów w odpowiednich polach formularza
   - Wyświetlenie ogólnego komunikatu w Toast
@@ -760,7 +827,8 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Błąd 401 (Unauthorized)
 
 **Scenariusz:** Token wygasł lub jest nieprawidłowy
-- **Obsługa:** 
+
+- **Obsługa:**
   - Wyświetlenie komunikatu "Zaloguj ponownie" w Toast
   - Przekierowanie do strony logowania (`/login`)
 - **Stan:** Sesja użytkownika jest nieważna
@@ -768,7 +836,8 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Błąd 409 (Conflict) - tylko dla profilu
 
 **Scenariusz:** Profil już istnieje dla użytkownika
-- **Obsługa:** 
+
+- **Obsługa:**
   - Wyświetlenie komunikatu "Profil już istnieje" w Toast
   - Przekierowanie do dashboardu (`/dashboard`)
 - **Stan:** Użytkownik już ma profil, nie powinien być w onboarding
@@ -776,7 +845,8 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Błąd 500 (Internal Server Error)
 
 **Scenariusz:** Błąd serwera
-- **Obsługa:** 
+
+- **Obsługa:**
   - Wyświetlenie komunikatu "Wystąpił błąd serwera. Spróbuj ponownie." w Toast
   - Formularz pozostaje aktywny, użytkownik może spróbować ponownie
 - **Stan:** Formularz pozostaje aktywny
@@ -784,7 +854,8 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 ### Błędy sieciowe
 
 **Scenariusz:** Brak połączenia z serwerem
-- **Obsługa:** 
+
+- **Obsługa:**
   - Wyświetlenie komunikatu "Brak połączenia z serwerem. Sprawdź połączenie internetowe." w Toast
   - Formularz pozostaje aktywny, użytkownik może spróbować ponownie
 - **Stan:** Formularz pozostaje aktywny
@@ -934,4 +1005,3 @@ function useOnboardingApi(supabaseClient: SupabaseClient<Database>) {
 3. Sprawdzenie zgodności z API plan
 4. Finalne testy end-to-end
 5. Code review i poprawki
-

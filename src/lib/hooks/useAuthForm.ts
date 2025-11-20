@@ -193,8 +193,7 @@ export function useAuthForm<T extends Record<string, unknown>>(options: UseAuthF
 
   const clearFieldError = useCallback((field: keyof AuthFormErrors) => {
     setState((prev) => {
-      const newErrors = { ...prev.errors };
-      delete newErrors[field];
+      const { [field]: _, ...newErrors } = prev.errors;
       return { ...prev, errors: newErrors };
     });
   }, []);

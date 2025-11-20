@@ -198,7 +198,7 @@ Dashboard (Astro page)
 - **Props:**
   ```typescript
   interface FireAgeCardProps {
-    timeToFire: MetricsDto['time_to_fire'];
+    timeToFire: MetricsDto["time_to_fire"];
     note?: string;
   }
   ```
@@ -309,7 +309,7 @@ Dashboard (Astro page)
 - **Props:**
   ```typescript
   interface PortfolioSummaryListProps {
-    shares: AiHintDto['shares'] | null;
+    shares: AiHintDto["shares"] | null;
     isLoading: boolean;
   }
   ```
@@ -336,7 +336,7 @@ Dashboard (Astro page)
 - **Props:**
   ```typescript
   interface EmptyStateProps {
-    type: 'no-profile' | 'no-investments' | 'no-data';
+    type: "no-profile" | "no-investments" | "no-data";
   }
   ```
 
@@ -367,6 +367,7 @@ Dashboard (Astro page)
 ### Typy DTO (z `src/types.ts`)
 
 #### MetricsDto
+
 ```typescript
 interface MetricsDto {
   inputs: {
@@ -391,9 +392,10 @@ interface MetricsDto {
 ```
 
 **Opis pól:**
+
 - `inputs` - wartości wejściowe użyte do obliczeń (z profilu i portfela, ewentualnie nadpisane przez query params)
 - `derived` - wartości obliczone:
-  - `annual_expense` - roczne wydatki (monthly_expense * 12)
+  - `annual_expense` - roczne wydatki (monthly_expense \* 12)
   - `fire_target` - docelowa liczba FIRE (annual_expense / (withdrawal_rate_pct / 100))
   - `fire_progress` - postęp do FIRE (invested_total / fire_target, wartość 0-1)
 - `time_to_fire` - informacje o czasie do osiągnięcia FIRE:
@@ -404,6 +406,7 @@ interface MetricsDto {
 - `note` - opcjonalna notatka dla przypadków brzegowych (np. "Years to FIRE undefined for zero investments.")
 
 #### AiHintDto
+
 ```typescript
 interface AiHintDto {
   hint: string; // zlokalizowany komunikat (max ~160 znaków)
@@ -418,17 +421,15 @@ interface AiHintDto {
 ```
 
 **Opis pól:**
+
 - `hint` - krótki tekst analizy portfela, zlokalizowany (polski/angielski), maksymalnie ~160 znaków
 - `rules_matched` - tablica identyfikatorów reguł, które zostały dopasowane do portfela
 - `shares` - procentowe udziały poszczególnych typów aktywów (wartości 0-100)
 
 #### AiRuleId
+
 ```typescript
-type AiRuleId =
-  | "stock_plus_etf_ge_80"
-  | "bond_ge_50"
-  | "cash_ge_30"
-  | "stock_plus_etf_lt_40";
+type AiRuleId = "stock_plus_etf_ge_80" | "bond_ge_50" | "cash_ge_30" | "stock_plus_etf_lt_40";
 ```
 
 **Opis:** Typy reguł używanych do generowania AI Hint.
@@ -436,6 +437,7 @@ type AiRuleId =
 ### Typy ViewModel (nowe typy dla komponentów)
 
 #### DashboardState
+
 ```typescript
 interface DashboardState {
   metrics: MetricsDto | null;
@@ -448,6 +450,7 @@ interface DashboardState {
 **Opis:** Stan głównego komponentu Dashboard, przechowujący dane z API, stan ładowania i błędy.
 
 #### MetricsQuery (z `src/types.ts`)
+
 ```typescript
 interface MetricsQuery {
   monthly_expense?: number;
@@ -460,6 +463,7 @@ interface MetricsQuery {
 **Opis:** Opcjonalne parametry query dla endpointu `/v1/me/metrics`, umożliwiające "what-if" scenariusze. W MVP nie są używane w widoku Dashboard, ale mogą być wykorzystane w przyszłości.
 
 #### ApiError (z `src/types.ts`)
+
 ```typescript
 interface ApiError {
   error: {
@@ -492,21 +496,21 @@ function useDashboard() {
   });
 
   const recalculateMetrics = async () => {
-    setState(prev => ({ ...prev, isLoading: true, error: null }));
-    
+    setState((prev) => ({ ...prev, isLoading: true, error: null }));
+
     try {
       // Równoległe wywołanie obu endpointów
       const [metricsResponse, aiHintResponse] = await Promise.all([
-        fetch('/api/v1/me/metrics', {
+        fetch("/api/v1/me/metrics", {
           headers: {
-            'Authorization': `Bearer ${getAuthToken()}`,
-            'Accept-Language': navigator.language || 'pl-PL',
+            Authorization: `Bearer ${getAuthToken()}`,
+            "Accept-Language": navigator.language || "pl-PL",
           },
         }),
-        fetch('/api/v1/me/ai-hint', {
+        fetch("/api/v1/me/ai-hint", {
           headers: {
-            'Authorization': `Bearer ${getAuthToken()}`,
-            'Accept-Language': navigator.language || 'pl-PL',
+            Authorization: `Bearer ${getAuthToken()}`,
+            "Accept-Language": navigator.language || "pl-PL",
           },
         }),
       ]);
@@ -514,12 +518,12 @@ function useDashboard() {
       // Obsługa błędów
       if (!metricsResponse.ok) {
         const error = await metricsResponse.json();
-        throw new Error(error.error?.message || 'Błąd pobierania metryk');
+        throw new Error(error.error?.message || "Błąd pobierania metryk");
       }
 
       if (!aiHintResponse.ok) {
         const error = await aiHintResponse.json();
-        throw new Error(error.error?.message || 'Błąd pobierania AI hint');
+        throw new Error(error.error?.message || "Błąd pobierania AI hint");
       }
 
       const metrics: MetricsDto = await metricsResponse.json();
@@ -532,10 +536,10 @@ function useDashboard() {
         error: null,
       });
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: error instanceof Error ? { error: { code: 'internal', message: error.message } } : null,
+        error: error instanceof Error ? { error: { code: "internal", message: error.message } } : null,
       }));
     }
   };
@@ -554,6 +558,7 @@ const { metrics, aiHint, isLoading, error, recalculateMetrics } = useDashboard()
 ```
 
 **Uwagi:**
+
 - Hook używa `useState` do zarządzania stanem lokalnym
 - Wywołania API są wykonywane równolegle (`Promise.all`) dla lepszej wydajności
 - Obsługa błędów jest scentralizowana w hooku
@@ -587,12 +592,14 @@ W MVP można zacząć od lokalnego stanu w hooku, a w przyszłości przenieść 
 **Autoryzacja:** Wymagana (Bearer token w headerze `Authorization`)
 
 **Query Parameters (opcjonalne, nieużywane w MVP Dashboard):**
+
 - `monthly_expense` (number, >= 0)
 - `withdrawal_rate_pct` (number, 0-100)
 - `expected_return_pct` (number, > -100)
 - `invested_total` (number, >= 0)
 
 **Request Headers:**
+
 ```typescript
 {
   'Authorization': 'Bearer <Supabase-JWT>',
@@ -601,42 +608,47 @@ W MVP można zacząć od lokalnego stanu w hooku, a w przyszłości przenieść 
 ```
 
 **Response 200:**
+
 ```typescript
-MetricsDto
+MetricsDto;
 ```
 
 **Response 400 Bad Request:**
+
 - Nieprawidłowe query parameters
 - `expected_return_pct <= -100` (po scaleniu z profilem)
 
 **Response 401 Unauthorized:**
+
 - Brak lub nieprawidłowy token autoryzacji
 
 **Response 404 Not Found:**
+
 - Brak profilu użytkownika (`"message": "profile_not_found"`)
 
 **Response 500 Internal Server Error:**
+
 - Nieoczekiwane błędy serwera
 
 **Implementacja w komponencie:**
 
 ```typescript
-const metricsResponse = await fetch('/api/v1/me/metrics', {
-  method: 'GET',
+const metricsResponse = await fetch("/api/v1/me/metrics", {
+  method: "GET",
   headers: {
-    'Authorization': `Bearer ${authToken}`,
-    'Content-Type': 'application/json',
+    Authorization: `Bearer ${authToken}`,
+    "Content-Type": "application/json",
   },
 });
 
 if (!metricsResponse.ok) {
   if (metricsResponse.status === 404) {
     // Redirect do /onboarding
-    window.location.href = '/onboarding';
+    window.location.href = "/onboarding";
     return;
   }
   const error = await metricsResponse.json();
-  throw new Error(error.error?.message || 'Błąd pobierania metryk');
+  throw new Error(error.error?.message || "Błąd pobierania metryk");
 }
 
 const metrics: MetricsDto = await metricsResponse.json();
@@ -653,6 +665,7 @@ const metrics: MetricsDto = await metricsResponse.json();
 **Query Parameters:** Brak
 
 **Request Headers:**
+
 ```typescript
 {
   'Authorization': 'Bearer <Supabase-JWT>',
@@ -661,31 +674,34 @@ const metrics: MetricsDto = await metricsResponse.json();
 ```
 
 **Response 200:**
+
 ```typescript
-AiHintDto
+AiHintDto;
 ```
 
 **Response 401 Unauthorized:**
+
 - Brak lub nieprawidłowy token autoryzacji
 
 **Response 500 Internal Server Error:**
+
 - Nieoczekiwane błędy serwera
 
 **Implementacja w komponencie:**
 
 ```typescript
-const aiHintResponse = await fetch('/api/v1/me/ai-hint', {
-  method: 'GET',
+const aiHintResponse = await fetch("/api/v1/me/ai-hint", {
+  method: "GET",
   headers: {
-    'Authorization': `Bearer ${authToken}`,
-    'Accept-Language': navigator.language || 'pl-PL',
-    'Content-Type': 'application/json',
+    Authorization: `Bearer ${authToken}`,
+    "Accept-Language": navigator.language || "pl-PL",
+    "Content-Type": "application/json",
   },
 });
 
 if (!aiHintResponse.ok) {
   const error = await aiHintResponse.json();
-  throw new Error(error.error?.message || 'Błąd pobierania AI hint');
+  throw new Error(error.error?.message || "Błąd pobierania AI hint");
 }
 
 const aiHint: AiHintDto = await aiHintResponse.json();
@@ -697,8 +713,12 @@ Oba endpointy są wywoływane równolegle przy użyciu `Promise.all` dla lepszej
 
 ```typescript
 const [metricsResponse, aiHintResponse] = await Promise.all([
-  fetch('/api/v1/me/metrics', { /* ... */ }),
-  fetch('/api/v1/me/ai-hint', { /* ... */ }),
+  fetch("/api/v1/me/metrics", {
+    /* ... */
+  }),
+  fetch("/api/v1/me/ai-hint", {
+    /* ... */
+  }),
 ]);
 ```
 
@@ -713,6 +733,7 @@ Jeśli którykolwiek endpoint zwróci `401 Unauthorized`, użytkownik powinien z
 **Akcja użytkownika:** Użytkownik klika przycisk "Przelicz wskaźniki"
 
 **Oczekiwany wynik:**
+
 1. Przycisk przechodzi w stan `disabled` i wyświetla ikonę ładowania
 2. Wyświetlany jest `LoadingSkeleton` (lub spinner) zamiast danych
 3. Wykonywane są równoległe wywołania do `/api/v1/me/metrics` i `/api/v1/me/ai-hint`
@@ -722,6 +743,7 @@ Jeśli którykolwiek endpoint zwróci `401 Unauthorized`, użytkownik powinien z
    - Jeśli wystąpił błąd, wyświetlany jest komunikat błędu (Toast lub inline)
 
 **Obsługa w kodzie:**
+
 ```typescript
 const handleRecalculate = async () => {
   await recalculateMetrics();
@@ -733,6 +755,7 @@ const handleRecalculate = async () => {
 **Akcja użytkownika:** Automatyczne (po kliknięciu "Przelicz wskaźniki")
 
 **Oczekiwany wynik:**
+
 - `MetricsPanel` wyświetla:
   - Liczbę FIRE (sformatowaną jako waluta)
   - Wiek FIRE (lub komunikat, jeśli nie można obliczyć)
@@ -745,6 +768,7 @@ const handleRecalculate = async () => {
 **Akcja użytkownika:** Automatyczne (gdy brak profilu lub inwestycji)
 
 **Oczekiwany wynik:**
+
 - Wyświetlany jest `EmptyState` z komunikatem i linkami CTA
 - Przycisk "Przelicz wskaźniki" jest disabled
 - Linki prowadzą do `/profile` lub `/investments`
@@ -754,6 +778,7 @@ const handleRecalculate = async () => {
 **Akcja użytkownika:** Automatyczne (gdy wystąpi błąd API)
 
 **Oczekiwany wynik:**
+
 - Wyświetlany jest Toast z komunikatem błędu
 - Jeśli błąd to `404 profile_not_found` → redirect do `/onboarding`
 - Jeśli błąd to `401 Unauthorized` → redirect do `/login` (przez AuthGuard)
@@ -764,6 +789,7 @@ const handleRecalculate = async () => {
 **Akcja użytkownika:** Kliknięcie linku w `EmptyState` lub `TopNav`
 
 **Oczekiwany wynik:**
+
 - Przekierowanie do odpowiedniej strony (`/profile`, `/investments`, `/dashboard`)
 - Stan Dashboardu pozostaje niezmieniony (dane nie są automatycznie odświeżane)
 
@@ -778,9 +804,11 @@ const handleRecalculate = async () => {
 **Warunek:** Sprawdzenie, czy użytkownik ma profil
 
 **Weryfikacja:**
+
 - Jeśli `GET /v1/me/metrics` zwraca `404` z `"message": "profile_not_found"` → redirect do `/onboarding`
 
 **Wpływ na UI:**
+
 - Wyświetlenie `EmptyState` z typem `'no-profile'`
 - Wyłączenie przycisku "Przelicz wskaźniki"
 
@@ -791,9 +819,11 @@ const handleRecalculate = async () => {
 **Warunek:** Sprawdzenie, czy użytkownik ma inwestycje
 
 **Weryfikacja:**
+
 - Jeśli `invested_total` w `MetricsDto.inputs` wynosi `0` → wyświetlenie komunikatu
 
 **Wpływ na UI:**
+
 - Wyświetlenie `EmptyState` z typem `'no-investments'` (opcjonalne)
 - Wyświetlenie komunikatu w `FireAgeCard`, jeśli `years_to_fire` jest `null`
 
@@ -804,9 +834,11 @@ const handleRecalculate = async () => {
 **Warunek:** Sprawdzenie, czy `years_to_fire` jest `null`
 
 **Weryfikacja:**
+
 - Jeśli `metrics.time_to_fire.years_to_fire === null` → wyświetlenie komunikatu z `note`
 
 **Wpływ na UI:**
+
 - Wyświetlenie komunikatu: "Lata do FIRE nie mogą zostać obliczone przy zerowych inwestycjach" (lub treść z `note`)
 - Ukrycie wartości wieku FIRE
 
@@ -817,9 +849,11 @@ const handleRecalculate = async () => {
 **Warunek:** Sprawdzenie, czy `fire_age` jest `null`
 
 **Weryfikacja:**
+
 - Jeśli `metrics.time_to_fire.fire_age === null` → wyświetlenie tylko `years_to_fire`
 
 **Wpływ na UI:**
+
 - Wyświetlenie tylko liczby lat do FIRE, bez wieku osiągnięcia FIRE
 
 #### 5. Walidacja danych AI Hint
@@ -829,10 +863,12 @@ const handleRecalculate = async () => {
 **Warunek:** Sprawdzenie, czy `aiHint` jest `null` lub ma puste dane
 
 **Weryfikacja:**
+
 - Jeśli `aiHint === null` → ukrycie komponentu lub wyświetlenie placeholder
 - Jeśli wszystkie `shares` są `0` → wyświetlenie komunikatu "Brak danych o portfelu"
 
 **Wpływ na UI:**
+
 - Ukrycie `AIHintAlert` lub wyświetlenie komunikatu
 - Wyświetlenie komunikatu w `PortfolioSummaryList`
 
@@ -841,15 +877,18 @@ const handleRecalculate = async () => {
 **Komponenty:** `FireTargetCard`, `FireProgressCard`, `PortfolioSummaryList`
 
 **Warunki:**
+
 - Formatowanie waluty PLN z dwoma miejscami po przecinku
 - Formatowanie procentów z odpowiednią liczbą miejsc po przecinku
 - Separatory tysięcy dla dużych liczb
 
 **Weryfikacja:**
+
 - Użycie `Intl.NumberFormat` dla formatowania waluty i procentów
 - Sprawdzenie, czy wartości są liczbami przed formatowaniem
 
 **Wpływ na UI:**
+
 - Poprawne wyświetlanie wartości zgodnie z lokalizacją (pl-PL)
 
 ### Warunki walidacji zgodne z API
@@ -859,12 +898,14 @@ const handleRecalculate = async () => {
 **Endpoint:** `GET /v1/me/metrics`
 
 **Warunki:**
+
 - `monthly_expense`: number >= 0
 - `withdrawal_rate_pct`: number 0-100
 - `expected_return_pct`: number > -100
 - `invested_total`: number >= 0
 
 **Obsługa w komponencie:**
+
 - Jeśli w przyszłości Dashboard będzie obsługiwał "what-if" scenariusze, walidacja powinna być wykonana przed wysłaniem żądania (używając tego samego schematu Zod, co backend)
 
 #### Walidacja odpowiedzi API
@@ -872,11 +913,13 @@ const handleRecalculate = async () => {
 **Komponenty:** `useDashboard`
 
 **Warunki:**
+
 - Sprawdzenie, czy odpowiedź ma status `200 OK`
 - Sprawdzenie, czy odpowiedź ma poprawny format JSON
 - Sprawdzenie, czy odpowiedź zawiera wymagane pola
 
 **Obsługa w komponencie:**
+
 - Użycie type guards dla sprawdzenia typu odpowiedzi
 - Obsługa błędów parsowania JSON
 
@@ -889,16 +932,18 @@ const handleRecalculate = async () => {
 **Przyczyna:** Brak lub nieprawidłowy token autoryzacji, wygasła sesja
 
 **Obsługa:**
+
 - `AuthGuard` (middleware) powinien przechwycić błąd i przekierować do `/login`
 - Komponent Dashboard nie musi obsługiwać tego przypadku bezpośrednio
 - Jeśli błąd wystąpi w komponencie, wyświetlenie Toast z komunikatem "Sesja wygasła – zaloguj się ponownie"
 
 **Implementacja:**
+
 ```typescript
 if (response.status === 401) {
   // AuthGuard powinien obsłużyć redirect
   // Ale na wszelki wypadek:
-  window.location.href = '/login';
+  window.location.href = "/login";
   return;
 }
 ```
@@ -908,15 +953,17 @@ if (response.status === 401) {
 **Przyczyna:** Użytkownik nie ma profilu
 
 **Obsługa:**
+
 - Redirect do `/onboarding`
 - Wyświetlenie `EmptyState` z typem `'no-profile'`
 
 **Implementacja:**
+
 ```typescript
 if (response.status === 404) {
   const error = await response.json();
-  if (error.error?.message === 'profile_not_found') {
-    window.location.href = '/onboarding';
+  if (error.error?.message === "profile_not_found") {
+    window.location.href = "/onboarding";
     return;
   }
 }
@@ -927,19 +974,21 @@ if (response.status === 404) {
 **Przyczyna:** Nieprawidłowe query parameters (w przyszłości, jeśli Dashboard będzie obsługiwał "what-if")
 
 **Obsługa:**
+
 - Wyświetlenie Toast z komunikatem błędu
 - Wyświetlenie szczegółów walidacji, jeśli dostępne w `error.fields`
 
 **Implementacja:**
+
 ```typescript
 if (response.status === 400) {
   const error = await response.json();
-  const message = error.error?.message || 'Nieprawidłowe dane';
+  const message = error.error?.message || "Nieprawidłowe dane";
   const fields = error.error?.fields || {};
-  
+
   // Wyświetlenie Toast z komunikatem
-  showToast(message, 'error');
-  
+  showToast(message, "error");
+
   // Jeśli są szczegóły walidacji, można je wyświetlić inline
   if (Object.keys(fields).length > 0) {
     // Obsługa błędów walidacji pól
@@ -952,13 +1001,15 @@ if (response.status === 400) {
 **Przyczyna:** Błąd serwera, problem z bazą danych
 
 **Obsługa:**
+
 - Wyświetlenie Toast z komunikatem "Problem po naszej stronie – spróbuj ponownie"
 - Możliwość ponowienia żądania (przycisk "Spróbuj ponownie")
 
 **Implementacja:**
+
 ```typescript
 if (response.status >= 500) {
-  showToast('Problem po naszej stronie – spróbuj ponownie', 'error');
+  showToast("Problem po naszej stronie – spróbuj ponownie", "error");
   // Opcjonalnie: przycisk "Spróbuj ponownie"
 }
 ```
@@ -968,18 +1019,20 @@ if (response.status >= 500) {
 **Przyczyna:** Brak połączenia z internetem, timeout, CORS
 
 **Obsługa:**
+
 - Wyświetlenie Toast z komunikatem "Brak połączenia z internetem"
 - Możliwość ponowienia żądania
 
 **Implementacja:**
+
 ```typescript
 try {
   const response = await fetch(/* ... */);
 } catch (error) {
-  if (error instanceof TypeError && error.message === 'Failed to fetch') {
-    showToast('Brak połączenia z internetem', 'error');
+  if (error instanceof TypeError && error.message === "Failed to fetch") {
+    showToast("Brak połączenia z internetem", "error");
   } else {
-    showToast('Wystąpił nieoczekiwany błąd', 'error');
+    showToast("Wystąpił nieoczekiwany błąd", "error");
   }
 }
 ```
@@ -989,16 +1042,18 @@ try {
 **Przyczyna:** Nieprawidłowa odpowiedź z serwera (nie JSON)
 
 **Obsługa:**
+
 - Wyświetlenie Toast z komunikatem "Nieprawidłowa odpowiedź z serwera"
 - Logowanie błędu do konsoli (dla debugowania)
 
 **Implementacja:**
+
 ```typescript
 try {
   const data = await response.json();
 } catch (error) {
-  console.error('Błąd parsowania JSON:', error);
-  showToast('Nieprawidłowa odpowiedź z serwera', 'error');
+  console.error("Błąd parsowania JSON:", error);
+  showToast("Nieprawidłowa odpowiedź z serwera", "error");
 }
 ```
 
@@ -1007,10 +1062,12 @@ try {
 **Przyczyna:** Żądanie trwa zbyt długo (np. > 30 sekund)
 
 **Obsługa:**
+
 - Użycie `AbortController` z timeout
 - Wyświetlenie Toast z komunikatem "Żądanie trwa zbyt długo – spróbuj ponownie"
 
 **Implementacja:**
+
 ```typescript
 const controller = new AbortController();
 const timeoutId = setTimeout(() => controller.abort(), 30000);
@@ -1022,8 +1079,8 @@ try {
   });
   clearTimeout(timeoutId);
 } catch (error) {
-  if (error.name === 'AbortError') {
-    showToast('Żądanie trwa zbyt długo – spróbuj ponownie', 'error');
+  if (error.name === "AbortError") {
+    showToast("Żądanie trwa zbyt długo – spróbuj ponownie", "error");
   }
 }
 ```
@@ -1033,10 +1090,12 @@ try {
 **Przyczyna:** `invested_total <= 0` (zerowe inwestycje)
 
 **Obsługa:**
+
 - Wyświetlenie komunikatu w `FireAgeCard` z treścią z `note` (jeśli dostępne)
 - Ukrycie wartości wieku FIRE
 
 **Implementacja:**
+
 ```typescript
 {metrics.time_to_fire.years_to_fire === null ? (
   <div className="text-muted-foreground">
@@ -1052,10 +1111,12 @@ try {
 **Przyczyna:** Brak `birth_date` w profilu
 
 **Obsługa:**
+
 - Wyświetlenie tylko `years_to_fire` bez wieku osiągnięcia FIRE
 - Opcjonalnie: komunikat zachęcający do uzupełnienia daty urodzenia
 
 **Implementacja:**
+
 ```typescript
 {metrics.time_to_fire.fire_age === null ? (
   <div>
@@ -1076,6 +1137,7 @@ try {
 **Komponent:** `ToastProvider` (globalny)
 
 **Obsługa:**
+
 - Wszystkie błędy są wyświetlane jako Toast
 - Błędy krytyczne (401, 404) mogą wyświetlać dodatkowy baner (`GlobalErrorBanner`)
 
@@ -1255,4 +1317,3 @@ try {
 2. Sprawdzenie, czy wszystkie komponenty mają odpowiednie JSDoc
 3. Code review (jeśli w zespole)
 4. Aktualizacja dokumentacji projektu (jeśli potrzebne)
-

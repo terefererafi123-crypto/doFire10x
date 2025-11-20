@@ -5,6 +5,7 @@
 Endpoint `GET /v1/me/portfolio-agg` służy do pobierania zagregowanych danych portfela inwestycyjnego użytkownika. Dane są pobierane z widoku bazy danych `v_investments_agg`, który agreguje sumy i udziały procentowe dla każdego typu aktywa (stock, etf, bond, cash). Endpoint zwraca wartości wyzerowane (0) w przypadku, gdy użytkownik nie ma żadnych inwestycji.
 
 **Główne funkcjonalności:**
+
 - Pobieranie zagregowanych sum inwestycji według typu aktywa
 - Obliczanie udziałów procentowych każdego typu aktywa w portfelu
 - Automatyczne wyzerowanie wartości dla użytkowników bez inwestycji
@@ -32,16 +33,16 @@ Endpoint `GET /v1/me/portfolio-agg` służy do pobierania zagregowanych danych p
 
 ```typescript
 export interface PortfolioAggDto {
-  user_id: string;              // UUID użytkownika
-  total_amount: number;         // Suma wszystkich inwestycji (Money)
-  sum_stock: number;            // Suma inwestycji typu 'stock'
-  sum_etf: number;              // Suma inwestycji typu 'etf'
-  sum_bond: number;             // Suma inwestycji typu 'bond'
-  sum_cash: number;             // Suma inwestycji typu 'cash'
-  share_stock: number;          // Procentowy udział akcji (0-100)
-  share_etf: number;            // Procentowy udział ETF (0-100)
-  share_bond: number;           // Procentowy udział obligacji (0-100)
-  share_cash: number;           // Procentowy udział gotówki (0-100)
+  user_id: string; // UUID użytkownika
+  total_amount: number; // Suma wszystkich inwestycji (Money)
+  sum_stock: number; // Suma inwestycji typu 'stock'
+  sum_etf: number; // Suma inwestycji typu 'etf'
+  sum_bond: number; // Suma inwestycji typu 'bond'
+  sum_cash: number; // Suma inwestycji typu 'cash'
+  share_stock: number; // Procentowy udział akcji (0-100)
+  share_etf: number; // Procentowy udział ETF (0-100)
+  share_bond: number; // Procentowy udział obligacji (0-100)
+  share_cash: number; // Procentowy udział gotówki (0-100)
 }
 ```
 
@@ -50,7 +51,7 @@ export interface PortfolioAggDto {
 **DbPortfolioAggRow** - Typ z widoku `v_investments_agg` (z `src/db/database.types.ts`):
 
 ```typescript
-type DbPortfolioAggRow = Tables<"v_investments_agg">
+type DbPortfolioAggRow = Tables<"v_investments_agg">;
 ```
 
 **Helper function** - Funkcja mapująca z `src/types.ts`:
@@ -86,11 +87,11 @@ export interface ApiError {
 ```json
 {
   "user_id": "3b9c1234-5678-90ab-cdef-1234567890ab",
-  "total_amount": 34000.00,
-  "sum_stock": 12000.00,
-  "sum_etf": 14000.00,
-  "sum_bond": 6000.00,
-  "sum_cash": 2000.00,
+  "total_amount": 34000.0,
+  "sum_stock": 12000.0,
+  "sum_etf": 14000.0,
+  "sum_bond": 6000.0,
+  "sum_cash": 2000.0,
   "share_stock": 35.29,
   "share_etf": 41.18,
   "share_bond": 17.65,
@@ -103,15 +104,15 @@ export interface ApiError {
 ```json
 {
   "user_id": "3b9c1234-5678-90ab-cdef-1234567890ab",
-  "total_amount": 0.00,
-  "sum_stock": 0.00,
-  "sum_etf": 0.00,
-  "sum_bond": 0.00,
-  "sum_cash": 0.00,
-  "share_stock": 0.00,
-  "share_etf": 0.00,
-  "share_bond": 0.00,
-  "share_cash": 0.00
+  "total_amount": 0.0,
+  "sum_stock": 0.0,
+  "sum_etf": 0.0,
+  "sum_bond": 0.0,
+  "sum_cash": 0.0,
+  "share_stock": 0.0,
+  "share_etf": 0.0,
+  "share_bond": 0.0,
+  "share_cash": 0.0
 }
 ```
 
@@ -198,7 +199,7 @@ Client Response
 **Zapytanie SQL (wykonywane przez Supabase):**
 
 ```sql
-SELECT 
+SELECT
   user_id,
   total_amount,
   sum_stock,
@@ -215,6 +216,7 @@ LIMIT 1;
 ```
 
 **Uwagi:**
+
 - RLS automatycznie filtruje wyniki na podstawie `user_id = auth.uid()`
 - Widok `v_investments_agg` agreguje dane z tabeli `investments`
 - Jeśli użytkownik nie ma inwestycji, widok nie zwraca wiersza (GROUP BY nie tworzy wierszy dla brakujących danych)
@@ -250,13 +252,13 @@ LIMIT 1;
 
 ### 7.1. Scenariusze błędów
 
-| Scenariusz | Kod HTTP | Kod błędu | Komunikat |
-|------------|----------|-----------|-----------|
-| Brak tokenu autoryzacji | 401 | `unauthorized` | "Authentication required. Please log in." |
-| Nieprawidłowy/wygasły token | 401 | `unauthorized` | "Invalid or expired authentication token." |
-| Błąd połączenia z bazą danych | 500 | `internal` | "An unexpected error occurred while fetching portfolio aggregation." |
-| Błąd Supabase SDK | 500 | `internal` | "Database error occurred. Please try again later." |
-| Błąd mapowania danych | 500 | `internal` | "An error occurred while processing portfolio data." |
+| Scenariusz                    | Kod HTTP | Kod błędu      | Komunikat                                                            |
+| ----------------------------- | -------- | -------------- | -------------------------------------------------------------------- |
+| Brak tokenu autoryzacji       | 401      | `unauthorized` | "Authentication required. Please log in."                            |
+| Nieprawidłowy/wygasły token   | 401      | `unauthorized` | "Invalid or expired authentication token."                           |
+| Błąd połączenia z bazą danych | 500      | `internal`     | "An unexpected error occurred while fetching portfolio aggregation." |
+| Błąd Supabase SDK             | 500      | `internal`     | "Database error occurred. Please try again later."                   |
+| Błąd mapowania danych         | 500      | `internal`     | "An error occurred while processing portfolio data."                 |
 
 ### 7.2. Implementacja obsługi błędów
 
@@ -267,14 +269,17 @@ try {
   // 1. Weryfikacja autoryzacji
   const user = await getAuthenticatedUser(context);
   if (!user) {
-    return new Response(JSON.stringify({
-      error: { code: "unauthorized", message: "..." }
-    }), { status: 401 });
+    return new Response(
+      JSON.stringify({
+        error: { code: "unauthorized", message: "..." },
+      }),
+      { status: 401 }
+    );
   }
 
   // 2. Pobieranie danych
   const portfolioData = await portfolioService.getAggregation(user.id);
-  
+
   // 3. Zwrócenie odpowiedzi
   return new Response(JSON.stringify(portfolioData), { status: 200 });
 } catch (error) {
@@ -282,14 +287,20 @@ try {
   if (error instanceof SupabaseError) {
     // Logowanie błędu (bez wrażliwych danych)
     console.error("Supabase error:", error.message);
-    return new Response(JSON.stringify({
-      error: { code: "internal", message: "..." }
-    }), { status: 500 });
+    return new Response(
+      JSON.stringify({
+        error: { code: "internal", message: "..." },
+      }),
+      { status: 500 }
+    );
   }
   // Inne błędy
-  return new Response(JSON.stringify({
-    error: { code: "internal", message: "..." }
-  }), { status: 500 });
+  return new Response(
+    JSON.stringify({
+      error: { code: "internal", message: "..." },
+    }),
+    { status: 500 }
+  );
 }
 ```
 
@@ -336,6 +347,7 @@ try {
 2. Utworzenie pliku `src/pages/api/v1/me/portfolio-agg.ts` (lub `.astro` jeśli używamy Astro endpoints)
 
 **Struktura plików:**
+
 ```
 src/
   pages/
@@ -362,23 +374,16 @@ src/
 
 ```typescript
 // src/lib/services/portfolio.service.ts
-import type { SupabaseClient } from '../db/supabase.client';
-import type { PortfolioAggDto } from '../../types';
-import { toPortfolioAggDto } from '../../types';
+import type { SupabaseClient } from "../db/supabase.client";
+import type { PortfolioAggDto } from "../../types";
+import { toPortfolioAggDto } from "../../types";
 
-export async function getPortfolioAggregation(
-  supabase: SupabaseClient,
-  userId: string
-): Promise<PortfolioAggDto> {
-  const { data, error } = await supabase
-    .from('v_investments_agg')
-    .select('*')
-    .eq('user_id', userId)
-    .single();
+export async function getPortfolioAggregation(supabase: SupabaseClient, userId: string): Promise<PortfolioAggDto> {
+  const { data, error } = await supabase.from("v_investments_agg").select("*").eq("user_id", userId).single();
 
   if (error) {
     // Jeśli błąd to "no rows returned", zwróć wyzerowane wartości
-    if (error.code === 'PGRST116') {
+    if (error.code === "PGRST116") {
       return {
         user_id: userId,
         total_amount: 0,
@@ -413,20 +418,21 @@ export async function getPortfolioAggregation(
 
 ```typescript
 // src/lib/auth/helpers.ts
-import type { APIContext } from 'astro';
-import type { User } from '@supabase/supabase-js';
+import type { APIContext } from "astro";
+import type { User } from "@supabase/supabase-js";
 
-export async function getAuthenticatedUser(
-  context: APIContext
-): Promise<User | null> {
-  const authHeader = context.request.headers.get('Authorization');
-  
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+export async function getAuthenticatedUser(context: APIContext): Promise<User | null> {
+  const authHeader = context.request.headers.get("Authorization");
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return null;
   }
 
   const token = authHeader.substring(7);
-  const { data: { user }, error } = await context.locals.supabase.auth.getUser(token);
+  const {
+    data: { user },
+    error,
+  } = await context.locals.supabase.auth.getUser(token);
 
   if (error || !user) {
     return null;
@@ -450,10 +456,10 @@ export async function getAuthenticatedUser(
 
 ```typescript
 // src/pages/api/v1/me/portfolio-agg.ts
-import type { APIContext } from 'astro';
-import { getAuthenticatedUser } from '../../../../lib/auth/helpers';
-import { getPortfolioAggregation } from '../../../../lib/services/portfolio.service';
-import type { ApiError } from '../../../../types';
+import type { APIContext } from "astro";
+import { getAuthenticatedUser } from "../../../../lib/auth/helpers";
+import { getPortfolioAggregation } from "../../../../lib/services/portfolio.service";
+import type { ApiError } from "../../../../types";
 
 export const prerender = false;
 
@@ -464,41 +470,38 @@ export async function GET(context: APIContext): Promise<Response> {
     if (!user) {
       const error: ApiError = {
         error: {
-          code: 'unauthorized',
-          message: 'Authentication required. Please log in.',
+          code: "unauthorized",
+          message: "Authentication required. Please log in.",
         },
       };
       return new Response(JSON.stringify(error), {
         status: 401,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
     // 2. Pobieranie danych portfela
-    const portfolioData = await getPortfolioAggregation(
-      context.locals.supabase,
-      user.id
-    );
+    const portfolioData = await getPortfolioAggregation(context.locals.supabase, user.id);
 
     // 3. Zwrócenie odpowiedzi
     return new Response(JSON.stringify(portfolioData), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     // 4. Obsługa błędów
-    console.error('Error fetching portfolio aggregation:', error);
-    
+    console.error("Error fetching portfolio aggregation:", error);
+
     const apiError: ApiError = {
       error: {
-        code: 'internal',
-        message: 'An unexpected error occurred while fetching portfolio aggregation.',
+        code: "internal",
+        message: "An unexpected error occurred while fetching portfolio aggregation.",
       },
     };
 
     return new Response(JSON.stringify(apiError), {
       status: 500,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   }
 }
@@ -594,7 +597,3 @@ curl -X GET http://localhost:4321/api/v1/me/portfolio-agg \
 **Data utworzenia planu:** 2025-01-15  
 **Wersja:** 1.0  
 **Status:** Gotowy do implementacji
-
-
-
-

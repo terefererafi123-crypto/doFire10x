@@ -7,13 +7,16 @@
 ### 1. Analiza Obecnych Komponentów
 
 #### 1.1 LoginForm (156 LOC)
+
 **Obecna implementacja:**
+
 - Używa `useAuthForm` hook (własna implementacja)
 - Ręczne zarządzanie walidacją przez `validateAll()`
 - Ręczne zarządzanie stanem przez `form.state.data` i `form.setFieldValue()`
 - Integracja z `EmailField` i `PasswordField` przez props `onChange`, `onBlur`, `onFocus`
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 16-31: Ręczna konfiguracja useAuthForm
 const form = useAuthForm<LoginFormData>({
@@ -38,26 +41,32 @@ if (!form.validateAll()) {
 **Potencjalne implementacje React Hook Form:**
 
 **Opcja A: Pełna integracja z Controller**
+
 - Pros: Pełna kontrola, łatwa integracja z Shadcn/ui
 - Cons: Więcej boilerplate dla każdego pola
 
 **Opcja B: Wrapper hook `useAuthFormWithRHF`**
+
 - Pros: Zachowanie obecnego API, łatwa migracja
 - Cons: Dodatkowa warstwa abstrakcji
 
 **Opcja C: Bezpośrednia integracja z useForm**
+
 - Pros: Najczystsze rozwiązanie, najlepsze performance
 - Cons: Wymaga zmiany wszystkich komponentów
 
 **Rekomendacja:** Opcja C - bezpośrednia integracja, ale z helper hookiem dla wspólnej logiki (rate limiting, error handling)
 
 #### 1.2 RegisterForm (179 LOC)
+
 **Obecna implementacja:**
+
 - Podobna do LoginForm, ale z dodatkowym polem `confirmPassword`
 - Ręczna walidacja potwierdzenia hasła
 - Osobny stan dla `isSuccess` i `successMessage`
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 18-26: Konfiguracja z confirmPassword
 const form = useAuthForm<RegisterFormData>({
@@ -74,32 +83,40 @@ if (form.state.data.confirmPassword) {
 **Potencjalne implementacje:**
 
 **Opcja A: Zod schema z refine dla confirmPassword**
+
 ```typescript
-const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Hasła nie są identyczne",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(6),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Hasła nie są identyczne",
+    path: ["confirmPassword"],
+  });
 ```
+
 - Pros: Type-safe, automatyczna walidacja zależności
 - Cons: Wymaga zmiany struktury
 
 **Opcja B: watch() + useEffect dla re-walidacji**
+
 - Pros: Reaktywna walidacja
 - Cons: Dodatkowe re-rendery
 
 **Rekomendacja:** Opcja A - Zod schema z refine, React Hook Form automatycznie obsłuży re-walidację
 
 #### 1.3 ForgotPasswordForm (136 LOC)
+
 **Obecna implementacja:**
+
 - Najprostszy formularz - tylko email
 - Używa `useAuthForm` z tylko jednym polem
 - Integracja z `ForgotPasswordService`
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 16-22: Konfiguracja dla jednego pola
 const form = useAuthForm<ForgotPasswordFormData>({
@@ -109,17 +126,21 @@ const form = useAuthForm<ForgotPasswordFormData>({
 ```
 
 **Potencjalne implementacje:**
+
 - Najprostszy przypadek - bezpośrednia integracja z `useForm`
 - Zod schema: `z.object({ email: z.string().email() })`
 - Można użyć jako wzorca dla innych prostych formularzy
 
 #### 1.4 ResetPasswordForm (155 LOC)
+
 **Obecna implementacja:**
+
 - Podobny do RegisterForm - password + confirmPassword
 - Dodatkowa logika walidacji tokenu z URL
 - Brak rate limiting (nie potrzebny)
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 30-50: Walidacja tokenu z URL
 React.useEffect(() => {
@@ -130,16 +151,20 @@ React.useEffect(() => {
 ```
 
 **Potencjalne implementacje:**
+
 - Podobna do RegisterForm - Zod schema z refine
 - Token validation może pozostać w useEffect, ale można przenieść do custom hooka
 
 #### 1.5 ProfileForm (207 LOC)
+
 **Obecna implementacja:**
+
 - Kontrolowany komponent z props `data`, `errors`, `onChange`, `onBlur`
 - Ręczna konwersja wartości (string -> number dla pól numerycznych)
 - Ręczne zarządzanie błędami przez props
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 22-40: Ręczna konwersja wartości
 const handleChange = (field: keyof ProfileFormData, value: string | number) => {
@@ -161,6 +186,7 @@ onChange={(e) => handleChange("monthly_expense", e.target.value)}
 **Potencjalne implementacje:**
 
 **Opcja A: Controller z valueAsNumber**
+
 ```typescript
 <Controller
   name="monthly_expense"
@@ -175,10 +201,12 @@ onChange={(e) => handleChange("monthly_expense", e.target.value)}
   )}
 />
 ```
+
 - Pros: Automatyczna konwersja typów
 - Cons: Wymaga Controller dla każdego pola
 
 **Opcja B: Custom input wrapper z valueAsNumber**
+
 ```typescript
 <FormField
   label="Miesięczne wydatki"
@@ -190,18 +218,22 @@ onChange={(e) => handleChange("monthly_expense", e.target.value)}
   />
 </FormField>
 ```
+
 - Pros: Prostsze, mniej boilerplate
 - Cons: Wymaga rozszerzenia FormField
 
 **Rekomendacja:** Opcja B - rozszerzyć FormField o wsparcie dla React Hook Form
 
 #### 1.6 InvestmentForm (151 LOC)
+
 **Obecna implementacja:**
+
 - Podobny do ProfileForm - kontrolowany komponent
 - Różne typy pól: Select, Input (number, date), Textarea
 - Ręczna konwersja wartości
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 40-59: Ręczna konwersja wartości dla różnych typów
 const handleChange = (field: keyof InvestmentFormData, value: string | number | null) => {
@@ -219,18 +251,22 @@ const handleChange = (field: keyof InvestmentFormData, value: string | number | 
 ```
 
 **Potencjalne implementacje:**
+
 - Controller dla Select (Shadcn/ui Select nie jest natywnym inputem)
 - register() dla Input i Textarea
 - valueAsNumber dla amount
 - valueAsDate dla acquired_at (lub pozostawić jako string)
 
 #### 1.7 EditInvestmentModal (266 LOC)
+
 **Obecna implementacja:**
+
 - Ręczne wykrywanie zmian przez porównywanie wartości
 - Ręczna walidacja tylko zmienionych pól
 - Złożona logika budowania `UpdateInvestmentCommand`
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 128-153: Ręczne wykrywanie zmian
 const updateCommand: UpdateInvestmentCommand = {};
@@ -249,23 +285,28 @@ if (Object.keys(updateCommand).length === 0) {
 **Potencjalne implementacje:**
 
 **Opcja A: formState.isDirty + dirtyFields**
+
 ```typescript
-const { formState: { isDirty, dirtyFields } } = useForm({
+const {
+  formState: { isDirty, dirtyFields },
+} = useForm({
   defaultValues: investment,
-  mode: 'onChange'
+  mode: "onChange",
 });
 
 // Automatyczne wykrywanie zmian
 const hasChanges = isDirty;
 const changedFields = Object.keys(dirtyFields);
 ```
+
 - Pros: Automatyczne, zero boilerplate
 - Cons: Wymaga ustawienia defaultValues z investment
 
 **Opcja B: reset() z investment jako defaultValues**
+
 ```typescript
 const form = useForm({
-  defaultValues: investment || defaultInvestment
+  defaultValues: investment || defaultInvestment,
 });
 
 // Przy zmianie investment
@@ -275,19 +316,23 @@ useEffect(() => {
   }
 }, [investment]);
 ```
+
 - Pros: Automatyczne synchronizowanie z prop
 - Cons: Może powodować nieoczekiwane resetowanie
 
 **Rekomendacja:** Opcja A - użyć `isDirty` i `dirtyFields`, ale z ostrożnym zarządzaniem `defaultValues`
 
 #### 1.8 OnboardingContainer (388 LOC)
+
 **Obecna implementacja:**
+
 - Zarządza dwoma formularzami (ProfileForm i InvestmentForm)
 - Ręczne zarządzanie stanem dla obu formularzy
 - Złożona logika przejść między krokami
 - Ręczna walidacja przed przejściem do następnego kroku
 
 **Obszary wymagające refaktoryzacji:**
+
 ```typescript
 // Linie 53-71: Ręczny stan dla dwóch formularzy
 const [state, setState] = React.useState<OnboardingState>({
@@ -316,6 +361,7 @@ const handleNext = React.useCallback(async () => {
 **Potencjalne implementacje:**
 
 **Opcja A: Dwa osobne useForm (jeden na krok)**
+
 ```typescript
 const profileForm = useForm<ProfileFormData>({
   defaultValues: { monthly_expense: 0, ... },
@@ -330,10 +376,12 @@ const investmentForm = useForm<InvestmentFormData>({
 // Przełączanie między formularzami
 const currentForm = state.currentStep === 1 ? profileForm : investmentForm;
 ```
+
 - Pros: Separacja concerns, łatwe zarządzanie
 - Cons: Trzeba zarządzać dwoma formularzami
 
 **Opcja B: Jeden useForm z conditional fields**
+
 ```typescript
 const form = useForm<OnboardingFormData>({
   defaultValues: {
@@ -342,15 +390,18 @@ const form = useForm<OnboardingFormData>({
   },
 });
 ```
+
 - Pros: Jeden formularz, łatwe zarządzanie
 - Cons: Złożona struktura danych
 
 **Opcja C: useFormContext dla każdego kroku**
+
 ```typescript
 <FormProvider {...profileForm}>
   <ProfileStep />
 </FormProvider>
 ```
+
 - Pros: Czytelna struktura, łatwe przekazywanie context
 - Cons: Wymaga FormProvider wrapper
 
@@ -359,6 +410,7 @@ const form = useForm<OnboardingFormData>({
 ### 2. Analiza Wywołań API
 
 **Obecne wzorce:**
+
 - `AuthService` - już wyodrębniony ✅
 - `RegisterService` - już wyodrębniony ✅
 - `ForgotPasswordService` - już wyodrębniony ✅
@@ -367,6 +419,7 @@ const form = useForm<OnboardingFormData>({
 - `EditInvestmentModal` - bezpośrednie wywołania fetch ❌
 
 **Rekomendacje:**
+
 - Utworzyć `InvestmentService` dla EditInvestmentModal
 - Wszystkie API calls powinny być w service layer
 - React Hook Form będzie tylko zarządzał stanem formularza, nie API calls
@@ -374,11 +427,13 @@ const form = useForm<OnboardingFormData>({
 ### 3. Analiza Walidacji
 
 **Obecne wzorce:**
+
 - `useOnboardingForm` - funkcje walidacji dla Profile i Investment
 - `useAuthForm` - funkcje walidacji dla email, password, confirmPassword
 - Ręczna walidacja w EditInvestmentModal
 
 **Rekomendacje:**
+
 - Migracja do Zod schemas
 - Wszystkie schematy w `src/lib/validators/`
 - Reużywalne schematy dla wspólnych pól (email, password)
@@ -391,20 +446,21 @@ const form = useForm<OnboardingFormData>({
 
 ### 1.1 Lista Komponentów i Funkcjonalności
 
-| Komponent | LOC | Główne Funkcjonalności | Formularz? |
-|-----------|-----|------------------------|------------|
-| **LoginForm** | 156 | Logowanie użytkownika, walidacja email/password, rate limiting | ✅ |
-| **RegisterForm** | 179 | Rejestracja użytkownika, walidacja email/password/confirmPassword | ✅ |
-| **ForgotPasswordForm** | 136 | Reset hasła - wysłanie emaila, walidacja email | ✅ |
-| **ResetPasswordForm** | 155 | Reset hasła - nowe hasło, walidacja password/confirmPassword, token validation | ✅ |
-| **ProfileForm** | 207 | Formularz profilu finansowego, walidacja pól numerycznych i daty | ✅ |
-| **InvestmentForm** | 151 | Formularz inwestycji, walidacja różnych typów pól (select, number, date, textarea) | ✅ |
-| **OnboardingContainer** | 388 | Kontener zarządzający dwoma formularzami (Profile + Investment), nawigacja między krokami | ✅ |
-| **EditInvestmentModal** | 266 | Edycja inwestycji, wykrywanie zmian, partial updates | ✅ |
+| Komponent               | LOC | Główne Funkcjonalności                                                                    | Formularz? |
+| ----------------------- | --- | ----------------------------------------------------------------------------------------- | ---------- |
+| **LoginForm**           | 156 | Logowanie użytkownika, walidacja email/password, rate limiting                            | ✅         |
+| **RegisterForm**        | 179 | Rejestracja użytkownika, walidacja email/password/confirmPassword                         | ✅         |
+| **ForgotPasswordForm**  | 136 | Reset hasła - wysłanie emaila, walidacja email                                            | ✅         |
+| **ResetPasswordForm**   | 155 | Reset hasła - nowe hasło, walidacja password/confirmPassword, token validation            | ✅         |
+| **ProfileForm**         | 207 | Formularz profilu finansowego, walidacja pól numerycznych i daty                          | ✅         |
+| **InvestmentForm**      | 151 | Formularz inwestycji, walidacja różnych typów pól (select, number, date, textarea)        | ✅         |
+| **OnboardingContainer** | 388 | Kontener zarządzający dwoma formularzami (Profile + Investment), nawigacja między krokami | ✅         |
+| **EditInvestmentModal** | 266 | Edycja inwestycji, wykrywanie zmian, partial updates                                      | ✅         |
 
 ### 1.2 Identyfikacja Logiki Formularzy
 
 **Wspólne wzorce:**
+
 1. **Walidacja** - ręczna przez funkcje validators
 2. **Zarządzanie stanem** - useState dla każdego pola lub useAuthForm
 3. **Obsługa błędów** - ręczne mapowanie błędów do pól
@@ -412,6 +468,7 @@ const form = useForm<OnboardingFormData>({
 5. **Wykrywanie zmian** - ręczne porównywanie wartości (EditInvestmentModal)
 
 **Obszary wysokiej złożoności:**
+
 - `OnboardingContainer` - zarządzanie dwoma formularzami, złożona logika przejść
 - `EditInvestmentModal` - ręczne wykrywanie zmian, partial updates
 - `ProfileForm` / `InvestmentForm` - ręczna konwersja typów dla każdego pola
@@ -419,15 +476,18 @@ const form = useForm<OnboardingFormData>({
 ### 1.3 Lokalizacja Wywołań API
 
 **Service Layer (już wyodrębnione):**
+
 - `AuthService.signIn()` - LoginForm
 - `RegisterService.register()` - RegisterForm
 - `ForgotPasswordService.sendResetEmail()` - ForgotPasswordForm
 - `ResetPasswordService.resetPassword()` - ResetPasswordForm
 
 **Hooki (już wyodrębnione):**
+
 - `useOnboardingApi` - OnboardingContainer (createProfile, createInvestment, updateProfile, getProfile, hasInvestments)
 
 **Bezpośrednie wywołania (wymagają refaktoryzacji):**
+
 - `EditInvestmentModal` - linie 168-194: bezpośrednie wywołanie `fetch('/api/v1/investments/${id}')`
 
 ---
@@ -443,6 +503,7 @@ npm install react-hook-form @hookform/resolvers zod
 ```
 
 **Uzasadnienie:**
+
 - `react-hook-form` - zarządzanie stanem formularzy, minimalizacja re-renderów
 - `@hookform/resolvers` - integracja Zod z React Hook Form
 - `zod` - type-safe walidacja, kompatybilna z TypeScript 5
@@ -474,22 +535,31 @@ src/
 #### 2.2.1 Utworzenie Zod Schemas
 
 **Plik: `src/lib/validators/common.schemas.ts`**
+
 ```typescript
 import { z } from "zod";
 
-export const emailSchema = z.string().trim().min(1, "Pole e-mail jest wymagane").email("Nieprawidłowy format adresu e-mail");
+export const emailSchema = z
+  .string()
+  .trim()
+  .min(1, "Pole e-mail jest wymagane")
+  .email("Nieprawidłowy format adresu e-mail");
 
-export const passwordSchema = (minLength: number = 6) => 
+export const passwordSchema = (minLength: number = 6) =>
   z.string().min(1, "Pole hasła jest wymagane").min(minLength, `Hasło musi mieć minimum ${minLength} znaków`);
 
 export const confirmPasswordSchema = (passwordField: string = "password") =>
-  z.string().min(1, "Pole potwierdzenia hasła jest wymagane").refine(
-    (val, ctx) => val === ctx.parent[passwordField],
-    { message: "Hasła nie są identyczne", path: ["confirmPassword"] }
-  );
+  z
+    .string()
+    .min(1, "Pole potwierdzenia hasła jest wymagane")
+    .refine((val, ctx) => val === ctx.parent[passwordField], {
+      message: "Hasła nie są identyczne",
+      path: ["confirmPassword"],
+    });
 ```
 
 **Plik: `src/lib/validators/auth.schemas.ts`**
+
 ```typescript
 import { z } from "zod";
 import { emailSchema, passwordSchema } from "./common.schemas";
@@ -499,29 +569,34 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Pole hasła jest wymagane"),
 });
 
-export const registerSchema = z.object({
-  email: emailSchema,
-  password: passwordSchema(6),
-  confirmPassword: z.string().min(1, "Pole potwierdzenia hasła jest wymagane"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Hasła nie są identyczne",
-  path: ["confirmPassword"],
-});
+export const registerSchema = z
+  .object({
+    email: emailSchema,
+    password: passwordSchema(6),
+    confirmPassword: z.string().min(1, "Pole potwierdzenia hasła jest wymagane"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Hasła nie są identyczne",
+    path: ["confirmPassword"],
+  });
 
 export const forgotPasswordSchema = z.object({
   email: emailSchema,
 });
 
-export const resetPasswordSchema = z.object({
-  password: passwordSchema(6),
-  confirmPassword: z.string().min(1, "Pole potwierdzenia hasła jest wymagane"),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Hasła nie są identyczne",
-  path: ["confirmPassword"],
-});
+export const resetPasswordSchema = z
+  .object({
+    password: passwordSchema(6),
+    confirmPassword: z.string().min(1, "Pole potwierdzenia hasła jest wymagane"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Hasła nie są identyczne",
+    path: ["confirmPassword"],
+  });
 ```
 
 **Plik: `src/lib/validators/profile.schema.ts`**
+
 ```typescript
 import { z } from "zod";
 
@@ -532,36 +607,51 @@ maxAge.setFullYear(today.getFullYear() - 120);
 maxAge.setHours(0, 0, 0, 0);
 
 export const profileSchema = z.object({
-  monthly_expense: z.number({
-    required_error: "Miesięczne wydatki są wymagane",
-    invalid_type_error: "Miesięczne wydatki muszą być liczbą",
-  }).min(0, "Miesięczne wydatki muszą być >= 0").finite("Miesięczne wydatki muszą być skończoną liczbą"),
-  
-  withdrawal_rate_pct: z.number({
-    required_error: "Stopa wypłat jest wymagana",
-    invalid_type_error: "Stopa wypłat musi być liczbą",
-  }).min(0, "Stopa wypłat musi być >= 0").max(100, "Stopa wypłat musi być <= 100").finite(),
-  
-  expected_return_pct: z.number({
-    required_error: "Oczekiwany zwrot jest wymagany",
-    invalid_type_error: "Oczekiwany zwrot musi być liczbą",
-  }).min(-100, "Oczekiwany zwrot musi być >= -100").max(1000, "Oczekiwany zwrot musi być <= 1000").finite(),
-  
-  birth_date: z.string().optional().refine(
-    (date) => {
-      if (!date) return true;
-      const d = new Date(date);
-      d.setHours(0, 0, 0, 0);
-      return d < today && d >= maxAge;
-    },
-    {
-      message: "Data urodzenia musi być w przeszłości i nie starsza niż 120 lat",
-    }
-  ),
+  monthly_expense: z
+    .number({
+      required_error: "Miesięczne wydatki są wymagane",
+      invalid_type_error: "Miesięczne wydatki muszą być liczbą",
+    })
+    .min(0, "Miesięczne wydatki muszą być >= 0")
+    .finite("Miesięczne wydatki muszą być skończoną liczbą"),
+
+  withdrawal_rate_pct: z
+    .number({
+      required_error: "Stopa wypłat jest wymagana",
+      invalid_type_error: "Stopa wypłat musi być liczbą",
+    })
+    .min(0, "Stopa wypłat musi być >= 0")
+    .max(100, "Stopa wypłat musi być <= 100")
+    .finite(),
+
+  expected_return_pct: z
+    .number({
+      required_error: "Oczekiwany zwrot jest wymagany",
+      invalid_type_error: "Oczekiwany zwrot musi być liczbą",
+    })
+    .min(-100, "Oczekiwany zwrot musi być >= -100")
+    .max(1000, "Oczekiwany zwrot musi być <= 1000")
+    .finite(),
+
+  birth_date: z
+    .string()
+    .optional()
+    .refine(
+      (date) => {
+        if (!date) return true;
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        return d < today && d >= maxAge;
+      },
+      {
+        message: "Data urodzenia musi być w przeszłości i nie starsza niż 120 lat",
+      }
+    ),
 });
 ```
 
 **Plik: `src/lib/validators/investment.schema.ts`**
+
 ```typescript
 import { z } from "zod";
 
@@ -572,20 +662,27 @@ export const assetTypeEnum = z.enum(["etf", "bond", "stock", "cash"]);
 
 export const investmentSchema = z.object({
   type: assetTypeEnum,
-  amount: z.number({
-    required_error: "Kwota jest wymagana",
-    invalid_type_error: "Kwota musi być liczbą",
-  }).positive("Kwota musi być większa od 0").max(999999999999.99, "Kwota musi być mniejsza niż 999999999999.99").finite(),
-  
-  acquired_at: z.string().min(1, "Data nabycia jest wymagana").refine(
-    (date) => {
-      const d = new Date(date);
-      d.setHours(0, 0, 0, 0);
-      return d <= today;
-    },
-    { message: "Data nabycia nie może być w przyszłości" }
-  ),
-  
+  amount: z
+    .number({
+      required_error: "Kwota jest wymagana",
+      invalid_type_error: "Kwota musi być liczbą",
+    })
+    .positive("Kwota musi być większa od 0")
+    .max(999999999999.99, "Kwota musi być mniejsza niż 999999999999.99")
+    .finite(),
+
+  acquired_at: z
+    .string()
+    .min(1, "Data nabycia jest wymagana")
+    .refine(
+      (date) => {
+        const d = new Date(date);
+        d.setHours(0, 0, 0, 0);
+        return d <= today;
+      },
+      { message: "Data nabycia nie może być w przyszłości" }
+    ),
+
   notes: z.string().max(1000, "Notatki nie mogą przekraczać 1000 znaków").optional().nullable(),
 });
 ```
@@ -593,6 +690,7 @@ export const investmentSchema = z.object({
 #### 2.2.2 Wrapper Hook dla Auth Formularzy
 
 **Plik: `src/lib/hooks/useAuthFormWithRHF.ts`**
+
 ```typescript
 import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -606,12 +704,10 @@ export interface UseAuthFormWithRHFOptions<T extends z.ZodType> {
   onSubmit: (data: z.infer<T>) => Promise<void>;
 }
 
-export function useAuthFormWithRHF<T extends z.ZodType>(
-  options: UseAuthFormWithRHFOptions<T>
-) {
+export function useAuthFormWithRHF<T extends z.ZodType>(options: UseAuthFormWithRHFOptions<T>) {
   const { schema, defaultValues, rateLimitCooldownMs = 60000, onSubmit } = options;
   const rateLimiter = useRateLimiter({ cooldownMs: rateLimitCooldownMs });
-  
+
   const form = useForm<z.infer<T>>({
     resolver: zodResolver(schema),
     defaultValues,
@@ -622,7 +718,7 @@ export function useAuthFormWithRHF<T extends z.ZodType>(
     if (rateLimiter.isRateLimited) {
       return;
     }
-    
+
     try {
       await onSubmit(data);
     } catch (error) {
@@ -644,6 +740,7 @@ export function useAuthFormWithRHF<T extends z.ZodType>(
 #### 2.2.3 Wrapper Komponentu FormField dla RHF
 
 **Plik: `src/components/forms/FormFieldWithRHF.tsx`**
+
 ```typescript
 import { Controller, useFormContext } from "react-hook-form";
 import { FormField } from "@/components/FormField";
@@ -659,7 +756,7 @@ interface FormFieldWithRHFProps {
 
 export function FormFieldWithRHF({ name, label, required, helperText, children }: FormFieldWithRHFProps) {
   const { control, formState: { errors } } = useFormContext();
-  
+
   return (
     <Controller
       name={name}
@@ -689,11 +786,13 @@ export function FormFieldWithRHF({ name, label, required, helperText, children }
 #### 2.3.1 LoginForm z React Hook Form
 
 **Przed (156 LOC):**
+
 - Ręczne zarządzanie stanem przez useAuthForm
 - Ręczna walidacja przez validateAll()
 - Ręczne bindingi do pól
 
 **Po (szacunkowo ~80 LOC):**
+
 ```typescript
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -703,7 +802,7 @@ import { authService } from "@/lib/services/auth.service";
 
 export default function LoginForm() {
   const rateLimiter = useRateLimiter({ cooldownMs: 60000 });
-  
+
   const form = useForm({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -712,11 +811,11 @@ export default function LoginForm() {
 
   const onSubmit = form.handleSubmit(async (data) => {
     if (rateLimiter.isRateLimited) return;
-    
+
     form.setError("root", {}); // Clear previous errors
-    
+
     const result = await authService.signIn(data.email, data.password);
-    
+
     if (!result.success) {
       form.setError("root", { message: result.error?.message });
       if (result.error?.isRateLimited) {
@@ -745,7 +844,7 @@ export default function LoginForm() {
             />
           )}
         </FormFieldWithRHF>
-        
+
         <FormFieldWithRHF name="password" label="Hasło" required>
           {({ field }) => (
             <PasswordField
@@ -755,7 +854,7 @@ export default function LoginForm() {
             />
           )}
         </FormFieldWithRHF>
-        
+
         {/* Error display, button, etc. */}
       </form>
     </FormProvider>
@@ -764,6 +863,7 @@ export default function LoginForm() {
 ```
 
 **Korzyści:**
+
 - Redukcja z ~156 do ~80 LOC (-49%)
 - Automatyczna walidacja przez Zod
 - Mniej re-renderów (React Hook Form optymalizuje)
@@ -772,6 +872,7 @@ export default function LoginForm() {
 #### 2.3.2 RegisterForm z React Hook Form
 
 **Kluczowe zmiany:**
+
 - Użycie `registerSchema` z refine dla confirmPassword
 - Automatyczna re-walidacja confirmPassword przy zmianie password
 - Uproszczenie logiki success state
@@ -779,6 +880,7 @@ export default function LoginForm() {
 #### 2.3.3 ProfileForm i InvestmentForm z React Hook Form
 
 **Kluczowe zmiany:**
+
 - Użycie `valueAsNumber` dla pól numerycznych
 - Controller dla Select (Shadcn/ui)
 - Automatyczna konwersja typów przez React Hook Form
@@ -786,6 +888,7 @@ export default function LoginForm() {
 #### 2.3.4 EditInvestmentModal z React Hook Form
 
 **Kluczowe zmiany:**
+
 - Użycie `formState.isDirty` i `dirtyFields` do wykrywania zmian
 - Automatyczne budowanie `UpdateInvestmentCommand` z dirtyFields
 - Eliminacja ręcznego porównywania wartości
@@ -799,7 +902,7 @@ const form = useForm<InvestmentFormData>({
 
 const onSubmit = form.handleSubmit(async (data) => {
   const { isDirty, dirtyFields } = form.formState;
-  
+
   if (!isDirty) {
     form.setError("root", { message: "Nie wprowadzono żadnych zmian" });
     return;
@@ -819,6 +922,7 @@ const onSubmit = form.handleSubmit(async (data) => {
 #### 2.3.5 OnboardingContainer z React Hook Form
 
 **Kluczowe zmiany:**
+
 - Dwa osobne `useForm` - jeden dla ProfileForm, jeden dla InvestmentForm
 - Użycie `trigger()` do walidacji przed przejściem do następnego kroku
 - Uproszczenie logiki przejść między krokami
@@ -838,14 +942,14 @@ const handleNext = async () => {
   if (currentStep === 1) {
     const isValid = await profileForm.trigger();
     if (!isValid) return;
-    
+
     const profileData = profileForm.getValues();
     await createProfile(profileData);
     setCurrentStep(2);
   } else {
     const isValid = await investmentForm.trigger();
     if (!isValid) return;
-    
+
     const investmentData = investmentForm.getValues();
     await createInvestment(investmentData);
     window.location.href = "/dashboard";
@@ -858,6 +962,7 @@ const handleNext = async () => {
 #### 2.4.1 Utworzenie InvestmentService
 
 **Plik: `src/lib/services/investment.service.ts`** (rozszerzenie istniejącego)
+
 ```typescript
 export class InvestmentService {
   async update(id: string, data: UpdateInvestmentCommand): Promise<InvestmentDto> {
@@ -907,6 +1012,7 @@ export class InvestmentService {
 #### 2.5.1 Unit Tests dla Zod Schemas
 
 **Plik: `src/lib/validators/auth.schemas.test.ts`**
+
 ```typescript
 import { describe, it, expect } from "vitest";
 import { loginSchema, registerSchema } from "./auth.schemas";
@@ -958,6 +1064,7 @@ describe("auth.schemas", () => {
 #### 2.5.2 Integration Tests dla Komponentów
 
 **Plik: `src/components/LoginForm.test.tsx`**
+
 ```typescript
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
@@ -971,10 +1078,10 @@ describe("LoginForm", () => {
   it("should validate email on blur", async () => {
     render(<LoginForm />);
     const emailInput = screen.getByLabelText(/e-mail/i);
-    
+
     await userEvent.type(emailInput, "invalid-email");
     await userEvent.tab(); // Blur
-    
+
     await waitFor(() => {
       expect(screen.getByText(/nieprawidłowy format/i)).toBeInTheDocument();
     });
@@ -985,13 +1092,13 @@ describe("LoginForm", () => {
       success: true,
       authToken: "token123",
     });
-    
+
     render(<LoginForm />);
-    
+
     await userEvent.type(screen.getByLabelText(/e-mail/i), "test@example.com");
     await userEvent.type(screen.getByLabelText(/hasło/i), "password123");
     await userEvent.click(screen.getByRole("button", { name: /zaloguj/i }));
-    
+
     await waitFor(() => {
       expect(authService.signIn).toHaveBeenCalledWith("test@example.com", "password123");
     });
@@ -1033,6 +1140,7 @@ describe("LoginForm", () => {
 ### Faza 1: Przygotowanie Infrastruktury (1-2 dni)
 
 1. **Instalacja zależności**
+
    ```bash
    npm install react-hook-form @hookform/resolvers zod
    ```
@@ -1124,6 +1232,7 @@ describe("LoginForm", () => {
 ## 4. Metryki Sukcesu
 
 ### Przed Refaktoryzacją:
+
 - **LoginForm**: 156 LOC
 - **RegisterForm**: 179 LOC
 - **ForgotPasswordForm**: 136 LOC
@@ -1135,6 +1244,7 @@ describe("LoginForm", () => {
 - **Łącznie**: ~1638 LOC
 
 ### Po Refaktoryzacji (szacunki):
+
 - **LoginForm**: ~80 LOC (-49%)
 - **RegisterForm**: ~90 LOC (-50%)
 - **ForgotPasswordForm**: ~70 LOC (-49%)
@@ -1146,6 +1256,7 @@ describe("LoginForm", () => {
 - **Łącznie**: ~930 LOC (-43%)
 
 ### Dodatkowe Korzyści:
+
 - **Type Safety**: 100% type coverage przez Zod
 - **Performance**: Mniej re-renderów przez React Hook Form
 - **Maintainability**: Centralizacja walidacji w Zod schemas
@@ -1156,18 +1267,23 @@ describe("LoginForm", () => {
 ## 5. Potencjalne Problemy i Rozwiązania
 
 ### Problem 1: Shadcn/ui Select nie jest natywnym inputem
+
 **Rozwiązanie:** Użycie Controller z custom render function
 
 ### Problem 2: Konwersja string -> number dla pól numerycznych
+
 **Rozwiązanie:** `valueAsNumber` w register() lub custom transform w Controller
 
 ### Problem 3: Wykrywanie zmian w EditInvestmentModal
+
 **Rozwiązanie:** `formState.isDirty` i `dirtyFields` - automatyczne przez RHF
 
 ### Problem 4: Multi-step form (OnboardingContainer)
+
 **Rozwiązanie:** Dwa osobne useForm z przełączaniem między nimi
 
 ### Problem 5: Rate Limiting
+
 **Rozwiązanie:** Integracja `useRateLimiter` z `onSubmit` handler
 
 ---
@@ -1185,13 +1301,15 @@ describe("LoginForm", () => {
 ## 7. Priorytetyzacja
 
 ### Wysoki Priorytet (duplikacja, wysokie ryzyko błędów):
+
 1. LoginForm + RegisterForm (najczęściej używane)
 2. EditInvestmentModal (złożona logika wykrywania zmian)
 
 ### Średni Priorytet (złożoność, maintainability):
+
 3. ProfileForm + InvestmentForm (reużywalne komponenty)
 4. OnboardingContainer (złożony, ale mniej krytyczny)
 
 ### Niski Priorytet (nice to have):
-5. ForgotPasswordForm + ResetPasswordForm (proste, rzadko używane)
 
+5. ForgotPasswordForm + ResetPasswordForm (proste, rzadko używane)

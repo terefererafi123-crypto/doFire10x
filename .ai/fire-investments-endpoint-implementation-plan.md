@@ -5,6 +5,7 @@
 Endpoint `GET /v1/me/metrics` służy do obliczania wskaźników FIRE (Financial Independence, Retire Early) na podstawie profilu użytkownika i agregacji portfela inwestycyjnego. Obliczenia są wykonywane w czasie rzeczywistym (runtime) i nie są trwale zapisywane w bazie danych. Endpoint wspiera funkcjonalność "what-if" poprzez opcjonalne parametry zapytania, które pozwalają na nadpisanie wartości z profilu i portfela.
 
 **Funkcjonalność:**
+
 - Pobiera dane profilu użytkownika z tabeli `profiles`
 - Pobiera agregację portfela z widoku `v_investments_agg`
 - Wykonuje obliczenia FIRE w czasie rzeczywistym
@@ -13,6 +14,7 @@ Endpoint `GET /v1/me/metrics` służy do obliczania wskaźników FIRE (Financial
 - Obsługuje przypadki brzegowe (zero inwestycji, nieprawidłowe wartości)
 
 **Relacja z bazą danych:**
+
 - Tabela: `public.profiles` (1:1 z `auth.users`)
 - Widok: `public.v_investments_agg` (agregacja z `public.investments`)
 - RLS: Automatyczna filtracja po `user_id = auth.uid()`
@@ -22,9 +24,11 @@ Endpoint `GET /v1/me/metrics` służy do obliczania wskaźników FIRE (Financial
 ## 2. Szczegóły żądania
 
 ### Metoda HTTP
+
 - `GET`
 
 ### Struktura URL
+
 ```
 GET /v1/me/metrics
 ```
@@ -55,6 +59,7 @@ Wszystkie parametry są opcjonalne i służą do nadpisania wartości z profilu 
   - Przykład: `?invested_total=50000`
 
 ### Headers
+
 - **Wymagane:**
   - `Authorization: Bearer <JWT_TOKEN>` - Token JWT z Supabase Auth
 - **Opcjonalne:**
@@ -62,6 +67,7 @@ Wszystkie parametry są opcjonalne i służą do nadpisania wartości z profilu 
   - `X-Request-Id: <uuid>` - Identyfikator korelacji żądania
 
 ### Request Body
+
 - Brak (GET request)
 
 ---
@@ -71,30 +77,32 @@ Wszystkie parametry są opcjonalne i służą do nadpisania wartości z profilu 
 ### DTO (Data Transfer Objects)
 
 #### MetricsDto
+
 ```typescript
 interface MetricsDto {
   inputs: {
-    monthly_expense: number;        // PLN, numeric(16,2)
-    withdrawal_rate_pct: number;    // %, numeric(5,2)
-    expected_return_pct: number;    // %, numeric(5,2)
-    invested_total: number;         // PLN, numeric(16,2)
+    monthly_expense: number; // PLN, numeric(16,2)
+    withdrawal_rate_pct: number; // %, numeric(5,2)
+    expected_return_pct: number; // %, numeric(5,2)
+    invested_total: number; // PLN, numeric(16,2)
   };
   derived: {
-    annual_expense: number;         // PLN (monthly_expense * 12)
-    fire_target: number;            // PLN (annual_expense / (withdrawal_rate_pct / 100))
-    fire_progress: number;          // 0-1 (invested_total / fire_target)
+    annual_expense: number; // PLN (monthly_expense * 12)
+    fire_target: number; // PLN (annual_expense / (withdrawal_rate_pct / 100))
+    fire_progress: number; // 0-1 (invested_total / fire_target)
   };
   time_to_fire: {
-    years_to_fire: number | null;   // null jeśli invested_total <= 0
-    birth_date: string | null;      // ISO 8601 date string lub null
-    current_age: number | null;     // null jeśli birth_date jest null
-    fire_age: number | null;        // null jeśli years_to_fire jest null
+    years_to_fire: number | null; // null jeśli invested_total <= 0
+    birth_date: string | null; // ISO 8601 date string lub null
+    current_age: number | null; // null jeśli birth_date jest null
+    fire_age: number | null; // null jeśli years_to_fire jest null
   };
-  note?: string;                    // Opcjonalna notatka dla przypadków brzegowych
+  note?: string; // Opcjonalna notatka dla przypadków brzegowych
 }
 ```
 
 #### MetricsQuery
+
 ```typescript
 interface MetricsQuery {
   monthly_expense?: number;
@@ -105,29 +113,33 @@ interface MetricsQuery {
 ```
 
 #### ApiError
+
 ```typescript
 interface ApiError {
   error: {
     code: "bad_request" | "unauthorized" | "not_found" | "internal";
     message: string;
     fields?: Record<string, string>;
-  }
+  };
 }
 ```
 
 ### Typy z bazy danych
 
 #### DbProfileRow
+
 ```typescript
-type DbProfileRow = Tables<"profiles">
+type DbProfileRow = Tables<"profiles">;
 ```
 
 #### DbPortfolioAggRow
+
 ```typescript
-type DbPortfolioAggRow = Tables<"v_investments_agg">
+type DbPortfolioAggRow = Tables<"v_investments_agg">;
 ```
 
 **Mapowanie danych:**
+
 - `DbProfileRow` → wartości domyślne dla `inputs` (z możliwością nadpisania przez query params)
 - `DbPortfolioAggRow.total_amount` → wartość domyślna dla `inputs.invested_total` (z możliwością nadpisania)
 - Obliczenia są wykonywane w serwisie na podstawie zmapowanych wartości
@@ -141,17 +153,18 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 **Status Code:** `200 OK`
 
 **Response Body:**
+
 ```json
 {
   "inputs": {
-    "monthly_expense": 4500.00,
-    "withdrawal_rate_pct": 4.00,
-    "expected_return_pct": 7.00,
-    "invested_total": 34000.00
+    "monthly_expense": 4500.0,
+    "withdrawal_rate_pct": 4.0,
+    "expected_return_pct": 7.0,
+    "invested_total": 34000.0
   },
   "derived": {
-    "annual_expense": 54000.00,
-    "fire_target": 1350000.00,
+    "annual_expense": 54000.0,
+    "fire_target": 1350000.0,
     "fire_progress": 0.0252
   },
   "time_to_fire": {
@@ -164,18 +177,19 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 ```
 
 **Przypadek brzegowy - zero inwestycji:**
+
 ```json
 {
   "inputs": {
-    "monthly_expense": 4500.00,
-    "withdrawal_rate_pct": 4.00,
-    "expected_return_pct": 7.00,
-    "invested_total": 0.00
+    "monthly_expense": 4500.0,
+    "withdrawal_rate_pct": 4.0,
+    "expected_return_pct": 7.0,
+    "invested_total": 0.0
   },
   "derived": {
-    "annual_expense": 54000.00,
-    "fire_target": 1350000.00,
-    "fire_progress": 0.00
+    "annual_expense": 54000.0,
+    "fire_target": 1350000.0,
+    "fire_progress": 0.0
   },
   "time_to_fire": {
     "years_to_fire": null,
@@ -188,6 +202,7 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 ```
 
 **Headers:**
+
 - `Content-Type: application/json`
 
 ### Błędy
@@ -197,11 +212,13 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 **Status Code:** `400 Bad Request`
 
 **Przyczyny:**
+
 - `expected_return_pct <= -100` (zapytanie lub profil)
 - Nieprawidłowy format parametrów zapytania (nie są liczbami)
 - Parametry poza dozwolonym zakresem (np. `withdrawal_rate_pct < 0` lub `> 100`)
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -219,6 +236,7 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 **Status Code:** `401 Unauthorized`
 
 **Przyczyny:**
+
 - Brak nagłówka `Authorization`
 - Nieprawidłowy format tokenu JWT
 - Token JWT wygasł
@@ -226,6 +244,7 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 - Użytkownik nie jest zalogowany
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -240,10 +259,12 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 **Status Code:** `404 Not Found`
 
 **Przyczyny:**
+
 - Profil użytkownika nie istnieje w bazie danych
 - RLS zwróciło pusty wynik (teoretycznie nie powinno się zdarzyć, jeśli użytkownik jest zalogowany)
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -258,12 +279,14 @@ type DbPortfolioAggRow = Tables<"v_investments_agg">
 **Status Code:** `500 Internal Server Error`
 
 **Przyczyny:**
+
 - Błąd połączenia z bazą danych
 - Błąd zapytania SQL
 - Błąd obliczeń (np. dzielenie przez zero, logarytm z wartości ujemnej)
 - Nieoczekiwany błąd serwera
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -453,21 +476,19 @@ API Route Handler (GET /v1/me/metrics)
 **Scenariusz:** Klient nie przesłał nagłówka `Authorization` lub token jest nieprawidłowy.
 
 **Obsługa:**
+
 ```typescript
-const authHeader = request.headers.get('Authorization');
-if (!authHeader || !authHeader.startsWith('Bearer ')) {
-  return errorResponse(
-    { code: 'unauthorized', message: 'Missing or invalid authentication token' },
-    401
-  );
+const authHeader = request.headers.get("Authorization");
+if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
 }
 
-const { data: { user }, error: authError } = await supabase.auth.getUser();
+const {
+  data: { user },
+  error: authError,
+} = await supabase.auth.getUser();
 if (authError || !user) {
-  return errorResponse(
-    { code: 'unauthorized', message: 'Invalid or expired token' },
-    401
-  );
+  return errorResponse({ code: "unauthorized", message: "Invalid or expired token" }, 401);
 }
 ```
 
@@ -476,13 +497,11 @@ if (authError || !user) {
 **Scenariusz:** Użytkownik jest zalogowany, ale nie ma profilu w bazie danych.
 
 **Obsługa:**
+
 ```typescript
 const profile = await profileService.getProfileByUserId(supabase, user.id);
 if (!profile) {
-  return errorResponse(
-    { code: 'not_found', message: 'profile_not_found' },
-    404
-  );
+  return errorResponse({ code: "not_found", message: "profile_not_found" }, 404);
 }
 ```
 
@@ -491,6 +510,7 @@ if (!profile) {
 **Scenariusz:** Parametry zapytania są nieprawidłowe (nie są liczbami, poza zakresem, `expected_return_pct <= -100`).
 
 **Obsługa:**
+
 ```typescript
 // Walidacja za pomocą Zod
 const querySchema = z.object({
@@ -504,8 +524,8 @@ const parseResult = querySchema.safeParse(queryParams);
 if (!parseResult.success) {
   return errorResponse(
     {
-      code: 'bad_request',
-      message: 'Invalid input parameters',
+      code: "bad_request",
+      message: "Invalid input parameters",
       fields: parseResult.error.flatten().fieldErrors,
     },
     400
@@ -517,10 +537,10 @@ const mergedExpectedReturn = queryParams.expected_return_pct ?? profile.expected
 if (mergedExpectedReturn <= -100) {
   return errorResponse(
     {
-      code: 'bad_request',
-      message: 'Invalid input parameters',
+      code: "bad_request",
+      message: "Invalid input parameters",
       fields: {
-        expected_return_pct: 'Expected return percentage must be greater than -100',
+        expected_return_pct: "Expected return percentage must be greater than -100",
       },
     },
     400
@@ -533,16 +553,14 @@ if (mergedExpectedReturn <= -100) {
 **Scenariusz:** Błąd podczas obliczeń (np. dzielenie przez zero, logarytm z wartości ujemnej).
 
 **Obsługa:**
+
 ```typescript
 try {
   const metrics = await metricsService.calculateFireMetrics(mergedInputs);
   return jsonResponse(metrics, 200);
 } catch (error) {
-  console.error('Error calculating metrics:', error);
-  return errorResponse(
-    { code: 'internal', message: 'An internal server error occurred' },
-    500
-  );
+  console.error("Error calculating metrics:", error);
+  return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
 }
 ```
 
@@ -551,16 +569,14 @@ try {
 **Scenariusz:** Błąd połączenia z bazą danych lub błąd zapytania SQL.
 
 **Obsługa:**
+
 ```typescript
 try {
   const profile = await profileService.getProfileByUserId(supabase, user.id);
   // ...
 } catch (error) {
-  console.error('Database error:', error);
-  return errorResponse(
-    { code: 'internal', message: 'An internal server error occurred' },
-    500
-  );
+  console.error("Database error:", error);
+  return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
 }
 ```
 
@@ -665,11 +681,13 @@ try {
 ### Krok 1: Utworzenie struktury katalogów
 
 1. Utworzenie katalogu dla API routes:
+
    ```
    src/pages/api/v1/me/metrics.ts
    ```
 
 2. Utworzenie katalogu dla serwisów (jeśli nie istnieje):
+
    ```
    src/lib/services/
    ```
@@ -688,9 +706,10 @@ try {
    - Obsługa przypadków brzegowych (zero inwestycji, dzielenie przez zero)
 
 2. **Implementacja helpera:**
+
    ```typescript
    // src/lib/utils/fire-calculations.ts
-   import type { ISODateString } from '../../types.ts';
+   import type { ISODateString } from "../../types.ts";
 
    export function calculateAge(birthDate: ISODateString): number {
      const today = new Date();
@@ -734,10 +753,11 @@ try {
    - Mapowanie danych do `MetricsDto`
 
 2. **Implementacja serwisu:**
+
    ```typescript
    // src/lib/services/metrics.service.ts
-   import type { MetricsDto, ISODateString } from '../../types.ts';
-   import { calculateAge, calculateYearsToFire } from '../utils/fire-calculations.ts';
+   import type { MetricsDto, ISODateString } from "../../types.ts";
+   import { calculateAge, calculateYearsToFire } from "../utils/fire-calculations.ts";
 
    interface FireMetricsInputs {
      monthly_expense: number;
@@ -754,11 +774,7 @@ try {
      const fire_progress = inputs.invested_total / fire_target;
 
      // Obliczenia time_to_fire
-     const years_to_fire = calculateYearsToFire(
-       fire_target,
-       inputs.invested_total,
-       inputs.expected_return_pct
-     );
+     const years_to_fire = calculateYearsToFire(fire_target, inputs.invested_total, inputs.expected_return_pct);
 
      let current_age: number | null = null;
      let fire_age: number | null = null;
@@ -792,7 +808,7 @@ try {
 
      // Dodanie notatki dla przypadków brzegowych
      if (inputs.invested_total <= 0) {
-       result.note = 'Years to FIRE undefined for zero investments.';
+       result.note = "Years to FIRE undefined for zero investments.";
      }
 
      return result;
@@ -807,27 +823,24 @@ try {
    - Mapowanie `DbPortfolioAggRow` → `PortfolioAggDto` (z użyciem `toPortfolioAggDto` z `types.ts`)
 
 2. **Implementacja serwisu:**
+
    ```typescript
    // src/lib/services/portfolio.service.ts
-   import type { SupabaseClient } from '../db/supabase.client.ts';
-   import type { Database } from '../db/database.types.ts';
-   import type { PortfolioAggDto } from '../../types.ts';
-   import { toPortfolioAggDto } from '../../types.ts';
-   import type { Tables } from '../db/database.types.ts';
+   import type { SupabaseClient } from "../db/supabase.client.ts";
+   import type { Database } from "../db/database.types.ts";
+   import type { PortfolioAggDto } from "../../types.ts";
+   import { toPortfolioAggDto } from "../../types.ts";
+   import type { Tables } from "../db/database.types.ts";
 
-   type DbPortfolioAggRow = Tables<'v_investments_agg'>;
+   type DbPortfolioAggRow = Tables<"v_investments_agg">;
 
    export async function getPortfolioAggByUserId(
      supabase: SupabaseClient<Database>,
      userId: string
    ): Promise<PortfolioAggDto> {
-     const { data, error } = await supabase
-       .from('v_investments_agg')
-       .select('*')
-       .eq('user_id', userId)
-       .maybeSingle();
+     const { data, error } = await supabase.from("v_investments_agg").select("*").eq("user_id", userId).maybeSingle();
 
-     if (error && error.code !== 'PGRST116') {
+     if (error && error.code !== "PGRST116") {
        throw error;
      }
 
@@ -858,9 +871,10 @@ try {
    - Walidacja typów i zakresów wartości
 
 2. **Implementacja walidatora:**
+
    ```typescript
    // src/lib/validators/metrics-query.validator.ts
-   import { z } from 'zod';
+   import { z } from "zod";
 
    export const metricsQuerySchema = z.object({
      monthly_expense: z.coerce.number().min(0).optional(),
@@ -880,21 +894,23 @@ try {
    - Zwracanie użytkownika lub null
 
 2. **Implementacja helpera:**
+
    ```typescript
    // src/lib/auth/helpers.ts
-   import type { SupabaseClient } from '../db/supabase.client.ts';
-   import type { Database } from '../db/database.types.ts';
-   import type { User } from '@supabase/supabase-js';
+   import type { SupabaseClient } from "../db/supabase.client.ts";
+   import type { Database } from "../db/database.types.ts";
+   import type { User } from "@supabase/supabase-js";
 
-   export async function getAuthenticatedUser(
-     supabase: SupabaseClient<Database>
-   ): Promise<User | null> {
-     const { data: { user }, error } = await supabase.auth.getUser();
-     
+   export async function getAuthenticatedUser(supabase: SupabaseClient<Database>): Promise<User | null> {
+     const {
+       data: { user },
+       error,
+     } = await supabase.auth.getUser();
+
      if (error || !user) {
        return null;
      }
-     
+
      return user;
    }
    ```
@@ -907,21 +923,22 @@ try {
    - Funkcje do serializacji DTO
 
 2. **Implementacja helpera:**
+
    ```typescript
    // src/lib/api/response.ts
-   import type { ApiError } from '../../types.ts';
+   import type { ApiError } from "../../types.ts";
 
    export function jsonResponse<T>(data: T, status: number = 200): Response {
      return new Response(JSON.stringify(data), {
        status,
-       headers: { 'Content-Type': 'application/json' },
+       headers: { "Content-Type": "application/json" },
      });
    }
 
-   export function errorResponse(error: ApiError['error'], status: number): Response {
+   export function errorResponse(error: ApiError["error"], status: number): Response {
      return new Response(JSON.stringify({ error }), {
        status,
-       headers: { 'Content-Type': 'application/json' },
+       headers: { "Content-Type": "application/json" },
      });
    }
    ```
@@ -938,15 +955,16 @@ try {
    - Zwrócenie odpowiedzi
 
 2. **Implementacja endpointu:**
+
    ```typescript
    // src/pages/api/v1/me/metrics.ts
-   import type { APIRoute } from 'astro';
-   import { getAuthenticatedUser } from '../../../lib/auth/helpers.ts';
-   import { getProfileByUserId } from '../../../lib/services/profile.service.ts';
-   import { getPortfolioAggByUserId } from '../../../lib/services/portfolio.service.ts';
-   import { calculateFireMetrics } from '../../../lib/services/metrics.service.ts';
-   import { metricsQuerySchema } from '../../../lib/validators/metrics-query.validator.ts';
-   import { jsonResponse, errorResponse } from '../../../lib/api/response.ts';
+   import type { APIRoute } from "astro";
+   import { getAuthenticatedUser } from "../../../lib/auth/helpers.ts";
+   import { getProfileByUserId } from "../../../lib/services/profile.service.ts";
+   import { getPortfolioAggByUserId } from "../../../lib/services/portfolio.service.ts";
+   import { calculateFireMetrics } from "../../../lib/services/metrics.service.ts";
+   import { metricsQuerySchema } from "../../../lib/validators/metrics-query.validator.ts";
+   import { jsonResponse, errorResponse } from "../../../lib/api/response.ts";
 
    export const prerender = false;
 
@@ -954,10 +972,7 @@ try {
      // 1. Authentication check
      const user = await getAuthenticatedUser(locals.supabase);
      if (!user) {
-       return errorResponse(
-         { code: 'unauthorized', message: 'Missing or invalid authentication token' },
-         401
-       );
+       return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
      }
 
      // 2. Parse and validate query parameters
@@ -966,8 +981,8 @@ try {
      if (!parseResult.success) {
        return errorResponse(
          {
-           code: 'bad_request',
-           message: 'Invalid input parameters',
+           code: "bad_request",
+           message: "Invalid input parameters",
            fields: parseResult.error.flatten().fieldErrors as Record<string, string>,
          },
          400
@@ -979,17 +994,11 @@ try {
      try {
        profile = await getProfileByUserId(locals.supabase, user.id);
        if (!profile) {
-         return errorResponse(
-           { code: 'not_found', message: 'profile_not_found' },
-           404
-         );
+         return errorResponse({ code: "not_found", message: "profile_not_found" }, 404);
        }
      } catch (error) {
-       console.error('Error fetching profile:', error);
-       return errorResponse(
-         { code: 'internal', message: 'An internal server error occurred' },
-         500
-       );
+       console.error("Error fetching profile:", error);
+       return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
      }
 
      // 4. Get portfolio aggregation
@@ -997,11 +1006,8 @@ try {
      try {
        portfolioAgg = await getPortfolioAggByUserId(locals.supabase, user.id);
      } catch (error) {
-       console.error('Error fetching portfolio aggregation:', error);
-       return errorResponse(
-         { code: 'internal', message: 'An internal server error occurred' },
-         500
-       );
+       console.error("Error fetching portfolio aggregation:", error);
+       return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
      }
 
      // 5. Merge data (query params override profile/portfolio values)
@@ -1017,10 +1023,10 @@ try {
      if (mergedInputs.expected_return_pct <= -100) {
        return errorResponse(
          {
-           code: 'bad_request',
-           message: 'Invalid input parameters',
+           code: "bad_request",
+           message: "Invalid input parameters",
            fields: {
-             expected_return_pct: 'Expected return percentage must be greater than -100',
+             expected_return_pct: "Expected return percentage must be greater than -100",
            },
          },
          400
@@ -1032,11 +1038,8 @@ try {
        const metrics = calculateFireMetrics(mergedInputs);
        return jsonResponse(metrics, 200);
      } catch (error) {
-       console.error('Error calculating metrics:', error);
-       return errorResponse(
-         { code: 'internal', message: 'An internal server error occurred' },
-         500
-       );
+       console.error("Error calculating metrics:", error);
+       return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
      }
    };
    ```
@@ -1250,10 +1253,6 @@ Content-Type: application/json
 
 ---
 
-*Plan wdrożenia utworzony: 2025-01-15*  
-*Wersja: 1.0*  
-*Autor: AI Assistant*
-
-
-
-
+_Plan wdrożenia utworzony: 2025-01-15_  
+_Wersja: 1.0_  
+_Autor: AI Assistant_

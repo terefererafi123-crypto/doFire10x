@@ -5,6 +5,7 @@
 Endpoint `GET /v1/auth/session` jest prostym endpointem "echo", który weryfikuje ważność tokenu JWT Supabase i zwraca podstawowe informacje o sesji użytkownika: identyfikator użytkownika, role oraz czas wystawienia tokenu (iat - issued at). Endpoint służy do weryfikacji autoryzacji i sprawdzania stanu sesji użytkownika.
 
 **Główne funkcjonalności:**
+
 - Weryfikacja ważności tokenu JWT Supabase
 - Ekstrakcja danych użytkownika z tokenu (user_id, roles, iat)
 - Zwrócenie informacji o sesji w formacie JSON
@@ -27,11 +28,12 @@ Endpoint `GET /v1/auth/session` jest prostym endpointem "echo", który weryfikuj
 ### 3.1. DTOs (Data Transfer Objects)
 
 **`AuthSessionDto`** (z `src/types.ts`):
+
 ```typescript
 export interface AuthSessionDto {
-  user_id: string
-  roles: string[]
-  iat: number
+  user_id: string;
+  roles: string[];
+  iat: number;
 }
 ```
 
@@ -42,17 +44,19 @@ Brak - endpoint jest tylko do odczytu (GET) i nie przyjmuje danych wejściowych.
 ### 3.3. Typy pomocnicze
 
 **Supabase User:**
+
 ```typescript
-import type { User } from '@supabase/supabase-js'
+import type { User } from "@supabase/supabase-js";
 ```
 
 **JWT Payload (wewnętrzny):**
+
 ```typescript
 interface JWTPayload {
-  sub: string // user_id
-  role: string // 'authenticated' | 'anon'
-  iat: number // issued at timestamp
-  exp: number // expiration timestamp
+  sub: string; // user_id
+  role: string; // 'authenticated' | 'anon'
+  iat: number; // issued at timestamp
+  exp: number; // expiration timestamp
   // ... inne pola JWT
 }
 ```
@@ -62,6 +66,7 @@ interface JWTPayload {
 ### 4.1. Sukces (200 OK)
 
 **Struktura odpowiedzi:**
+
 ```json
 {
   "user_id": "3b9c1234-5678-90ab-cdef-1234567890ab",
@@ -71,6 +76,7 @@ interface JWTPayload {
 ```
 
 **Opis pól:**
+
 - `user_id` (string, UUID): Identyfikator użytkownika z tokenu JWT (pole `sub`)
 - `roles` (string[]): Tablica ról użytkownika, zwykle zawiera `["authenticated"]` dla zalogowanych użytkowników
 - `iat` (number): Timestamp Unix (sekundy) czasu wystawienia tokenu (issued at)
@@ -82,6 +88,7 @@ interface JWTPayload {
 #### 401 Unauthorized
 
 **Przyczyny:**
+
 - Brak nagłówka `Authorization`
 - Nieprawidłowy format tokenu (nie zaczyna się od "Bearer ")
 - Nieprawidłowy lub wygasły token JWT
@@ -89,6 +96,7 @@ interface JWTPayload {
 - Użytkownik nie jest zalogowany
 
 **Struktura odpowiedzi:**
+
 ```json
 {
   "error": {
@@ -203,15 +211,15 @@ Client Request
 
 ### 7.1. Scenariusze błędów
 
-| Scenariusz | Kod statusu | Komunikat błędu | Logowanie |
-|------------|-------------|-----------------|-----------|
-| Brak nagłówka Authorization | 401 | "Missing or invalid authentication token" | WARN |
-| Nieprawidłowy format tokenu | 401 | "Missing or invalid authentication token" | WARN |
-| Nieprawidłowy token JWT | 401 | "Missing or invalid authentication token" | WARN |
-| Wygasły token | 401 | "Missing or invalid authentication token" | WARN |
-| Błąd weryfikacji Supabase | 401 | "Missing or invalid authentication token" | ERROR |
-| Błąd parsowania JWT | 401 | "Missing or invalid authentication token" | ERROR |
-| Błąd serwera (nieoczekiwany) | 500 | "Internal server error" | ERROR |
+| Scenariusz                   | Kod statusu | Komunikat błędu                           | Logowanie |
+| ---------------------------- | ----------- | ----------------------------------------- | --------- |
+| Brak nagłówka Authorization  | 401         | "Missing or invalid authentication token" | WARN      |
+| Nieprawidłowy format tokenu  | 401         | "Missing or invalid authentication token" | WARN      |
+| Nieprawidłowy token JWT      | 401         | "Missing or invalid authentication token" | WARN      |
+| Wygasły token                | 401         | "Missing or invalid authentication token" | WARN      |
+| Błąd weryfikacji Supabase    | 401         | "Missing or invalid authentication token" | ERROR     |
+| Błąd parsowania JWT          | 401         | "Missing or invalid authentication token" | ERROR     |
+| Błąd serwera (nieoczekiwany) | 500         | "Internal server error"                   | ERROR     |
 
 ### 7.2. Struktura błędów
 
@@ -283,6 +291,7 @@ Wszystkie błędy zwracają strukturę zgodną z `ApiError` z `src/types.ts`:
    - Dodanie `export const prerender = false` dla API route
 
 2. **Implementacja handlera GET:**
+
    ```typescript
    export async function GET(context: APIContext) {
      // Implementacja weryfikacji tokenu i zwrócenia danych sesji
@@ -366,25 +375,25 @@ Wszystkie błędy zwracają strukturę zgodną z `ApiError` z `src/types.ts`:
 
 ```typescript
 // src/pages/api/v1/auth/session.ts
-import type { APIContext } from 'astro';
-import type { AuthSessionDto } from '../../../types';
+import type { APIContext } from "astro";
+import type { AuthSessionDto } from "../../../types";
 
 export const prerender = false;
 
 export async function GET(context: APIContext): Promise<Response> {
   // Early return dla braku autoryzacji
-  const authHeader = context.request.headers.get('Authorization');
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+  const authHeader = context.request.headers.get("Authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return new Response(
       JSON.stringify({
         error: {
-          code: 'unauthorized',
-          message: 'Missing or invalid authentication token',
+          code: "unauthorized",
+          message: "Missing or invalid authentication token",
         },
       }),
       {
         status: 401,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
@@ -396,69 +405,70 @@ export async function GET(context: APIContext): Promise<Response> {
     // 2. Ustawić sesję w istniejącym client
     // Poniżej przykład z ustawieniem sesji:
     const supabase = context.locals.supabase;
-    const token = authHeader.replace('Bearer ', '');
-    
+    const token = authHeader.replace("Bearer ", "");
+
     // Ustawienie sesji z tokenem
-    const { data: { session }, error: sessionError } = await supabase.auth.setSession({
+    const {
+      data: { session },
+      error: sessionError,
+    } = await supabase.auth.setSession({
       access_token: token,
-      refresh_token: '', // Refresh token nie jest potrzebny dla weryfikacji
+      refresh_token: "", // Refresh token nie jest potrzebny dla weryfikacji
     });
-    
+
     if (sessionError || !session || !session.user) {
       return new Response(
         JSON.stringify({
           error: {
-            code: 'unauthorized',
-            message: 'Missing or invalid authentication token',
+            code: "unauthorized",
+            message: "Missing or invalid authentication token",
           },
         }),
         {
           status: 401,
-          headers: { 'Content-Type': 'application/json' },
+          headers: { "Content-Type": "application/json" },
         }
       );
     }
-    
+
     // Pobranie użytkownika z sesji
     const user = session.user;
-    
+
     // Ekstrakcja danych z tokenu
     // Parsowanie JWT payload, aby uzyskać iat
     let iat: number;
     try {
-      const payload = JSON.parse(
-        Buffer.from(token.split('.')[1], 'base64').toString()
-      );
+      const payload = JSON.parse(Buffer.from(token.split(".")[1], "base64").toString());
       iat = payload.iat || Math.floor(Date.now() / 1000);
     } catch {
       // Fallback do aktualnego czasu, jeśli parsowanie się nie powiedzie
       iat = Math.floor(Date.now() / 1000);
     }
-    
+
     const sessionDto: AuthSessionDto = {
       user_id: user.id,
-      roles: user.role ? [user.role] : ['authenticated'],
+      roles: user.role ? [user.role] : ["authenticated"],
       iat: iat,
     };
 
     return new Response(JSON.stringify(sessionDto), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     // Logowanie nieoczekiwanych błędów
-    console.error('Error in GET /v1/auth/session:', error);
-    
+    console.error("Error in GET /v1/auth/session:", error);
+
     return new Response(
       JSON.stringify({
         error: {
-          code: 'internal',
-          message: 'Internal server error',
+          code: "internal",
+          message: "Internal server error",
         },
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
@@ -470,20 +480,24 @@ export async function GET(context: APIContext): Promise<Response> {
 1. **Weryfikacja tokenu - różne podejścia:**
    - **Opcja 1 (zalecana):** Utworzenie nowego Supabase client z tokenem:
      ```typescript
-     import { createClient } from '@supabase/supabase-js';
+     import { createClient } from "@supabase/supabase-js";
      const supabaseWithToken = createClient(supabaseUrl, supabaseAnonKey, {
-       global: { headers: { Authorization: `Bearer ${token}` } }
+       global: { headers: { Authorization: `Bearer ${token}` } },
      });
-     const { data: { user } } = await supabaseWithToken.auth.getUser();
+     const {
+       data: { user },
+     } = await supabaseWithToken.auth.getUser();
      ```
    - **Opcja 2:** Użycie `setSession()` (może wymagać refresh token):
      ```typescript
-     await supabase.auth.setSession({ access_token: token, refresh_token: '' });
-     const { data: { user } } = await supabase.auth.getUser();
+     await supabase.auth.setSession({ access_token: token, refresh_token: "" });
+     const {
+       data: { user },
+     } = await supabase.auth.getUser();
      ```
    - **Opcja 3:** Parsowanie i weryfikacja JWT bezpośrednio (wymaga biblioteki JWT):
      ```typescript
-     import jwt from 'jsonwebtoken';
+     import jwt from "jsonwebtoken";
      const payload = jwt.verify(token, supabaseJwtSecret);
      ```
    - **Uwaga:** Wybór metody zależy od wersji Supabase SDK i wymagań projektu. Sprawdź aktualną dokumentację Supabase.
@@ -507,6 +521,7 @@ export async function GET(context: APIContext): Promise<Response> {
 ## 11. Podsumowanie
 
 Endpoint `GET /v1/auth/session` jest prostym endpointem weryfikacyjnym, który:
+
 - Weryfikuje ważność tokenu JWT Supabase
 - Zwraca podstawowe informacje o sesji użytkownika (user_id, roles, iat)
 - Nie wykonuje zapytań do bazy danych
@@ -514,4 +529,3 @@ Endpoint `GET /v1/auth/session` jest prostym endpointem weryfikacyjnym, który:
 - Zwraca 200 OK dla prawidłowych tokenów i 401 Unauthorized dla nieprawidłowych
 
 Implementacja powinna być prosta i wydajna, ponieważ endpoint nie wymaga interakcji z bazą danych ani złożonej logiki biznesowej.
-

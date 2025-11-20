@@ -5,6 +5,7 @@
 Endpoint `GET /v1/investments` służy do pobierania listy inwestycji użytkownika z obsługą paginacji kursora, filtrowania i sortowania. Endpoint wymaga autoryzacji i zwraca tylko te inwestycje, które należą do zalogowanego użytkownika (weryfikacja przez Row Level Security w bazie danych). Jest to podstawowy endpoint do przeglądania inwestycji użytkownika, używany w scenariuszach takich jak lista inwestycji, raporty i analizy portfela.
 
 **Kluczowe cechy:**
+
 - Wymaga autoryzacji (Bearer JWT token)
 - Zwraca listę inwestycji z paginacją kursora
 - Obsługuje filtrowanie po typie aktywa i zakresie dat
@@ -44,19 +45,22 @@ Endpoint `GET /v1/investments` służy do pobierania listy inwestycji użytkowni
 Endpoint wykorzystuje typy zdefiniowane w `src/types.ts`:
 
 **InvestmentListResponseDto:**
+
 ```typescript
 export interface InvestmentListResponseDto {
-  items: InvestmentDto[]
-  next_cursor?: Cursor
+  items: InvestmentDto[];
+  next_cursor?: Cursor;
 }
 ```
 
 **InvestmentDto:**
+
 ```typescript
-export type InvestmentDto = Omit<DbInvestmentRow, "user_id">
+export type InvestmentDto = Omit<DbInvestmentRow, "user_id">;
 ```
 
 **Struktura odpowiedzi (200 OK):**
+
 ```typescript
 {
   items: [
@@ -79,14 +83,15 @@ export type InvestmentDto = Omit<DbInvestmentRow, "user_id">
 ### 3.2. Typy zapytań
 
 **InvestmentListQuery:**
+
 ```typescript
 export interface InvestmentListQuery {
-  limit?: number // 1–200 (default 25)
-  cursor?: Cursor
-  type?: AssetType
-  acquired_at_from?: ISODateString
-  acquired_at_to?: ISODateString
-  sort?: "acquired_at_desc" | "acquired_at_asc" | "amount_desc" | "amount_asc"
+  limit?: number; // 1–200 (default 25)
+  cursor?: Cursor;
+  type?: AssetType;
+  acquired_at_from?: ISODateString;
+  acquired_at_to?: ISODateString;
+  sort?: "acquired_at_desc" | "acquired_at_asc" | "amount_desc" | "amount_asc";
 }
 ```
 
@@ -97,10 +102,10 @@ Endpoint wykorzystuje typ `ApiError` zdefiniowany w `src/types.ts`:
 ```typescript
 export interface ApiError {
   error: {
-    code: "unauthorized" | "bad_request" | "internal"
-    message: string
-    fields?: Record<string, string>
-  }
+    code: "unauthorized" | "bad_request" | "internal";
+    message: string;
+    fields?: Record<string, string>;
+  };
 }
 ```
 
@@ -117,19 +122,29 @@ export interface ApiError {
 Parametry zapytania powinny być walidowane za pomocą schematu Zod:
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 const InvestmentListQuerySchema = z.object({
   limit: z.coerce.number().int().min(1).max(200).optional().default(25),
   cursor: z.string().optional(),
-  type: z.enum(['etf', 'bond', 'stock', 'cash']).optional(),
-  acquired_at_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  acquired_at_to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  sort: z.enum(['acquired_at_desc', 'acquired_at_asc', 'amount_desc', 'amount_asc']).optional().default('acquired_at_desc')
+  type: z.enum(["etf", "bond", "stock", "cash"]).optional(),
+  acquired_at_from: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  acquired_at_to: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .optional(),
+  sort: z
+    .enum(["acquired_at_desc", "acquired_at_asc", "amount_desc", "amount_asc"])
+    .optional()
+    .default("acquired_at_desc"),
 });
 ```
 
 **Reguły walidacji:**
+
 - `limit`: Musi być liczbą całkowitą z zakresu 1-200, domyślnie 25
 - `cursor`: Opcjonalny string (dekodowany przez serwis)
 - `type`: Musi być jednym z dozwolonych typów aktywów
@@ -143,13 +158,14 @@ const InvestmentListQuerySchema = z.object({
 **Status:** `200 OK`
 
 **Body:**
+
 ```json
 {
   "items": [
     {
       "id": "ef2a1b2c-3d4e-5f6a-7b8c-9d0e1f2a3b4c",
       "type": "etf",
-      "amount": 12000.00,
+      "amount": 12000.0,
       "acquired_at": "2024-11-01",
       "notes": "IKZE",
       "created_at": "2024-11-01T10:11:12Z",
@@ -158,7 +174,7 @@ const InvestmentListQuerySchema = z.object({
     {
       "id": "a1b2c3d4-5e6f-7a8b-9c0d-1e2f3a4b5c6d",
       "type": "bond",
-      "amount": 5000.00,
+      "amount": 5000.0,
       "acquired_at": "2024-10-15",
       "notes": null,
       "created_at": "2024-10-15T14:20:30Z",
@@ -170,6 +186,7 @@ const InvestmentListQuerySchema = z.object({
 ```
 
 **Uwagi:**
+
 - Jeśli użytkownik nie ma inwestycji, `items` będzie pustą tablicą
 - `next_cursor` jest obecny tylko wtedy, gdy istnieją kolejne strony wyników
 - Kursor jest nieprzezroczysty dla klienta (base64-encoded JSON)
@@ -181,6 +198,7 @@ const InvestmentListQuerySchema = z.object({
 **Status:** `401 Unauthorized`
 
 **Body:**
+
 ```json
 {
   "error": {
@@ -191,6 +209,7 @@ const InvestmentListQuerySchema = z.object({
 ```
 
 **Przyczyny:**
+
 - Brak nagłówka `Authorization`
 - Nieprawidłowy format tokenu
 - Wygasły lub nieprawidłowy token JWT
@@ -201,6 +220,7 @@ const InvestmentListQuerySchema = z.object({
 **Status:** `400 Bad Request`
 
 **Body:**
+
 ```json
 {
   "error": {
@@ -215,6 +235,7 @@ const InvestmentListQuerySchema = z.object({
 ```
 
 **Przyczyny:**
+
 - Nieprawidłowy format parametru `limit` (poza zakresem 1-200)
 - Nieprawidłowy format daty w `acquired_at_from` lub `acquired_at_to`
 - Nieprawidłowa wartość `type` (nie jest jednym z dozwolonych typów)
@@ -226,6 +247,7 @@ const InvestmentListQuerySchema = z.object({
 **Status:** `500 Internal Server Error`
 
 **Body:**
+
 ```json
 {
   "error": {
@@ -236,6 +258,7 @@ const InvestmentListQuerySchema = z.object({
 ```
 
 **Przyczyny:**
+
 - Błąd połączenia z bazą danych
 - Błąd podczas dekodowania kursora
 - Nieoczekiwany błąd podczas wykonywania zapytania
@@ -319,13 +342,15 @@ Client Response
 **Tabela:** `public.investments`
 
 **Indeksy wykorzystywane:**
+
 - `investments_user_id_idx` - dla filtrowania po `user_id` (RLS)
 - `investments_acquired_at_idx` - dla sortowania i filtrowania po dacie
 - `investments_type_idx` - dla filtrowania po typie aktywa
 
 **Zapytanie SQL (przykład):**
+
 ```sql
-SELECT 
+SELECT
   id,
   type,
   amount,
@@ -338,8 +363,8 @@ WHERE user_id = auth.uid()
   AND ($1::asset_type IS NULL OR type = $1::asset_type)
   AND ($2::date IS NULL OR acquired_at >= $2::date)
   AND ($3::date IS NULL OR acquired_at <= $3::date)
-ORDER BY 
-  CASE 
+ORDER BY
+  CASE
     WHEN $4 = 'acquired_at_desc' THEN acquired_at
     WHEN $4 = 'acquired_at_asc' THEN acquired_at
     WHEN $4 = 'amount_desc' THEN amount
@@ -391,10 +416,12 @@ OFFSET $6;
 **Scenariusz:** Brak lub nieprawidłowy token JWT
 
 **Obsługa:**
+
 - Middleware zwraca `401 Unauthorized` przed przetworzeniem żądania
 - Komunikat: "Missing or invalid authentication token"
 
 **Logowanie:**
+
 - Zaloguj próbę dostępu bez autoryzacji (bez wrażliwych danych)
 
 #### 7.1.2. Błąd walidacji (400)
@@ -402,15 +429,18 @@ OFFSET $6;
 **Scenariusz:** Nieprawidłowe parametry zapytania
 
 **Obsługa:**
+
 - Walidacja za pomocą schematu Zod zwraca szczegółowe błędy
 - Zwróć `400 Bad Request` z obiektem `fields` zawierającym szczegóły błędów dla każdego pola
 
 **Przykłady:**
+
 - `limit` poza zakresem 1-200 → `"limit": "must_be_between_1_and_200"`
 - Nieprawidłowy format daty → `"acquired_at_from": "invalid_date_format"`
 - Nieprawidłowy typ aktywa → `"type": "must_be_one_of_etf_bond_stock_cash"`
 
 **Logowanie:**
+
 - Zaloguj błędy walidacji z parametrami zapytania (bez wrażliwych danych)
 
 #### 7.1.3. Błąd dekodowania kursora (400)
@@ -418,10 +448,12 @@ OFFSET $6;
 **Scenariusz:** Nieprawidłowy format kursora
 
 **Obsługa:**
+
 - Próba dekodowania base64 kursora kończy się niepowodzeniem
 - Zwróć `400 Bad Request` z komunikatem: "Invalid cursor format"
 
 **Logowanie:**
+
 - Zaloguj próbę użycia nieprawidłowego kursora
 
 #### 7.1.4. Błąd bazy danych (500)
@@ -429,11 +461,13 @@ OFFSET $6;
 **Scenariusz:** Błąd połączenia z bazą danych lub błąd zapytania
 
 **Obsługa:**
+
 - Przechwyć błąd z Supabase client
 - Zwróć `500 Internal Server Error` z ogólnym komunikatem
 - Nie ujawniaj szczegółów błędu klientowi (ze względów bezpieczeństwa)
 
 **Logowanie:**
+
 - Zaloguj pełny błąd z stack trace (tylko po stronie serwera)
 - Użyj `X-Request-Id` do korelacji logów
 
@@ -442,10 +476,12 @@ OFFSET $6;
 **Scenariusz:** Błąd podczas transformacji wyników z bazy do DTO
 
 **Obsługa:**
+
 - Przechwyć błąd podczas mapowania
 - Zwróć `500 Internal Server Error`
 
 **Logowanie:**
+
 - Zaloguj błąd z kontekstem (user_id, parametry zapytania)
 
 ### 7.2. Struktura odpowiedzi błędów
@@ -647,11 +683,13 @@ Wszystkie błędy zwracają strukturę zgodną z `ApiError`:
 ### 10.1. Paginacja kursora
 
 Paginacja kursora jest preferowana nad OFFSET, ponieważ:
+
 - Zapewnia stabilne sortowanie (nie ma problemu z duplikatami przy dodawaniu nowych rekordów)
 - Lepsza wydajność dla dużych zbiorów danych (OFFSET jest kosztowny)
 - Nieprzezroczysty dla klienta (nie ujawnia struktury danych)
 
 **Format kursora:**
+
 ```typescript
 {
   offset: number,           // Offset dla OFFSET-based pagination (opcjonalnie)
@@ -661,12 +699,14 @@ Paginacja kursora jest preferowana nad OFFSET, ponieważ:
 ```
 
 **Użycie kursora:**
+
 - Dla sortowania po `acquired_at`: `WHERE (acquired_at, id) > ($last_acquired_at, $last_id)`
 - Dla sortowania po `amount`: `WHERE (amount, id) > ($last_amount, $last_id)`
 
 ### 10.2. Obsługa pustych wyników
 
 Jeśli użytkownik nie ma inwestycji, endpoint zwraca:
+
 ```json
 {
   "items": [],
@@ -679,12 +719,14 @@ Nie jest to błąd - to prawidłowa odpowiedź dla użytkownika bez inwestycji.
 ### 10.3. Sortowanie domyślne
 
 Domyślne sortowanie to `acquired_at_desc` (najnowsze inwestycje pierwsze), ponieważ:
+
 - Użytkownicy zazwyczaj chcą zobaczyć najnowsze inwestycje
 - Indeks na `acquired_at` zapewnia dobrą wydajność
 
 ### 10.4. Limit domyślny
 
 Domyślny limit 25 rekordów jest kompromisem między:
+
 - Wydajnością (mniejsze zapytania są szybsze)
 - Doświadczeniem użytkownika (wystarczająca liczba wyników na stronie)
 - Obciążeniem serwera (mniejsze obciążenie bazy danych)
@@ -694,11 +736,8 @@ Maksymalny limit 200 rekordów zapobiega przeciążeniu serwera przy bardzo duż
 ### 10.5. Filtrowanie dat
 
 Filtry `acquired_at_from` i `acquired_at_to` są włączne (inclusive):
+
 - `acquired_at_from`: `acquired_at >= $date`
 - `acquired_at_to`: `acquired_at <= $date`
 
 Oznacza to, że inwestycja z datą dokładnie równą `acquired_at_from` lub `acquired_at_to` będzie uwzględniona w wynikach.
-
-
-
-

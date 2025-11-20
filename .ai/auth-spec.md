@@ -7,10 +7,12 @@ Niniejsza specyfikacja opisuje architekturę modułu rejestracji, logowania i od
 ### 1.1 Uwagi dotyczące niespójności w PRD
 
 **Wykryta sprzeczność #1 - Metoda autentykacji**: W dokumencie PRD istnieje sprzeczność między:
+
 - Sekcją 3.1 (linia 37): "Logowanie przez Supabase magic link (bez haseł)"
 - US-007 (linia 186): "Logowanie wymaga podania adresu email i hasła"
 
 **Rozstrzygnięcie**: US-007 jest bardziej szczegółowym i aktualnym wymaganiem, które precyzuje metodę autentykacji. Niniejsza specyfikacja implementuje wymagania zgodnie z US-007 (email/hasło), ponieważ:
+
 1. US-007 jest bardziej szczegółowy i zawiera pełną specyfikację procesu logowania
 2. US-007 wymaga również rejestracji i odzyskiwania hasła, co nie jest możliwe z magic link
 3. US-007 jest zgodny z wymaganiami bezpieczeństwa (hasła)
@@ -49,16 +51,19 @@ Niniejsza specyfikacja opisuje architekturę modułu rejestracji, logowania i od
 
 **Status**: Wymaga modyfikacji
 
-**Obecna implementacja**: 
+**Obecna implementacja**:
+
 - Używa magic link (OTP)
 - Komponent `LoginForm` wysyła OTP email
 
 **Zmiany wymagane**:
+
 - Zastąpienie logiki magic link formularzem email/hasło
 - Zachowanie obecnego layoutu i struktury
 - Dodanie linku do rejestracji i odzyskiwania hasła
 
 **Struktura**:
+
 ```astro
 ---
 // Server-side: sprawdzenie czy użytkownik jest już zalogowany
@@ -88,6 +93,7 @@ import LoginForm from "../components/LoginForm";
 ```
 
 **Logika server-side**:
+
 - Sprawdzenie sesji użytkownika przez `locals.supabase.auth.getUser()`
 - Jeśli użytkownik jest zalogowany → redirect do `/dashboard`
 - Jeśli nie → renderowanie formularza logowania
@@ -97,11 +103,13 @@ import LoginForm from "../components/LoginForm";
 **Status**: Do utworzenia
 
 **Funkcjonalność**:
+
 - Formularz rejestracji z polami: email, hasło, potwierdzenie hasła
 - Walidacja po stronie klienta i serwera
 - Po udanej rejestracji → automatyczne logowanie → redirect do `/onboarding` (jeśli brak profilu) lub `/dashboard`
 
 **Struktura**:
+
 ```astro
 ---
 // Server-side: sprawdzenie czy użytkownik jest już zalogowany
@@ -133,12 +141,14 @@ import RegisterForm from "../components/RegisterForm";
 **Status**: Do utworzenia
 
 **Funkcjonalność**:
+
 - Formularz z polem email
 - Wysyłka linku resetującego hasło przez Supabase
 - Komunikat sukcesu po wysłaniu emaila
 - Link powrotu do logowania
 
 **Struktura**:
+
 ```astro
 ---
 // Server-side: sprawdzenie czy użytkownik jest już zalogowany
@@ -170,12 +180,14 @@ import ForgotPasswordForm from "../components/ForgotPasswordForm";
 **Status**: Do utworzenia
 
 **Funkcjonalność**:
+
 - Formularz z polami: nowe hasło, potwierdzenie hasła
 - Walidacja tokenu resetującego z URL (hash fragment)
 - Aktualizacja hasła przez Supabase Auth
 - Po sukcesie → automatyczne logowanie → redirect do `/dashboard`
 
 **Struktura**:
+
 ```astro
 ---
 // Server-side: sprawdzenie tokenu z URL (opcjonalne)
@@ -204,11 +216,13 @@ import ResetPasswordForm from "../components/ResetPasswordForm";
 
 **Status**: Wymaga całkowitej przebudowy
 
-**Obecna implementacja**: 
+**Obecna implementacja**:
+
 - Używa `supabaseClient.auth.signInWithOtp()`
 - Obsługuje tylko email
 
 **Nowa implementacja**:
+
 - Pola formularza: `email` (string), `password` (string)
 - Walidacja: email (format), hasło (wymagane)
 - Metoda: `supabaseClient.auth.signInWithPassword({ email, password })`
@@ -221,6 +235,7 @@ import ResetPasswordForm from "../components/ResetPasswordForm";
 - Trwała sesja: `persistSession: true` (domyślnie w Supabase)
 
 **Struktura stanu**:
+
 ```typescript
 interface LoginFormState {
   email: string;
@@ -235,6 +250,7 @@ interface LoginFormState {
 ```
 
 **Walidacja**:
+
 - Email: format regex `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`
 - Hasło: wymagane (minimum 1 znak)
 - Błędy wyświetlane inline pod polami
@@ -244,6 +260,7 @@ interface LoginFormState {
 **Status**: Do utworzenia
 
 **Funkcjonalność**:
+
 - Pola formularza: `email` (string), `password` (string), `confirmPassword` (string)
 - Walidacja:
   - Email: format regex
@@ -258,6 +275,7 @@ interface LoginFormState {
 - Po sukcesie: automatyczne logowanie → sprawdzenie profilu → redirect do `/onboarding` (brak profilu) lub `/dashboard`
 
 **Struktura stanu**:
+
 ```typescript
 interface RegisterFormState {
   email: string;
@@ -274,6 +292,7 @@ interface RegisterFormState {
 ```
 
 **Walidacja**:
+
 - Email: format regex
 - Hasło: minimum 6 znaków
 - Potwierdzenie hasła: identyczne z hasłem
@@ -284,6 +303,7 @@ interface RegisterFormState {
 **Status**: Do utworzenia
 
 **Funkcjonalność**:
+
 - Pole formularza: `email` (string)
 - Walidacja: format email
 - Metoda: `supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: '/reset-password' })`
@@ -293,6 +313,7 @@ interface RegisterFormState {
 - Po sukcesie: komunikat "Sprawdź swoją skrzynkę e-mail. Kliknij w link, aby zresetować hasło"
 
 **Struktura stanu**:
+
 ```typescript
 interface ForgotPasswordFormState {
   email: string;
@@ -310,6 +331,7 @@ interface ForgotPasswordFormState {
 **Status**: Do utworzenia
 
 **Funkcjonalność**:
+
 - Pola formularza: `password` (string), `confirmPassword` (string)
 - Walidacja:
   - Hasło: minimum 6 znaków
@@ -322,6 +344,7 @@ interface ForgotPasswordFormState {
 - Po sukcesie: automatyczne logowanie → redirect do `/dashboard`
 
 **Struktura stanu**:
+
 ```typescript
 interface ResetPasswordFormState {
   password: string;
@@ -336,6 +359,7 @@ interface ResetPasswordFormState {
 ```
 
 **Obsługa tokenu**:
+
 - Token resetujący przychodzi w hash fragment URL: `#access_token=...&type=recovery`
 - Supabase automatycznie parsuje token z hash fragment
 - Jeśli token jest nieprawidłowy, wyświetlić komunikat błędu
@@ -345,39 +369,42 @@ interface ResetPasswordFormState {
 **Status**: Wymaga modyfikacji
 
 **Obecna implementacja**:
+
 - Zawsze wyświetla przycisk "Wyloguj"
 - Zakłada, że użytkownik jest zalogowany
 
 **Nowa implementacja**:
+
 - Sprawdzenie stanu autentykacji przez `supabaseClient.auth.getSession()` lub `useAuth()` hook
 - Jeśli zalogowany: wyświetl przycisk "Wyloguj" (obecna funkcjonalność)
 - Jeśli niezalogowany: wyświetl przycisk "Zaloguj się" (link do `/login`)
 - Przycisk "Zaloguj się" w prawym górnym rogu (zgodnie z US-007)
 
 **Struktura**:
+
 ```typescript
 export function TopNav() {
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean | null>(null);
-  
+
   React.useEffect(() => {
     // Sprawdzenie sesji przy mount
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       setIsAuthenticated(!!session);
     });
-    
+
     // Nasłuchiwanie zmian stanu autentykacji
     const { data: { subscription } } = supabaseClient.auth.onAuthStateChange((event, session) => {
       setIsAuthenticated(!!session);
     });
-    
+
     return () => subscription.unsubscribe();
   }, []);
-  
+
   // Renderowanie warunkowe
   if (isAuthenticated === null) {
     return <nav>...</nav>; // Loading state
   }
-  
+
   return (
     <nav>
       {/* Logo i linki */}
@@ -401,7 +428,8 @@ export function TopNav() {
 
 **Status**: Istnieje, może wymagać drobnych modyfikacji
 
-**Funkcjonalność**: 
+**Funkcjonalność**:
+
 - Pole input dla adresu email
 - Walidacja formatu
 - Wyświetlanie błędów inline
@@ -412,6 +440,7 @@ export function TopNav() {
 **Status**: Do utworzenia
 
 **Funkcjonalność**:
+
 - Pole input typu password z możliwością pokazania/ukrycia hasła
 - Ikona oka do przełączania widoczności
 - Walidacja (opcjonalna, może być przekazana z rodzica)
@@ -419,6 +448,7 @@ export function TopNav() {
 - Obsługa stanów: disabled, error, autoFocus
 
 **Struktura**:
+
 ```typescript
 interface PasswordFieldProps {
   value: string;
@@ -438,7 +468,8 @@ interface PasswordFieldProps {
 
 **Status**: Istnieje, może być używany w nowych formularzach
 
-**Funkcjonalność**: 
+**Funkcjonalność**:
+
 - Wyświetlanie ogólnych błędów formularza (np. błędy submit)
 - Komunikaty błędów z API
 
@@ -448,7 +479,8 @@ interface PasswordFieldProps {
 
 **Status**: Bez zmian
 
-**Funkcjonalność**: 
+**Funkcjonalność**:
+
 - Podstawowy layout HTML
 - Globalne style
 - Meta tagi
@@ -457,7 +489,8 @@ interface PasswordFieldProps {
 
 **Status**: Bez zmian
 
-**Funkcjonalność**: 
+**Funkcjonalność**:
+
 - Layout dla zalogowanych użytkowników
 - Zawiera TopNav
 - GlobalErrorProviderWrapper
@@ -467,16 +500,19 @@ interface PasswordFieldProps {
 #### 2.5.1 Walidacja po stronie klienta
 
 **Email**:
+
 - Format: `/^[^\s@]+@[^\s@]+\.[^\s@]+$/`
 - Komunikat: "Nieprawidłowy format adresu e-mail"
 - Wymagane: Tak
 
 **Hasło**:
+
 - Minimum: 6 znaków (zgodnie z konfiguracją Supabase)
 - Komunikat: "Hasło musi mieć minimum 6 znaków"
 - Wymagane: Tak
 
 **Potwierdzenie hasła**:
+
 - Musi być identyczne z hasłem
 - Komunikat: "Hasła nie są identyczne"
 - Wymagane: Tak (tylko w formularzach rejestracji i resetowania)
@@ -484,22 +520,26 @@ interface PasswordFieldProps {
 #### 2.5.2 Komunikaty błędów z Supabase
 
 **Logowanie**:
+
 - `Invalid login credentials` → "Nieprawidłowy email lub hasło"
 - `Email not confirmed` → "Potwierdź swój adres email przed logowaniem"
 - `Too many requests` → "Zbyt wiele prób. Spróbuj ponownie za kilka minut"
 - `Network error` → "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie"
 
 **Rejestracja**:
+
 - `User already registered` → "Użytkownik o tym adresie email już istnieje"
 - `Password too weak` → "Hasło jest zbyt słabe. Minimum 6 znaków"
 - `Invalid email` → "Nieprawidłowy format adresu email"
 - `Too many requests` → "Zbyt wiele prób. Spróbuj ponownie za kilka minut"
 
 **Odzyskiwanie hasła**:
+
 - `Email not found` → "Jeśli konto istnieje, otrzymasz email z linkiem resetującym" (nie ujawniamy czy email istnieje)
 - `Too many requests` → "Zbyt wiele prób. Spróbuj ponownie za kilka minut"
 
 **Resetowanie hasła**:
+
 - `Invalid token` → "Link resetujący wygasł lub jest nieprawidłowy"
 - `Password too weak` → "Hasło jest zbyt słabe. Minimum 6 znaków"
 - `Session expired` → "Sesja wygasła. Poproś o nowy link resetujący"
@@ -578,18 +618,21 @@ interface PasswordFieldProps {
 
 **Status**: Istnieje, bez zmian
 
-**Funkcjonalność**: 
+**Funkcjonalność**:
+
 - Weryfikacja tokenu JWT z Supabase
 - Zwraca informacje o sesji: `user_id`, `roles`, `iat`
 - Używany przez frontend do sprawdzania stanu autentykacji
 
 **Request**:
+
 ```
 Headers:
   Authorization: Bearer <Supabase-JWT>
 ```
 
 **Response**:
+
 ```typescript
 {
   user_id: string;
@@ -599,6 +642,7 @@ Headers:
 ```
 
 **Błędy**:
+
 - `401 Unauthorized`: Brak lub nieprawidłowy token
 - `500 Internal Server Error`: Błąd serwera
 
@@ -607,11 +651,13 @@ Headers:
 **Uwaga**: Supabase Auth obsługuje większość logiki autentykacji po stronie klienta. Endpointy API mogą być potrzebne tylko dla dodatkowej walidacji lub logiki biznesowej.
 
 **POST `/api/v1/auth/register`** (opcjonalny):
+
 - Może być używany do dodatkowej walidacji przed rejestracją
 - Tworzenie profilu użytkownika po rejestracji
 - Obecnie nie jest wymagany, ponieważ Supabase Auth obsługuje rejestrację bezpośrednio
 
 **POST `/api/v1/auth/reset-password`** (opcjonalny):
+
 - Może być używany do weryfikacji tokenu przed resetowaniem
 - Obecnie nie jest wymagany, ponieważ Supabase Auth obsługuje resetowanie bezpośrednio
 
@@ -634,6 +680,7 @@ export interface AuthSessionDto {
 **Status**: Zarządzany przez Supabase
 
 **Struktura** (z Supabase):
+
 ```typescript
 {
   id: string;
@@ -650,17 +697,20 @@ export interface AuthSessionDto {
 #### 3.3.1 Walidacja po stronie serwera (middleware)
 
 **Middleware** (`src/middleware/index.ts`):
+
 - Tworzy Supabase client z tokenem z `Authorization` header
 - Token jest weryfikowany przez Supabase przy każdym żądaniu
 - Jeśli token jest nieprawidłowy, Supabase zwróci błąd
 
 **Aktualizacja**:
+
 - Middleware pozostaje bez zmian
 - Token jest przekazywany z frontendu przez `Authorization: Bearer <token>`
 
 #### 3.3.2 Walidacja w endpointach API
 
 **Obecne endpointy** (`/api/v1/me/*`, `/api/v1/investments/*`):
+
 - Używają `getAuthenticatedUser()` z `src/lib/auth/helpers.ts`
 - Jeśli użytkownik nie jest zalogowany → `401 Unauthorized`
 - Komunikat: "Zaloguj ponownie" (zgodnie z US-001)
@@ -672,37 +722,44 @@ export interface AuthSessionDto {
 #### 3.4.1 Błędy autentykacji
 
 **401 Unauthorized**:
+
 - Brak tokenu w `Authorization` header
 - Nieprawidłowy lub wygasły token
 - Komunikat: "Zaloguj ponownie" (zgodnie z US-001 i US-006)
 
 **403 Forbidden**:
+
 - Token prawidłowy, ale użytkownik nie ma uprawnień
 - Komunikat: "Zaloguj ponownie" (zgodnie z US-006)
 
 **Obsługa w komponentach**:
+
 - GlobalErrorBanner może wyświetlać komunikaty błędów autentykacji
 - Komponenty formularzy wyświetlają błędy inline
 
 #### 3.4.2 Błędy sieciowe
 
 **Network Error**:
+
 - Brak połączenia z internetem
 - Timeout żądania
 - Komunikat: "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie"
 
 **Obsługa**:
+
 - Try-catch w komponentach React
 - Wyświetlanie komunikatów błędów w formularzach
 
 #### 3.4.3 Rate limiting
 
 **Too many requests**:
+
 - Supabase zwraca błąd 429 lub komunikat o rate limit
 - Komunikat: "Zbyt wiele prób. Spróbuj ponownie za kilka minut"
 - Opcjonalnie: wyświetlenie countdown timer
 
 **Obsługa**:
+
 - Wykrywanie błędów rate limit w komponentach
 - Wyświetlanie komunikatu z countdown (opcjonalnie)
 
@@ -711,12 +768,14 @@ export interface AuthSessionDto {
 #### 3.5.1 Strony publiczne (login, register, forgot-password)
 
 **Renderowanie**:
+
 - SSR (server-side rendering)
 - Sprawdzenie sesji użytkownika w Astro page
 - Jeśli zalogowany → redirect do `/dashboard`
 - Jeśli niezalogowany → renderowanie formularza
 
 **Przykład** (`src/pages/login.astro`):
+
 ```astro
 ---
 import { getAuthenticatedUser } from "../lib/auth/helpers";
@@ -735,11 +794,13 @@ if (import.meta.env.SSR) {
 #### 3.5.2 Strony chronione (dashboard, onboarding)
 
 **Renderowanie**:
+
 - SSR z weryfikacją autentykacji
 - Jeśli niezalogowany → redirect do `/login`
 - Jeśli zalogowany → renderowanie zawartości
 
 **Przykład** (`src/pages/dashboard.astro`):
+
 ```astro
 ---
 import { getAuthenticatedUser } from "../lib/auth/helpers";
@@ -760,6 +821,7 @@ if (import.meta.env.SSR) {
 **Status**: Bez zmian
 
 **Konfiguracja**:
+
 - `output: "server"` - SSR włączony
 - `adapter: node({ mode: "standalone" })` - Node.js adapter
 - Middleware jest wykonywany przed renderowaniem stron
@@ -775,6 +837,7 @@ if (import.meta.env.SSR) {
 **Plik**: `supabase/config.toml`
 
 **Ustawienia wymagane**:
+
 ```toml
 [auth]
 enabled = true
@@ -788,6 +851,7 @@ enable_confirmations = false  # Opcjonalnie: wymaganie potwierdzenia email
 ```
 
 **Metoda autentykacji**:
+
 - Email/Password: włączona (domyślnie)
 - Magic Link: wyłączona (nie używamy)
 - OAuth providers: wyłączone (zgodnie z US-007)
@@ -798,16 +862,18 @@ enable_confirmations = false  # Opcjonalnie: wymaganie potwierdzenia email
 
 **Status**: Wymaga aktualizacji
 
-**Obecna implementacja**: 
+**Obecna implementacja**:
+
 - Tworzy klienta bez dodatkowych opcji
 
 **Nowa implementacja**:
+
 ```typescript
 export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: true,  // Trwała sesja (zgodnie z US-001)
-    autoRefreshToken: true,  // Automatyczne odświeżanie tokenu
-    detectSessionInUrl: true,  // Wykrywanie sesji w URL (dla resetowania hasła)
+    persistSession: true, // Trwała sesja (zgodnie z US-001)
+    autoRefreshToken: true, // Automatyczne odświeżanie tokenu
+    detectSessionInUrl: true, // Wykrywanie sesji w URL (dla resetowania hasła)
   },
 });
 ```
@@ -821,19 +887,23 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Metoda**: `supabaseClient.auth.signInWithPassword({ email, password })`
 
 **Parametry**:
+
 - `email`: string (wymagane)
 - `password`: string (wymagane)
 
 **Zwraca**:
+
 - `{ data: { user, session }, error: null }` - sukces
 - `{ data: { user: null, session: null }, error: AuthError }` - błąd
 
 **Obsługa błędów**:
+
 - `Invalid login credentials` → Nieprawidłowy email lub hasło
 - `Email not confirmed` → Email nie został potwierdzony
 - `Too many requests` → Rate limit
 
 **Sesja**:
+
 - Automatycznie zapisywana w localStorage (jeśli `persistSession: true`)
 - Token jest odświeżany automatycznie
 - Sesja jest utrzymywana między odświeżeniami strony (zgodnie z US-001)
@@ -843,19 +913,23 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Metoda**: `supabaseClient.auth.signUp({ email, password })`
 
 **Parametry**:
+
 - `email`: string (wymagane)
 - `password`: string (wymagane, minimum 6 znaków)
 
 **Zwraca**:
+
 - `{ data: { user, session }, error: null }` - sukces
 - `{ data: { user: null, session: null }, error: AuthError }` - błąd
 
 **Obsługa błędów**:
+
 - `User already registered` → Użytkownik już istnieje
 - `Password too weak` → Hasło zbyt słabe
 - `Invalid email` → Nieprawidłowy format email
 
 **Sesja**:
+
 - Po rejestracji użytkownik jest automatycznie logowany
 - Sesja jest zapisywana w localStorage
 
@@ -866,10 +940,12 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Parametry**: Brak
 
 **Zwraca**:
+
 - `{ error: null }` - sukces
 - `{ error: AuthError }` - błąd
 
 **Efekt**:
+
 - Sesja jest usuwana z localStorage
 - Token jest unieważniany
 - Użytkownik jest wylogowany
@@ -879,18 +955,22 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Metoda**: `supabaseClient.auth.resetPasswordForEmail(email, options)`
 
 **Parametry**:
+
 - `email`: string (wymagane)
 - `options.redirectTo`: string (URL do przekierowania po kliknięciu linku)
 
 **Zwraca**:
+
 - `{ data: {}, error: null }` - sukces (email wysłany)
 - `{ data: {}, error: AuthError }` - błąd
 
 **Obsługa błędów**:
+
 - `Email not found` → Nie ujawniamy czy email istnieje (bezpieczeństwo)
 - `Too many requests` → Rate limit
 
 **Proces**:
+
 1. Supabase wysyła email z linkiem resetującym
 2. Link zawiera token w hash fragment: `/reset-password#access_token=...&type=recovery`
 3. Użytkownik klika link → przekierowanie do `/reset-password`
@@ -903,18 +983,22 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Metoda**: `supabaseClient.auth.updateUser({ password: newPassword })`
 
 **Parametry**:
+
 - `password`: string (wymagane, minimum 6 znaków)
 
 **Zwraca**:
+
 - `{ data: { user }, error: null }` - sukces
 - `{ data: { user: null }, error: AuthError }` - błąd
 
 **Obsługa błędów**:
+
 - `Invalid token` → Token wygasł lub jest nieprawidłowy
 - `Password too weak` → Hasło zbyt słabe
 - `Session expired` → Sesja wygasła
 
 **Efekt**:
+
 - Hasło jest zaktualizowane
 - Użytkownik pozostaje zalogowany (jeśli token był prawidłowy)
 
@@ -925,6 +1009,7 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Konfiguracja**: `persistSession: true` w opcjach klienta Supabase
 
 **Efekt**:
+
 - Sesja jest zapisywana w localStorage
 - Sesja jest przywracana po odświeżeniu strony
 - Token jest automatycznie odświeżany
@@ -936,6 +1021,7 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Konfiguracja**: `autoRefreshToken: true` (domyślnie włączone)
 
 **Efekt**:
+
 - Token jest automatycznie odświeżany przed wygaśnięciem
 - Użytkownik nie jest wylogowywany automatycznie
 - Sesja pozostaje aktywna
@@ -945,6 +1031,7 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Konfiguracja**: `detectSessionInUrl: true`
 
 **Efekt**:
+
 - Supabase automatycznie wykrywa token w hash fragment URL
 - Używane przy resetowaniu hasła i innych przepływach OAuth
 - Token jest parsowany i sesja jest tworzona automatycznie
@@ -953,16 +1040,19 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 
 #### 4.4.1 Błędy 401/403
 
-**Źródło**: 
+**Źródło**:
+
 - Nieprawidłowy lub wygasły token
 - Brak tokenu w żądaniu
 
 **Obsługa**:
+
 - Middleware zwraca `401 Unauthorized`
 - Frontend wyświetla komunikat "Zaloguj ponownie" (zgodnie z US-001 i US-006)
 - Użytkownik jest przekierowywany do `/login`
 
 **Implementacja**:
+
 - Endpointy API używają `getAuthenticatedUser()`
 - Jeśli `null` → zwróć `401 Unauthorized`
 - Frontend obsługuje błędy 401/403 w komponentach
@@ -970,11 +1060,13 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 #### 4.4.2 Błędy sieciowe
 
 **Źródło**:
+
 - Brak połączenia z internetem
 - Timeout żądania
 - Błąd Supabase API
 
 **Obsługa**:
+
 - Try-catch w komponentach React
 - Wyświetlanie komunikatów błędów w formularzach
 - Komunikat: "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie"
@@ -982,10 +1074,12 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 #### 4.4.3 Rate limiting
 
 **Źródło**:
+
 - Zbyt wiele żądań w krótkim czasie
 - Supabase zwraca błąd 429 lub komunikat o rate limit
 
 **Obsługa**:
+
 - Wykrywanie błędów rate limit w komponentach
 - Wyświetlanie komunikatu: "Zbyt wiele prób. Spróbuj ponownie za kilka minut"
 - Opcjonalnie: countdown timer
@@ -997,6 +1091,7 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 **Status**: Bez zmian
 
 **Funkcjonalność**:
+
 - Tworzy Supabase client z tokenem z `Authorization` header
 - Token jest przekazywany do `context.locals.supabase`
 - Endpointy API używają `locals.supabase` do weryfikacji autentykacji
@@ -1006,11 +1101,13 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 #### 4.5.2 Server-side rendering
 
 **Strony publiczne**:
+
 - Sprawdzenie sesji w Astro page (opcjonalne)
 - Jeśli zalogowany → redirect do `/dashboard`
 - Jeśli niezalogowany → renderowanie formularza
 
 **Strony chronione**:
+
 - Sprawdzenie sesji w Astro page (wymagane)
 - Jeśli niezalogowany → redirect do `/login`
 - Jeśli zalogowany → renderowanie zawartości
@@ -1020,13 +1117,17 @@ export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKe
 #### 4.5.3 Client-side rendering
 
 **Komponenty React**:
+
 - Używają `supabaseClient` do operacji autentykacji
 - Sesja jest zarządzana przez Supabase (localStorage)
 - Token jest przekazywany do API przez `Authorization` header
 
 **Przykład**:
+
 ```typescript
-const { data: { session } } = await supabaseClient.auth.getSession();
+const {
+  data: { session },
+} = await supabaseClient.auth.getSession();
 const token = session?.access_token;
 
 const response = await fetch("/api/v1/me/profile", {
@@ -1043,30 +1144,37 @@ const response = await fetch("/api/v1/me/profile", {
 ### 5.1 Weryfikacja pokrycia User Stories
 
 **US-001: Logowanie użytkownika**
+
 - ✅ **Sesja utrzymuje się między odświeżeniami strony** → Implementacja: `persistSession: true` w konfiguracji Supabase client (sekcja 4.1.2, 4.3.1)
 - ✅ **Przy błędnym tokenie wyświetlany jest komunikat "Zaloguj ponownie"** → Implementacja: Obsługa błędów 401/403 w endpointach API i komponentach (sekcja 3.4.1, 4.4.1)
 
 **US-002: Dodanie inwestycji**
+
 - ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
 - ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
 **US-003: Edycja i usuwanie inwestycji**
+
 - ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
 - ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
 **US-004: Przeliczenie wskaźników FIRE**
+
 - ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
 - ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
 **US-005: Analiza portfela (AI Hint)**
+
 - ✅ **Wymaga logowania** → Implementacja: Endpointy API używają `getAuthenticatedUser()` (sekcja 3.3.2)
 - ℹ️ **Nie wymaga zmian w module autentykacji** → Istniejąca logika pozostaje niezmieniona
 
 **US-006: Walidacje i błędy**
+
 - ✅ **Błąd 401/403 → komunikat "Zaloguj ponownie"** → Implementacja: Obsługa w endpointach API i komponentach (sekcja 3.4.1, 4.4.1)
 - ℹ️ **Walidacje formularzy inwestycji** → Nie wymagają zmian w module autentykacji
 
 **US-007: Bezpieczny dostęp i uwierzytelnianie**
+
 - ✅ **Logowanie i rejestracja odbywają się na dedykowanych stronach** → Implementacja: `/login`, `/register` (sekcja 2.1.1, 2.1.2)
 - ✅ **Logowanie wymaga podania adresu email i hasła** → Implementacja: `LoginForm` z `signInWithPassword()` (sekcja 2.2.1, 4.2.1)
 - ✅ **Rejestracja wymaga podania adresu email, hasła i potwierdzenia hasła** → Implementacja: `RegisterForm` (sekcja 2.2.2, 4.2.2)
@@ -1078,6 +1186,7 @@ const response = await fetch("/api/v1/me/profile", {
 ### 5.2 Podsumowanie zgodności
 
 **Wszystkie User Stories są w pełni pokryte przez niniejszą specyfikację:**
+
 - US-001: ✅ Pełne pokrycie (trwała sesja, obsługa błędów)
 - US-002: ✅ Zgodność zachowana (wymaga logowania)
 - US-003: ✅ Zgodność zachowana (wymaga logowania)
@@ -1179,4 +1288,3 @@ const response = await fetch("/api/v1/me/profile", {
 ---
 
 **Koniec specyfikacji**
-

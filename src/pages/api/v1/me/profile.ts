@@ -141,9 +141,9 @@ export const POST: APIRoute = async ({ locals, request }) => {
   let body: unknown;
   try {
     body = await request.json();
-    } catch {
-      console.warn(
-        `Invalid JSON in request body for POST /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+  } catch {
+    console.warn(
+      `Invalid JSON in request body for POST /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
     );
     return errorResponse(
       {
@@ -196,7 +196,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
         }
       } else if (err.code === "unrecognized_keys") {
         // Handle unknown fields (from .strict() mode)
-        const unknownKeys = (err as any).keys || [];
+        const unknownKeys = (err && typeof err === "object" && "keys" in err && Array.isArray(err.keys) ? err.keys : []) as string[];
         unknownKeys.forEach((key: string) => {
           fields[key] = "unknown_field";
         });
@@ -262,7 +262,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
     }
 
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // 7. Handle errors - check error type
     console.error(
       `Error creating profile in POST /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}:`,
@@ -270,7 +270,7 @@ export const POST: APIRoute = async ({ locals, request }) => {
     );
 
     // Handle unique constraint violation (profile already exists)
-    if (error.code === "23505") {
+    if (error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "23505") {
       return errorResponse(
         {
           code: "conflict",
@@ -363,9 +363,9 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
   let body: unknown;
   try {
     body = await request.json();
-    } catch {
-      console.warn(
-        `Invalid JSON in request body for PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
+  } catch {
+    console.warn(
+      `Invalid JSON in request body for PATCH /v1/me/profile${requestId ? ` [Request-ID: ${requestId}]` : ""}`
     );
     return errorResponse(
       {
@@ -413,7 +413,7 @@ export const PATCH: APIRoute = async ({ locals, request }) => {
         }
       } else if (err.code === "unrecognized_keys") {
         // Handle unknown fields (from .strict() mode)
-        const unknownKeys = (err as any).keys || [];
+        const unknownKeys = (err && typeof err === "object" && "keys" in err && Array.isArray(err.keys) ? err.keys : []) as string[];
         unknownKeys.forEach((key: string) => {
           fields[key] = "unknown_field";
         });

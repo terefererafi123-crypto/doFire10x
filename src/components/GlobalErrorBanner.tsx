@@ -18,18 +18,14 @@ export interface GlobalErrorBannerProps {
 export function GlobalErrorBanner({ error, onDismiss, onRedirect, className }: GlobalErrorBannerProps) {
   const [isRedirecting, setIsRedirecting] = React.useState(false);
 
-  // Don't render if there's no error
-  if (!error) {
-    return null;
-  }
-
-  const errorCode = error.error.code;
+  const errorCode = error?.error.code;
   const isAuthError = errorCode === "unauthorized" || errorCode === "forbidden";
   const isServerError = errorCode === "internal";
   const isRateLimitError = errorCode === "too_many_requests";
 
   // Get user-friendly error message
   const getErrorMessage = (): string => {
+    if (!error) return "Wystąpił błąd";
     if (isAuthError) {
       return "Sesja wygasła – zaloguj się ponownie";
     }
@@ -44,6 +40,7 @@ export function GlobalErrorBanner({ error, onDismiss, onRedirect, className }: G
 
   // Handle redirect for auth errors
   React.useEffect(() => {
+    if (!error) return;
     if (isAuthError && !isRedirecting) {
       const timer = setTimeout(() => {
         setIsRedirecting(true);
@@ -56,7 +53,12 @@ export function GlobalErrorBanner({ error, onDismiss, onRedirect, className }: G
 
       return () => clearTimeout(timer);
     }
-  }, [isAuthError, isRedirecting, onRedirect]);
+  }, [isAuthError, isRedirecting, onRedirect, error]);
+
+  // Don't render if there's no error
+  if (!error) {
+    return null;
+  }
 
   const handleDismiss = () => {
     if (onDismiss) {

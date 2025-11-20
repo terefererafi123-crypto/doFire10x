@@ -22,13 +22,13 @@ Konstruktor `OpenRouterService` inicjalizuje usługę z wymaganym kluczem API i 
 
 ```typescript
 interface OpenRouterConfig {
-  apiKey: string;           // Wymagany klucz API OpenRouter
-  baseUrl?: string;         // Opcjonalny URL bazowy (domyślnie: 'https://openrouter.ai/api/v1')
-  referer?: string;         // Opcjonalny nagłówek HTTP-Referer dla identyfikacji aplikacji
-  appTitle?: string;        // Opcjonalny nagłówek X-Title dla identyfikacji aplikacji
-  timeout?: number;         // Opcjonalny timeout żądania w ms (domyślnie: 30000)
-  maxRetries?: number;      // Opcjonalna liczba ponownych prób przy błędach sieciowych (domyślnie: 3)
-  retryDelay?: number;      // Opcjonalne opóźnienie między próbami w ms (domyślnie: 1000)
+  apiKey: string; // Wymagany klucz API OpenRouter
+  baseUrl?: string; // Opcjonalny URL bazowy (domyślnie: 'https://openrouter.ai/api/v1')
+  referer?: string; // Opcjonalny nagłówek HTTP-Referer dla identyfikacji aplikacji
+  appTitle?: string; // Opcjonalny nagłówek X-Title dla identyfikacji aplikacji
+  timeout?: number; // Opcjonalny timeout żądania w ms (domyślnie: 30000)
+  maxRetries?: number; // Opcjonalna liczba ponownych prób przy błędach sieciowych (domyślnie: 3)
+  retryDelay?: number; // Opcjonalne opóźnienie między próbami w ms (domyślnie: 1000)
 }
 ```
 
@@ -45,30 +45,30 @@ class OpenRouterService {
 
   constructor(config: OpenRouterConfig) {
     // Walidacja klucza API
-    if (!config.apiKey || typeof config.apiKey !== 'string' || config.apiKey.trim().length === 0) {
-      throw new Error('OpenRouter API key is required');
+    if (!config.apiKey || typeof config.apiKey !== "string" || config.apiKey.trim().length === 0) {
+      throw new Error("OpenRouter API key is required");
     }
 
     this.apiKey = config.apiKey.trim();
-    this.baseUrl = config.baseUrl ?? 'https://openrouter.ai/api/v1';
+    this.baseUrl = config.baseUrl ?? "https://openrouter.ai/api/v1";
     this.timeout = config.timeout ?? 30000;
     this.maxRetries = config.maxRetries ?? 3;
     this.retryDelay = config.retryDelay ?? 1000;
 
     // Inicjalizacja nagłówków
     this.headers = {
-      'Authorization': `Bearer ${this.apiKey}`,
-      'Content-Type': 'application/json',
-      'HTTP-Referer': config.referer ?? '',
-      'X-Title': config.appTitle ?? '',
+      Authorization: `Bearer ${this.apiKey}`,
+      "Content-Type": "application/json",
+      "HTTP-Referer": config.referer ?? "",
+      "X-Title": config.appTitle ?? "",
     };
 
     // Usuń puste nagłówki opcjonalne
-    if (!this.headers['HTTP-Referer']) {
-      delete this.headers['HTTP-Referer'];
+    if (!this.headers["HTTP-Referer"]) {
+      delete this.headers["HTTP-Referer"];
     }
-    if (!this.headers['X-Title']) {
-      delete this.headers['X-Title'];
+    if (!this.headers["X-Title"]) {
+      delete this.headers["X-Title"];
     }
   }
 }
@@ -85,9 +85,9 @@ const service = new OpenRouterService({
 // Pełna konfiguracja z wszystkimi opcjami
 const service = new OpenRouterService({
   apiKey: import.meta.env.OPENROUTER_API_KEY,
-  baseUrl: 'https://openrouter.ai/api/v1',
-  referer: 'https://dofire.app',
-  appTitle: 'DoFIRE App',
+  baseUrl: "https://openrouter.ai/api/v1",
+  referer: "https://dofire.app",
+  appTitle: "DoFIRE App",
   timeout: 60000,
   maxRetries: 5,
   retryDelay: 2000,
@@ -110,17 +110,17 @@ async chatCompletion(params: ChatCompletionParams): Promise<ChatCompletionRespon
 
 ```typescript
 interface ChatCompletionParams {
-  messages: Message[];                    // Lista wiadomości w konwersacji
-  model: string;                          // Nazwa modelu (np. 'openai/gpt-4o', 'anthropic/claude-3.5-sonnet')
-  responseFormat?: ResponseFormat;        // Opcjonalny format odpowiedzi (JSON schema)
-  temperature?: number;                   // Opcjonalna temperatura (0-2, domyślnie: 1)
-  maxTokens?: number;                     // Opcjonalna maksymalna liczba tokenów w odpowiedzi
-  topP?: number;                          // Opcjonalny top_p (0-1, domyślnie: 1)
-  topK?: number;                          // Opcjonalny top_k (dla niektórych modeli)
-  frequencyPenalty?: number;              // Opcjonalna kara za częstotliwość (-2 do 2)
-  presencePenalty?: number;               // Opcjonalna kara za obecność (-2 do 2)
-  stream?: boolean;                       // Opcjonalne włączenie streaming (domyślnie: false)
-  metadata?: Record<string, unknown>;     // Opcjonalne metadane żądania
+  messages: Message[]; // Lista wiadomości w konwersacji
+  model: string; // Nazwa modelu (np. 'openai/gpt-4o', 'anthropic/claude-3.5-sonnet')
+  responseFormat?: ResponseFormat; // Opcjonalny format odpowiedzi (JSON schema)
+  temperature?: number; // Opcjonalna temperatura (0-2, domyślnie: 1)
+  maxTokens?: number; // Opcjonalna maksymalna liczba tokenów w odpowiedzi
+  topP?: number; // Opcjonalny top_p (0-1, domyślnie: 1)
+  topK?: number; // Opcjonalny top_k (dla niektórych modeli)
+  frequencyPenalty?: number; // Opcjonalna kara za częstotliwość (-2 do 2)
+  presencePenalty?: number; // Opcjonalna kara za obecność (-2 do 2)
+  stream?: boolean; // Opcjonalne włączenie streaming (domyślnie: false)
+  metadata?: Record<string, unknown>; // Opcjonalne metadane żądania
 }
 ```
 
@@ -128,8 +128,8 @@ interface ChatCompletionParams {
 
 ```typescript
 interface Message {
-  role: 'system' | 'user' | 'assistant';  // Rola wiadomości
-  content: string;                         // Treść wiadomości
+  role: "system" | "user" | "assistant"; // Rola wiadomości
+  content: string; // Treść wiadomości
 }
 ```
 
@@ -137,11 +137,11 @@ interface Message {
 
 ```typescript
 interface ResponseFormat {
-  type: 'json_schema';
+  type: "json_schema";
   json_schema: {
-    name: string;                          // Nazwa schematu
-    strict: boolean;                       // Czy schemat jest ścisły (wymusza dokładne dopasowanie)
-    schema: JSONSchema;                    // Schemat JSON zgodny z JSON Schema Draft 7
+    name: string; // Nazwa schematu
+    strict: boolean; // Czy schemat jest ścisły (wymusza dokładne dopasowanie)
+    schema: JSONSchema; // Schemat JSON zgodny z JSON Schema Draft 7
   };
 }
 ```
@@ -151,10 +151,10 @@ interface ResponseFormat {
 ```typescript
 const response = await service.chatCompletion({
   messages: [
-    { role: 'system', content: 'You are a helpful financial advisor.' },
-    { role: 'user', content: 'What is the FIRE number?' }
+    { role: "system", content: "You are a helpful financial advisor." },
+    { role: "user", content: "What is the FIRE number?" },
   ],
-  model: 'openai/gpt-4o',
+  model: "openai/gpt-4o",
   temperature: 0.7,
   maxTokens: 500,
 });
@@ -166,46 +166,46 @@ const response = await service.chatCompletion({
 const response = await service.chatCompletion({
   messages: [
     {
-      role: 'system',
-      content: 'You are a financial advisor. Analyze the portfolio and provide structured feedback.'
+      role: "system",
+      content: "You are a financial advisor. Analyze the portfolio and provide structured feedback.",
     },
     {
-      role: 'user',
-      content: 'My portfolio has 80% stocks and 20% bonds. Provide feedback.'
-    }
+      role: "user",
+      content: "My portfolio has 80% stocks and 20% bonds. Provide feedback.",
+    },
   ],
-  model: 'openai/gpt-4o',
+  model: "openai/gpt-4o",
   responseFormat: {
-    type: 'json_schema',
+    type: "json_schema",
     json_schema: {
-      name: 'portfolio_feedback',
+      name: "portfolio_feedback",
       strict: true,
       schema: {
-        type: 'object',
+        type: "object",
         properties: {
           risk_level: {
-            type: 'string',
-            enum: ['low', 'medium', 'high'],
-            description: 'Risk level of the portfolio'
+            type: "string",
+            enum: ["low", "medium", "high"],
+            description: "Risk level of the portfolio",
           },
           recommendation: {
-            type: 'string',
-            description: 'Recommendation for portfolio adjustment'
+            type: "string",
+            description: "Recommendation for portfolio adjustment",
           },
           diversification_score: {
-            type: 'number',
+            type: "number",
             minimum: 0,
             maximum: 100,
-            description: 'Diversification score from 0 to 100'
-          }
+            description: "Diversification score from 0 to 100",
+          },
         },
-        required: ['risk_level', 'recommendation', 'diversification_score'],
-        additionalProperties: false
-      }
-    }
+        required: ["risk_level", "recommendation", "diversification_score"],
+        additionalProperties: false,
+      },
+    },
   },
   temperature: 0.3,
-  maxTokens: 300
+  maxTokens: 300,
 });
 ```
 
@@ -213,13 +213,13 @@ const response = await service.chatCompletion({
 
 ```typescript
 interface ChatCompletionResponse {
-  id: string;                              // Unikalny identyfikator odpowiedzi
-  model: string;                           // Nazwa użytego modelu
-  created: number;                         // Timestamp utworzenia odpowiedzi
+  id: string; // Unikalny identyfikator odpowiedzi
+  model: string; // Nazwa użytego modelu
+  created: number; // Timestamp utworzenia odpowiedzi
   choices: Array<{
     index: number;
-    message: Message;                      // Wiadomość asystenta
-    finish_reason: 'stop' | 'length' | 'tool_calls' | 'content_filter' | null;
+    message: Message; // Wiadomość asystenta
+    finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | null;
   }>;
   usage?: {
     prompt_tokens: number;
@@ -248,9 +248,9 @@ setHeaders(headers: Partial<Record<string, string>>): void
 
 ```typescript
 interface Headers {
-  referer?: string;       // HTTP-Referer header
-  title?: string;         // X-Title header
-  [key: string]: string;  // Inne niestandardowe nagłówki
+  referer?: string; // HTTP-Referer header
+  title?: string; // X-Title header
+  [key: string]: string; // Inne niestandardowe nagłówki
 }
 ```
 
@@ -258,8 +258,8 @@ interface Headers {
 
 ```typescript
 service.setHeaders({
-  referer: 'https://dofire.app',
-  title: 'DoFIRE App',
+  referer: "https://dofire.app",
+  title: "DoFIRE App",
 });
 ```
 
@@ -277,17 +277,17 @@ async getModels(): Promise<Model[]>
 
 ```typescript
 interface Model {
-  id: string;                              // Identyfikator modelu
-  name: string;                            // Nazwa modelu
-  description?: string;                    // Opis modelu
+  id: string; // Identyfikator modelu
+  name: string; // Nazwa modelu
+  description?: string; // Opis modelu
   pricing?: {
-    prompt: string;                        // Cena za prompt token
-    completion: string;                    // Cena za completion token
+    prompt: string; // Cena za prompt token
+    completion: string; // Cena za completion token
   };
-  context_length?: number;                 // Maksymalna długość kontekstu
+  context_length?: number; // Maksymalna długość kontekstu
   architecture?: {
-    modality: string;                      // Modality (text, vision, etc.)
-    tokenizer: string;                     // Tokenizer używany
+    modality: string; // Modality (text, vision, etc.)
+    tokenizer: string; // Tokenizer używany
   };
 }
 ```
@@ -535,7 +535,7 @@ private async _handleResponse(response: Response): Promise<ChatCompletionRespons
 ```typescript
 private async _handleResponse(response: Response): Promise<ChatCompletionResponse> {
   const contentType = response.headers.get('content-type');
-  
+
   if (!contentType || !contentType.includes('application/json')) {
     const text = await response.text();
     throw new Error(`Unexpected content type: ${contentType}. Response: ${text}`);
@@ -571,7 +571,7 @@ class OpenRouterApiError extends Error {
     public readonly statusCode: number
   ) {
     super(message);
-    this.name = 'OpenRouterApiError';
+    this.name = "OpenRouterApiError";
   }
 }
 ```
@@ -589,16 +589,12 @@ class OpenRouterApiError extends Error {
 ```typescript
 // W metodzie _handleResponse
 if (response.status === 401) {
-  throw new OpenRouterApiError(
-    'Invalid or expired API key',
-    '401',
-    'authentication_error',
-    401
-  );
+  throw new OpenRouterApiError("Invalid or expired API key", "401", "authentication_error", 401);
 }
 ```
 
 **Działanie dla dewelopera:**
+
 - Sprawdź poprawność klucza API w zmiennych środowiskowych
 - Zweryfikuj, czy klucz API jest aktywny w panelu OpenRouter
 - Upewnij się, że klucz API nie został cofnięty lub zablokowany
@@ -611,17 +607,18 @@ if (response.status === 401) {
 
 ```typescript
 // Błąd zwracany przez API
-if (response.status === 400 && data.error?.message?.includes('model')) {
+if (response.status === 400 && data.error?.message?.includes("model")) {
   throw new OpenRouterApiError(
     `Invalid model: ${params.model}. Please check available models.`,
-    '400',
-    'validation_error',
+    "400",
+    "validation_error",
     400
   );
 }
 ```
 
 **Działanie dla dewelopera:**
+
 - Użyj metody `getModels()` do sprawdzenia dostępnych modeli
 - Sprawdź dokumentację OpenRouter dla aktualnej listy modeli
 - Upewnij się, że nazwa modelu jest w formacie `provider/model-name`
@@ -636,13 +633,14 @@ if (response.status === 400 && data.error?.message?.includes('model')) {
 // Walidacja przed wysłaniem żądania
 private _validateResponseFormat(format: ResponseFormat): void {
   // ... walidacja struktury ...
-  
+
   // Sprawdź, czy model obsługuje JSON schema
   // Niektóre modele mogą nie obsługiwać strict mode
 }
 ```
 
 **Działanie dla dewelopera:**
+
 - Sprawdź dokumentację modelu pod kątem obsługi JSON Schema
 - Upewnij się, że schemat jest zgodny z JSON Schema Draft 7
 - Rozważ użycie `strict: false` jeśli model nie obsługuje ścisłego trybu
@@ -655,15 +653,16 @@ private _validateResponseFormat(format: ResponseFormat): void {
 
 ```typescript
 if (response.status === 429) {
-  const retryAfter = response.headers.get('Retry-After');
+  const retryAfter = response.headers.get("Retry-After");
   throw new OpenRouterRateLimitError(
-    'Rate limit exceeded. Please wait before making another request.',
+    "Rate limit exceeded. Please wait before making another request.",
     retryAfter ? parseInt(retryAfter, 10) : 60
   );
 }
 ```
 
 **Działanie dla dewelopera:**
+
 - Zaimplementuj exponential backoff między żądaniami
 - Monitoruj liczbę żądań i stosuj odpowiednie limity
 - Rozważ użycie kolejki żądań dla batch processing
@@ -688,6 +687,7 @@ catch (error) {
 ```
 
 **Działanie dla dewelopera:**
+
 - Sprawdź połączenie internetowe
 - Zwiększ timeout jeśli żądania są wolne
 - Zaimplementuj ponowne próby z exponential backoff (już zaimplementowane)
@@ -707,6 +707,7 @@ try {
 ```
 
 **Działanie dla dewelopera:**
+
 - Sprawdź logi API OpenRouter pod kątem problemów
 - Skontaktuj się z supportem OpenRouter jeśli błąd się powtarza
 - Zaimplementuj fallback mechanism dla krytycznych operacji
@@ -720,15 +721,15 @@ try {
 ```typescript
 // W metodzie _buildRequestPayload
 if (!Array.isArray(params.messages) || params.messages.length === 0) {
-  throw new Error('Messages array is required and cannot be empty');
+  throw new Error("Messages array is required and cannot be empty");
 }
 
 for (const msg of params.messages) {
-  if (!['system', 'user', 'assistant'].includes(msg.role)) {
+  if (!["system", "user", "assistant"].includes(msg.role)) {
     throw new Error(`Invalid message role: ${msg.role}`);
   }
-  if (typeof msg.content !== 'string' || msg.content.trim().length === 0) {
-    throw new Error('Message content must be a non-empty string');
+  if (typeof msg.content !== "string" || msg.content.trim().length === 0) {
+    throw new Error("Message content must be a non-empty string");
   }
 }
 ```
@@ -744,7 +745,7 @@ function mapOpenRouterErrorToApiError(error: unknown): ApiError {
     if (error.statusCode === 401 || error.statusCode === 403) {
       return {
         error: {
-          code: 'unauthorized',
+          code: "unauthorized",
           message: error.message,
         },
       };
@@ -752,7 +753,7 @@ function mapOpenRouterErrorToApiError(error: unknown): ApiError {
     if (error.statusCode === 429) {
       return {
         error: {
-          code: 'too_many_requests',
+          code: "too_many_requests",
           message: error.message,
         },
       };
@@ -760,7 +761,7 @@ function mapOpenRouterErrorToApiError(error: unknown): ApiError {
     if (error.statusCode >= 400 && error.statusCode < 500) {
       return {
         error: {
-          code: 'bad_request',
+          code: "bad_request",
           message: error.message,
         },
       };
@@ -770,8 +771,8 @@ function mapOpenRouterErrorToApiError(error: unknown): ApiError {
   // Domyślny błąd wewnętrzny
   return {
     error: {
-      code: 'internal',
-      message: error instanceof Error ? error.message : 'Unknown error occurred',
+      code: "internal",
+      message: error instanceof Error ? error.message : "Unknown error occurred",
     },
   };
 }
@@ -920,19 +921,23 @@ private _validateNumericParam(
 ### 6.3. Ochrona przed atakami
 
 **6.3.1. Rate Limiting:**
+
 - Zaimplementuj rate limiting po stronie aplikacji
 - Monitoruj liczbę żądań per użytkownik/IP
 - Stosuj exponential backoff przy błędach 429
 
 **6.3.2. Timeout Protection:**
+
 - Ustaw rozsądny timeout dla żądań (domyślnie 30s)
 - Zapobiegaj długotrwałym żądaniom blokującym zasoby
 
 **6.3.3. Input Sanitization:**
+
 - Nie wysyłaj wrażliwych danych (hasła, tokeny) w wiadomościach
 - Rozważ filtrowanie lub redakcję danych osobowych przed wysłaniem do API
 
 **6.3.4. Error Message Sanitization:**
+
 - Nie ujawniaj szczegółowych informacji o błędach użytkownikom końcowym
 - Loguj szczegóły błędów tylko po stronie serwera
 
@@ -970,8 +975,8 @@ OPENROUTER_API_KEY=sk-or-v1-xxxxxxxxxxxxxxxxxxxxx
 ```typescript
 /// <reference types="astro/client" />
 
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from './db/database.types.ts';
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "./db/database.types.ts";
 
 declare global {
   namespace App {
@@ -1004,13 +1009,13 @@ W pliku `src/lib/services/openrouter.types.ts`:
 ```typescript
 // Typy dla wiadomości
 export interface Message {
-  role: 'system' | 'user' | 'assistant';
+  role: "system" | "user" | "assistant";
   content: string;
 }
 
 // Typy dla response format
 export interface ResponseFormat {
-  type: 'json_schema';
+  type: "json_schema";
   json_schema: {
     name: string;
     strict: boolean;
@@ -1041,7 +1046,7 @@ export interface ChatCompletionResponse {
   choices: Array<{
     index: number;
     message: Message;
-    finish_reason: 'stop' | 'length' | 'tool_calls' | 'content_filter' | null;
+    finish_reason: "stop" | "length" | "tool_calls" | "content_filter" | null;
   }>;
   usage?: {
     prompt_tokens: number;
@@ -1105,23 +1110,29 @@ export class OpenRouterApiError extends Error {
     public readonly statusCode: number
   ) {
     super(message);
-    this.name = 'OpenRouterApiError';
+    this.name = "OpenRouterApiError";
     Object.setPrototypeOf(this, OpenRouterApiError.prototype);
   }
 }
 
 export class OpenRouterRateLimitError extends OpenRouterApiError {
-  constructor(message: string, public readonly retryAfter: number) {
-    super(message, '429', 'rate_limit_error', 429);
-    this.name = 'OpenRouterRateLimitError';
+  constructor(
+    message: string,
+    public readonly retryAfter: number
+  ) {
+    super(message, "429", "rate_limit_error", 429);
+    this.name = "OpenRouterRateLimitError";
     Object.setPrototypeOf(this, OpenRouterRateLimitError.prototype);
   }
 }
 
 export class OpenRouterValidationError extends Error {
-  constructor(message: string, public readonly field?: string) {
+  constructor(
+    message: string,
+    public readonly field?: string
+  ) {
     super(message);
-    this.name = 'OpenRouterValidationError';
+    this.name = "OpenRouterValidationError";
     Object.setPrototypeOf(this, OpenRouterValidationError.prototype);
   }
 }
@@ -1141,12 +1152,8 @@ import type {
   Message,
   ResponseFormat,
   Model,
-} from './openrouter.types.ts';
-import {
-  OpenRouterApiError,
-  OpenRouterRateLimitError,
-  OpenRouterValidationError,
-} from './openrouter.errors.ts';
+} from "./openrouter.types.ts";
+import { OpenRouterApiError, OpenRouterRateLimitError, OpenRouterValidationError } from "./openrouter.errors.ts";
 ```
 
 2. **Implementacja konstruktora** (zgodnie z sekcją 2)
@@ -1160,8 +1167,8 @@ import {
 Utwórz plik `src/lib/services/openrouter.client.ts`:
 
 ```typescript
-import { OpenRouterService } from './openrouter.service.ts';
-import type { OpenRouterConfig } from './openrouter.types.ts';
+import { OpenRouterService } from "./openrouter.service.ts";
+import type { OpenRouterConfig } from "./openrouter.types.ts";
 
 let serviceInstance: OpenRouterService | null = null;
 
@@ -1174,20 +1181,17 @@ export function getOpenRouterService(): OpenRouterService {
     const apiKey = import.meta.env.OPENROUTER_API_KEY;
 
     if (!apiKey) {
-      throw new Error(
-        'OPENROUTER_API_KEY environment variable is not set. ' +
-        'Please add it to your .env file.'
-      );
+      throw new Error("OPENROUTER_API_KEY environment variable is not set. " + "Please add it to your .env file.");
     }
 
     const config: OpenRouterConfig = {
       apiKey,
-      baseUrl: import.meta.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1',
+      baseUrl: import.meta.env.OPENROUTER_BASE_URL || "https://openrouter.ai/api/v1",
       referer: import.meta.env.OPENROUTER_REFERER,
-      appTitle: import.meta.env.OPENROUTER_APP_TITLE || 'DoFIRE App',
-      timeout: parseInt(import.meta.env.OPENROUTER_TIMEOUT || '30000', 10),
-      maxRetries: parseInt(import.meta.env.OPENROUTER_MAX_RETRIES || '3', 10),
-      retryDelay: parseInt(import.meta.env.OPENROUTER_RETRY_DELAY || '1000', 10),
+      appTitle: import.meta.env.OPENROUTER_APP_TITLE || "DoFIRE App",
+      timeout: parseInt(import.meta.env.OPENROUTER_TIMEOUT || "30000", 10),
+      maxRetries: parseInt(import.meta.env.OPENROUTER_MAX_RETRIES || "3", 10),
+      retryDelay: parseInt(import.meta.env.OPENROUTER_RETRY_DELAY || "1000", 10),
     };
 
     serviceInstance = new OpenRouterService(config);
@@ -1202,31 +1206,31 @@ export function getOpenRouterService(): OpenRouterService {
 Zaktualizuj `src/lib/utils/api-error-handler.ts`:
 
 ```typescript
-import { OpenRouterApiError } from '../services/openrouter.errors.ts';
-import type { ApiError } from '@/types.ts';
+import { OpenRouterApiError } from "../services/openrouter.errors.ts";
+import type { ApiError } from "@/types.ts";
 
 export function mapOpenRouterErrorToApiError(error: unknown): ApiError {
   if (error instanceof OpenRouterApiError) {
     if (error.statusCode === 401 || error.statusCode === 403) {
       return {
         error: {
-          code: 'unauthorized',
-          message: 'Authentication failed with AI service',
+          code: "unauthorized",
+          message: "Authentication failed with AI service",
         },
       };
     }
     if (error.statusCode === 429) {
       return {
         error: {
-          code: 'too_many_requests',
-          message: 'Rate limit exceeded. Please try again later.',
+          code: "too_many_requests",
+          message: "Rate limit exceeded. Please try again later.",
         },
       };
     }
     if (error.statusCode >= 400 && error.statusCode < 500) {
       return {
         error: {
-          code: 'bad_request',
+          code: "bad_request",
           message: error.message,
         },
       };
@@ -1235,8 +1239,8 @@ export function mapOpenRouterErrorToApiError(error: unknown): ApiError {
 
   return {
     error: {
-      code: 'internal',
-      message: error instanceof Error ? error.message : 'Unknown error occurred',
+      code: "internal",
+      message: error instanceof Error ? error.message : "Unknown error occurred",
     },
   };
 }
@@ -1247,10 +1251,10 @@ export function mapOpenRouterErrorToApiError(error: unknown): ApiError {
 Utwórz przykładowy endpoint `src/pages/api/v1/test/openrouter.ts`:
 
 ```typescript
-import type { APIRoute } from 'astro';
-import { getOpenRouterService } from '@/lib/services/openrouter.client.ts';
-import { mapOpenRouterErrorToApiError } from '@/lib/utils/api-error-handler.ts';
-import type { ApiError } from '@/types.ts';
+import type { APIRoute } from "astro";
+import { getOpenRouterService } from "@/lib/services/openrouter.client.ts";
+import { mapOpenRouterErrorToApiError } from "@/lib/utils/api-error-handler.ts";
+import type { ApiError } from "@/types.ts";
 
 export const prerender = false;
 
@@ -1261,10 +1265,10 @@ export const POST: APIRoute = async ({ request }) => {
 
     const response = await service.chatCompletion({
       messages: body.messages || [
-        { role: 'system', content: 'You are a helpful assistant.' },
-        { role: 'user', content: 'Hello!' },
+        { role: "system", content: "You are a helpful assistant." },
+        { role: "user", content: "Hello!" },
       ],
-      model: body.model || 'openai/gpt-4o',
+      model: body.model || "openai/gpt-4o",
       temperature: body.temperature,
       maxTokens: body.maxTokens,
       responseFormat: body.responseFormat,
@@ -1272,7 +1276,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     const apiError: ApiError = mapOpenRouterErrorToApiError(error);
@@ -1280,7 +1284,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify(apiError), {
       status: statusCode,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   }
 };
@@ -1293,43 +1297,41 @@ export const POST: APIRoute = async ({ request }) => {
 Utwórz plik `src/lib/services/__tests__/openrouter.service.test.ts`:
 
 ```typescript
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { OpenRouterService } from '../openrouter.service.ts';
-import { OpenRouterApiError } from '../openrouter.errors.ts';
+import { describe, it, expect, beforeEach, vi } from "vitest";
+import { OpenRouterService } from "../openrouter.service.ts";
+import { OpenRouterApiError } from "../openrouter.errors.ts";
 
-describe('OpenRouterService', () => {
+describe("OpenRouterService", () => {
   let service: OpenRouterService;
 
   beforeEach(() => {
     service = new OpenRouterService({
-      apiKey: 'test-api-key',
+      apiKey: "test-api-key",
     });
   });
 
-  it('should throw error if API key is missing', () => {
+  it("should throw error if API key is missing", () => {
     expect(() => {
-      new OpenRouterService({ apiKey: '' });
-    }).toThrow('OpenRouter API key is required');
+      new OpenRouterService({ apiKey: "" });
+    }).toThrow("OpenRouter API key is required");
   });
 
-  it('should validate messages array', async () => {
+  it("should validate messages array", async () => {
     await expect(
       service.chatCompletion({
         messages: [],
-        model: 'openai/gpt-4o',
+        model: "openai/gpt-4o",
       })
-    ).rejects.toThrow('Messages array is required and cannot be empty');
+    ).rejects.toThrow("Messages array is required and cannot be empty");
   });
 
-  it('should validate message roles', async () => {
+  it("should validate message roles", async () => {
     await expect(
       service.chatCompletion({
-        messages: [
-          { role: 'invalid' as any, content: 'Test' },
-        ],
-        model: 'openai/gpt-4o',
+        messages: [{ role: "invalid" as any, content: "Test" }],
+        model: "openai/gpt-4o",
       })
-    ).rejects.toThrow('Invalid message role');
+    ).rejects.toThrow("Invalid message role");
   });
 
   // Dodaj więcej testów...
@@ -1341,21 +1343,19 @@ describe('OpenRouterService', () => {
 Przetestuj rzeczywiste wywołania API (używaj testowego klucza API):
 
 ```typescript
-describe('OpenRouterService Integration', () => {
-  it('should make a successful API call', async () => {
+describe("OpenRouterService Integration", () => {
+  it("should make a successful API call", async () => {
     const service = new OpenRouterService({
       apiKey: process.env.OPENROUTER_API_KEY!,
     });
 
     const response = await service.chatCompletion({
-      messages: [
-        { role: 'user', content: 'Say hello' },
-      ],
-      model: 'openai/gpt-4o',
+      messages: [{ role: "user", content: "Say hello" }],
+      model: "openai/gpt-4o",
       maxTokens: 10,
     });
 
-    expect(response).toHaveProperty('choices');
+    expect(response).toHaveProperty("choices");
     expect(response.choices.length).toBeGreaterThan(0);
   });
 });
@@ -1387,22 +1387,22 @@ describe('OpenRouterService Integration', () => {
 ### Przykład 1: Podstawowy czat
 
 ```typescript
-import { getOpenRouterService } from '@/lib/services/openrouter.client.ts';
+import { getOpenRouterService } from "@/lib/services/openrouter.client.ts";
 
 const service = getOpenRouterService();
 
 const response = await service.chatCompletion({
   messages: [
     {
-      role: 'system',
-      content: 'You are a financial advisor helping users with FIRE calculations.'
+      role: "system",
+      content: "You are a financial advisor helping users with FIRE calculations.",
     },
     {
-      role: 'user',
-      content: 'What is my FIRE number if I spend $3000 per month?'
-    }
+      role: "user",
+      content: "What is my FIRE number if I spend $3000 per month?",
+    },
   ],
-  model: 'openai/gpt-4o',
+  model: "openai/gpt-4o",
   temperature: 0.7,
   maxTokens: 500,
 });
@@ -1417,53 +1417,53 @@ console.log(answer);
 const response = await service.chatCompletion({
   messages: [
     {
-      role: 'system',
-      content: 'Analyze the investment portfolio and provide structured feedback.'
+      role: "system",
+      content: "Analyze the investment portfolio and provide structured feedback.",
     },
     {
-      role: 'user',
-      content: 'Portfolio: 60% stocks, 30% bonds, 10% cash. Provide analysis.'
-    }
+      role: "user",
+      content: "Portfolio: 60% stocks, 30% bonds, 10% cash. Provide analysis.",
+    },
   ],
-  model: 'openai/gpt-4o',
+  model: "openai/gpt-4o",
   responseFormat: {
-    type: 'json_schema',
+    type: "json_schema",
     json_schema: {
-      name: 'portfolio_analysis',
+      name: "portfolio_analysis",
       strict: true,
       schema: {
-        type: 'object',
+        type: "object",
         properties: {
           risk_level: {
-            type: 'string',
-            enum: ['low', 'medium', 'high'],
-            description: 'Overall risk level of the portfolio'
+            type: "string",
+            enum: ["low", "medium", "high"],
+            description: "Overall risk level of the portfolio",
           },
           recommendation: {
-            type: 'string',
-            description: 'Recommendation for portfolio adjustment'
+            type: "string",
+            description: "Recommendation for portfolio adjustment",
           },
           diversification_score: {
-            type: 'number',
+            type: "number",
             minimum: 0,
             maximum: 100,
-            description: 'Diversification score from 0 to 100'
+            description: "Diversification score from 0 to 100",
           },
           suggested_allocation: {
-            type: 'object',
+            type: "object",
             properties: {
-              stocks: { type: 'number', minimum: 0, maximum: 100 },
-              bonds: { type: 'number', minimum: 0, maximum: 100 },
-              cash: { type: 'number', minimum: 0, maximum: 100 },
+              stocks: { type: "number", minimum: 0, maximum: 100 },
+              bonds: { type: "number", minimum: 0, maximum: 100 },
+              cash: { type: "number", minimum: 0, maximum: 100 },
             },
-            required: ['stocks', 'bonds', 'cash'],
-            additionalProperties: false
-          }
+            required: ["stocks", "bonds", "cash"],
+            additionalProperties: false,
+          },
         },
-        required: ['risk_level', 'recommendation', 'diversification_score', 'suggested_allocation'],
-        additionalProperties: false
-      }
-    }
+        required: ["risk_level", "recommendation", "diversification_score", "suggested_allocation"],
+        additionalProperties: false,
+      },
+    },
   },
   temperature: 0.3,
   maxTokens: 400,
@@ -1471,9 +1471,9 @@ const response = await service.chatCompletion({
 
 // Parse JSON response
 const analysis = JSON.parse(response.choices[0].message.content);
-console.log('Risk Level:', analysis.risk_level);
-console.log('Recommendation:', analysis.recommendation);
-console.log('Diversification Score:', analysis.diversification_score);
+console.log("Risk Level:", analysis.risk_level);
+console.log("Recommendation:", analysis.recommendation);
+console.log("Diversification Score:", analysis.diversification_score);
 ```
 
 ### Przykład 3: Konwersacja z kontekstem
@@ -1481,20 +1481,20 @@ console.log('Diversification Score:', analysis.diversification_score);
 ```typescript
 const messages: Message[] = [
   {
-    role: 'system',
-    content: 'You are a financial advisor. Keep responses concise (max 200 words).'
-  }
+    role: "system",
+    content: "You are a financial advisor. Keep responses concise (max 200 words).",
+  },
 ];
 
 // Pierwsza wiadomość użytkownika
 messages.push({
-  role: 'user',
-  content: 'I want to achieve FIRE. Where should I start?'
+  role: "user",
+  content: "I want to achieve FIRE. Where should I start?",
 });
 
 const response1 = await service.chatCompletion({
   messages,
-  model: 'openai/gpt-4o',
+  model: "openai/gpt-4o",
   temperature: 0.7,
   maxTokens: 300,
 });
@@ -1504,18 +1504,18 @@ messages.push(response1.choices[0].message);
 
 // Druga wiadomość użytkownika (kontynuacja konwersacji)
 messages.push({
-  role: 'user',
-  content: 'How much should I save per month if I want to retire in 15 years?'
+  role: "user",
+  content: "How much should I save per month if I want to retire in 15 years?",
 });
 
 const response2 = await service.chatCompletion({
   messages,
-  model: 'openai/gpt-4o',
+  model: "openai/gpt-4o",
   temperature: 0.7,
   maxTokens: 300,
 });
 
-console.log('Follow-up answer:', response2.choices[0].message.content);
+console.log("Follow-up answer:", response2.choices[0].message.content);
 ```
 
 ### Przykład 4: Różne modele dla różnych zadań
@@ -1523,8 +1523,8 @@ console.log('Follow-up answer:', response2.choices[0].message.content);
 ```typescript
 // Szybki i tani model dla prostych pytań
 const quickResponse = await service.chatCompletion({
-  messages: [{ role: 'user', content: 'What is FIRE?' }],
-  model: 'openai/gpt-3.5-turbo',
+  messages: [{ role: "user", content: "What is FIRE?" }],
+  model: "openai/gpt-3.5-turbo",
   maxTokens: 100,
 });
 
@@ -1532,15 +1532,15 @@ const quickResponse = await service.chatCompletion({
 const detailedResponse = await service.chatCompletion({
   messages: [
     {
-      role: 'system',
-      content: 'You are an expert financial analyst. Provide detailed analysis.'
+      role: "system",
+      content: "You are an expert financial analyst. Provide detailed analysis.",
     },
     {
-      role: 'user',
-      content: 'Analyze my portfolio: 50% VTI, 30% BND, 20% cash. Provide detailed recommendations.'
-    }
+      role: "user",
+      content: "Analyze my portfolio: 50% VTI, 30% BND, 20% cash. Provide detailed recommendations.",
+    },
   ],
-  model: 'openai/gpt-4o',
+  model: "openai/gpt-4o",
   temperature: 0.5,
   maxTokens: 800,
 });
@@ -1549,10 +1549,10 @@ const detailedResponse = await service.chatCompletion({
 ### Przykład 5: Obsługa błędów w endpointzie
 
 ```typescript
-import type { APIRoute } from 'astro';
-import { getOpenRouterService } from '@/lib/services/openrouter.client.ts';
-import { OpenRouterApiError } from '@/lib/services/openrouter.errors.ts';
-import { mapOpenRouterErrorToApiError } from '@/lib/utils/api-error-handler.ts';
+import type { APIRoute } from "astro";
+import { getOpenRouterService } from "@/lib/services/openrouter.client.ts";
+import { OpenRouterApiError } from "@/lib/services/openrouter.errors.ts";
+import { mapOpenRouterErrorToApiError } from "@/lib/utils/api-error-handler.ts";
 
 export const prerender = false;
 
@@ -1566,17 +1566,17 @@ export const POST: APIRoute = async ({ request }) => {
       return new Response(
         JSON.stringify({
           error: {
-            code: 'bad_request',
-            message: 'Messages array is required',
+            code: "bad_request",
+            message: "Messages array is required",
           },
         }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
+        { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
 
     const response = await service.chatCompletion({
       messages: body.messages,
-      model: body.model || 'openai/gpt-4o',
+      model: body.model || "openai/gpt-4o",
       temperature: body.temperature,
       maxTokens: body.maxTokens,
       responseFormat: body.responseFormat,
@@ -1584,24 +1584,22 @@ export const POST: APIRoute = async ({ request }) => {
 
     return new Response(JSON.stringify(response), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
     // Mapuj błędy OpenRouter na ApiError
     const apiError = mapOpenRouterErrorToApiError(error);
-    const statusCode = error instanceof OpenRouterApiError 
-      ? error.statusCode 
-      : 500;
+    const statusCode = error instanceof OpenRouterApiError ? error.statusCode : 500;
 
     // Loguj szczegóły błędu (tylko po stronie serwera)
-    console.error('OpenRouter API Error:', {
+    console.error("OpenRouter API Error:", {
       error: error instanceof Error ? error.message : error,
       statusCode,
     });
 
     return new Response(JSON.stringify(apiError), {
       status: statusCode,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   }
 };
@@ -1632,4 +1630,3 @@ export const POST: APIRoute = async ({ request }) => {
 - Usługa jest zgodna z API OpenRouter i powinna działać z wszystkimi obsługiwanymi modelami
 - Sprawdź dokumentację OpenRouter dla aktualizacji API i nowych funkcji
 - Upewnij się, że wybrany model obsługuje wymagane funkcje (np. JSON Schema)
-

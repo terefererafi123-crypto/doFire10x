@@ -5,6 +5,7 @@
 Endpoint `POST /v1/me/profile` służy do tworzenia profilu użytkownika dla aktualnie zalogowanego użytkownika. Endpoint jest chroniony autoryzacją Bearer JWT i wykorzystuje Row Level Security (RLS) Supabase, aby zapewnić, że użytkownik może utworzyć tylko swój własny profil.
 
 **Funkcjonalność:**
+
 - Tworzy profil użytkownika w tabeli `profiles`
 - Jest idempotentny w MVP (zwraca 409 Conflict, jeśli profil już istnieje)
 - Waliduje dane wejściowe zgodnie ze specyfikacją API
@@ -12,12 +13,14 @@ Endpoint `POST /v1/me/profile` służy do tworzenia profilu użytkownika dla akt
 - Wykorzystuje RLS do automatycznej ochrony danych
 
 **Relacja z bazą danych:**
+
 - Tabela: `public.profiles`
 - Relacja: 1:1 z `auth.users` (przez `user_id`)
 - Indeks: `profiles_user_id_idx` (optymalizacja zapytań)
 - Ograniczenie: `profiles_user_id_key` (UNIQUE na `user_id`)
 
 **Zachowanie idempotentności (MVP):**
+
 - W MVP endpoint zwraca `409 Conflict`, jeśli profil już istnieje
 - W przyszłości można zmienić na upsert (PUT) lub zmodyfikować POST, aby obsługiwał upsert
 
@@ -26,14 +29,17 @@ Endpoint `POST /v1/me/profile` służy do tworzenia profilu użytkownika dla akt
 ## 2. Szczegóły żądania
 
 ### Metoda HTTP
+
 - `POST`
 
 ### Struktura URL
+
 ```
 POST /v1/me/profile
 ```
 
 ### Parametry
+
 - **Wymagane:** Brak (wszystkie dane w request body)
 - **Opcjonalne:** Brak
 - **Query string:** Brak
@@ -42,22 +48,25 @@ POST /v1/me/profile
 ### Request Body
 
 **Struktura JSON:**
+
 ```json
 {
-  "monthly_expense": 4500.00,
-  "withdrawal_rate_pct": 4.00,
-  "expected_return_pct": 7.00,
+  "monthly_expense": 4500.0,
+  "withdrawal_rate_pct": 4.0,
+  "expected_return_pct": 7.0,
   "birth_date": "1992-05-12"
 }
 ```
 
 **Pola:**
+
 - `monthly_expense` (number, wymagane): Miesięczne wydatki użytkownika (PLN, numeric(16,2))
 - `withdrawal_rate_pct` (number, wymagane): Roczna stopa wypłaty (procent, numeric(5,2))
 - `expected_return_pct` (number, wymagane): Oczekiwana roczna stopa zwrotu (procent, numeric(5,2))
 - `birth_date` (string | null, opcjonalne): Data urodzenia użytkownika (ISO 8601 date string: YYYY-MM-DD) lub null
 
 ### Headers
+
 - **Wymagane:**
   - `Authorization: Bearer <JWT_TOKEN>` - Token JWT z Supabase Auth
   - `Content-Type: application/json` - Typ treści żądania
@@ -73,48 +82,53 @@ POST /v1/me/profile
 ### DTO (Data Transfer Objects)
 
 #### CreateProfileCommand
+
 ```typescript
 interface CreateProfileCommand {
-  monthly_expense: number;        // >= 0, numeric(16,2)
-  withdrawal_rate_pct: number;    // 0-100, numeric(5,2)
-  expected_return_pct: number;    // -100 to 1000, numeric(5,2)
-  birth_date?: string | null;     // ISO 8601 date string (YYYY-MM-DD) lub null
+  monthly_expense: number; // >= 0, numeric(16,2)
+  withdrawal_rate_pct: number; // 0-100, numeric(5,2)
+  expected_return_pct: number; // -100 to 1000, numeric(5,2)
+  birth_date?: string | null; // ISO 8601 date string (YYYY-MM-DD) lub null
 }
 ```
 
 #### ProfileDto
+
 ```typescript
 interface ProfileDto {
-  id: string;                    // UUID profilu
-  user_id: string;               // UUID użytkownika (z auth.users)
-  monthly_expense: number;       // Miesięczne wydatki (PLN, numeric(16,2))
-  withdrawal_rate_pct: number;   // Roczna stopa wypłaty (%, numeric(5,2))
-  expected_return_pct: number;   // Oczekiwana stopa zwrotu (%, numeric(5,2))
-  birth_date: string | null;     // Data urodzenia (ISO 8601 date string) lub null
-  created_at: string;            // Timestamp utworzenia (RFC 3339)
-  updated_at: string;            // Timestamp ostatniej aktualizacji (RFC 3339)
+  id: string; // UUID profilu
+  user_id: string; // UUID użytkownika (z auth.users)
+  monthly_expense: number; // Miesięczne wydatki (PLN, numeric(16,2))
+  withdrawal_rate_pct: number; // Roczna stopa wypłaty (%, numeric(5,2))
+  expected_return_pct: number; // Oczekiwana stopa zwrotu (%, numeric(5,2))
+  birth_date: string | null; // Data urodzenia (ISO 8601 date string) lub null
+  created_at: string; // Timestamp utworzenia (RFC 3339)
+  updated_at: string; // Timestamp ostatniej aktualizacji (RFC 3339)
 }
 ```
 
 #### ApiError
+
 ```typescript
 interface ApiError {
   error: {
     code: "bad_request" | "unauthorized" | "conflict" | "internal";
     message: string;
-    fields?: Record<string, string>;  // Field-wise validation errors
-  }
+    fields?: Record<string, string>; // Field-wise validation errors
+  };
 }
 ```
 
 ### Typy z bazy danych
 
 #### DbProfileInsert
+
 ```typescript
-type DbProfileInsert = TablesInsert<"profiles">
+type DbProfileInsert = TablesInsert<"profiles">;
 ```
 
 **Mapowanie CreateProfileCommand → DbProfileInsert:**
+
 - `monthly_expense` → `monthly_expense` (required)
 - `withdrawal_rate_pct` → `withdrawal_rate_pct` (required)
 - `expected_return_pct` → `expected_return_pct` (required)
@@ -125,30 +139,35 @@ type DbProfileInsert = TablesInsert<"profiles">
 ### Typy walidacji (Zod)
 
 #### CreateProfileSchema
+
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 const CreateProfileSchema = z.object({
-  monthly_expense: z.number()
-    .nonnegative('monthly_expense must be >= 0')
-    .finite('monthly_expense must be a finite number'),
-  withdrawal_rate_pct: z.number()
-    .min(0, 'withdrawal_rate_pct must be >= 0')
-    .max(100, 'withdrawal_rate_pct must be <= 100')
-    .finite('withdrawal_rate_pct must be a finite number'),
-  expected_return_pct: z.number()
-    .min(-100, 'expected_return_pct must be >= -100')
-    .max(1000, 'expected_return_pct must be <= 1000')
-    .finite('expected_return_pct must be a finite number'),
-  birth_date: z.string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'birth_date must be in YYYY-MM-DD format')
+  monthly_expense: z
+    .number()
+    .nonnegative("monthly_expense must be >= 0")
+    .finite("monthly_expense must be a finite number"),
+  withdrawal_rate_pct: z
+    .number()
+    .min(0, "withdrawal_rate_pct must be >= 0")
+    .max(100, "withdrawal_rate_pct must be <= 100")
+    .finite("withdrawal_rate_pct must be a finite number"),
+  expected_return_pct: z
+    .number()
+    .min(-100, "expected_return_pct must be >= -100")
+    .max(1000, "expected_return_pct must be <= 1000")
+    .finite("expected_return_pct must be a finite number"),
+  birth_date: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "birth_date must be in YYYY-MM-DD format")
     .refine((date) => {
       const dateObj = new Date(date);
       const today = new Date();
       const maxAge = new Date();
       maxAge.setFullYear(today.getFullYear() - 120);
       return dateObj < today && dateObj >= maxAge;
-    }, 'birth_date must be in the past and not older than 120 years')
+    }, "birth_date must be in the past and not older than 120 years")
     .nullable()
     .optional(),
 });
@@ -163,13 +182,14 @@ const CreateProfileSchema = z.object({
 **Status Code:** `201 Created`
 
 **Response Body:**
+
 ```json
 {
   "id": "c0a1dba8-1234-5678-9abc-def012345678",
   "user_id": "3b9c1234-5678-9abc-def0-123456789abc",
-  "monthly_expense": 4500.00,
-  "withdrawal_rate_pct": 4.00,
-  "expected_return_pct": 7.00,
+  "monthly_expense": 4500.0,
+  "withdrawal_rate_pct": 4.0,
+  "expected_return_pct": 7.0,
   "birth_date": "1992-05-12",
   "created_at": "2025-01-02T09:00:12Z",
   "updated_at": "2025-01-02T09:00:12Z"
@@ -177,6 +197,7 @@ const CreateProfileSchema = z.object({
 ```
 
 **Headers:**
+
 - `Content-Type: application/json`
 - `Location: /v1/me/profile` (opcjonalnie, dla zgodności z REST)
 
@@ -187,6 +208,7 @@ const CreateProfileSchema = z.object({
 **Status Code:** `400 Bad Request`
 
 **Przyczyny:**
+
 - Nieprawidłowy format JSON w request body
 - Brak wymaganych pól (monthly_expense, withdrawal_rate_pct, expected_return_pct)
 - Nieprawidłowe typy danych (np. string zamiast number)
@@ -196,6 +218,7 @@ const CreateProfileSchema = z.object({
 - Nieznane pola w request body (dodatkowa walidacja)
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -216,6 +239,7 @@ const CreateProfileSchema = z.object({
 **Status Code:** `401 Unauthorized`
 
 **Przyczyny:**
+
 - Brak nagłówka `Authorization`
 - Nieprawidłowy format tokenu JWT
 - Token JWT wygasł
@@ -223,6 +247,7 @@ const CreateProfileSchema = z.object({
 - Użytkownik nie jest zalogowany
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -237,10 +262,12 @@ const CreateProfileSchema = z.object({
 **Status Code:** `409 Conflict`
 
 **Przyczyny:**
+
 - Profil użytkownika już istnieje w bazie danych (relacja 1:1)
 - Próba utworzenia drugiego profilu dla tego samego użytkownika
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -255,12 +282,14 @@ const CreateProfileSchema = z.object({
 **Status Code:** `500 Internal Server Error`
 
 **Przyczyny:**
+
 - Błąd połączenia z bazą danych
 - Błąd zapytania SQL
 - Nieoczekiwany błąd serwera
 - Błąd walidacji na poziomie bazy danych (CHECK constraints)
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -438,21 +467,19 @@ API Route Handler (POST /v1/me/profile)
 **Scenariusz:** Klient nie przesłał nagłówka `Authorization` lub token jest nieprawidłowy.
 
 **Obsługa:**
+
 ```typescript
-const authHeader = request.headers.get('Authorization');
-if (!authHeader || !authHeader.startsWith('Bearer ')) {
-  return errorResponse(
-    { code: 'unauthorized', message: 'Missing or invalid authentication token' },
-    401
-  );
+const authHeader = request.headers.get("Authorization");
+if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
 }
 
-const { data: { user }, error: authError } = await supabase.auth.getUser();
+const {
+  data: { user },
+  error: authError,
+} = await supabase.auth.getUser();
 if (authError || !user) {
-  return errorResponse(
-    { code: 'unauthorized', message: 'Invalid or expired token' },
-    401
-  );
+  return errorResponse({ code: "unauthorized", message: "Invalid or expired token" }, 401);
 }
 ```
 
@@ -461,15 +488,13 @@ if (authError || !user) {
 **Scenariusz:** Request body nie jest prawidłowym JSON lub jest puste.
 
 **Obsługa:**
+
 ```typescript
 let body: unknown;
 try {
   body = await request.json();
 } catch (error) {
-  return errorResponse(
-    { code: 'bad_request', message: 'Invalid JSON in request body' },
-    400
-  );
+  return errorResponse({ code: "bad_request", message: "Invalid JSON in request body" }, 400);
 }
 ```
 
@@ -478,19 +503,20 @@ try {
 **Scenariusz:** Dane wejściowe nie spełniają reguł walidacji.
 
 **Obsługa:**
+
 ```typescript
 const validationResult = CreateProfileSchema.safeParse(body);
 if (!validationResult.success) {
   const fieldErrors: Record<string, string> = {};
   validationResult.error.errors.forEach((error) => {
-    const field = error.path.join('.');
+    const field = error.path.join(".");
     fieldErrors[field] = error.message;
   });
-  
+
   return errorResponse(
     {
-      code: 'bad_request',
-      message: 'Validation failed',
+      code: "bad_request",
+      message: "Validation failed",
       fields: fieldErrors,
     },
     400
@@ -503,29 +529,25 @@ if (!validationResult.success) {
 **Scenariusz:** Profil użytkownika już istnieje w bazie danych.
 
 **Obsługa:**
+
 ```typescript
 // Check if profile exists before insert
 const existingProfile = await getProfileByUserId(supabase, user.id);
 if (existingProfile) {
-  return errorResponse(
-    { code: 'conflict', message: 'Profile already exists for this user' },
-    409
-  );
+  return errorResponse({ code: "conflict", message: "Profile already exists for this user" }, 409);
 }
 
 // Or catch unique constraint violation during insert
 const { data: profile, error } = await supabase
-  .from('profiles')
+  .from("profiles")
   .insert({ user_id: user.id, ...command })
   .select()
   .single();
 
 if (error) {
-  if (error.code === '23505') { // Unique violation
-    return errorResponse(
-      { code: 'conflict', message: 'Profile already exists for this user' },
-      409
-    );
+  if (error.code === "23505") {
+    // Unique violation
+    return errorResponse({ code: "conflict", message: "Profile already exists for this user" }, 409);
   }
   // Handle other database errors
 }
@@ -536,20 +558,22 @@ if (error) {
 **Scenariusz:** Dane nie spełniają CHECK constraints w bazie danych (teoretycznie nie powinno się zdarzyć po walidacji Zod).
 
 **Obsługa:**
+
 ```typescript
 const { data: profile, error } = await supabase
-  .from('profiles')
+  .from("profiles")
   .insert({ user_id: user.id, ...command })
   .select()
   .single();
 
 if (error) {
-  if (error.code === '23514') { // Check constraint violation
+  if (error.code === "23514") {
+    // Check constraint violation
     return errorResponse(
       {
-        code: 'bad_request',
-        message: 'Data validation failed',
-        fields: { [error.column || 'unknown']: error.message },
+        code: "bad_request",
+        message: "Data validation failed",
+        fields: { [error.column || "unknown"]: error.message },
       },
       400
     );
@@ -563,27 +587,22 @@ if (error) {
 **Scenariusz:** Błąd połączenia z bazą danych lub błąd zapytania SQL.
 
 **Obsługa:**
+
 ```typescript
 try {
   const { data: profile, error } = await supabase
-    .from('profiles')
+    .from("profiles")
     .insert({ user_id: user.id, ...command })
     .select()
     .single();
-  
-  if (error && error.code !== '23505' && error.code !== '23514') {
-    console.error('Database error:', error);
-    return errorResponse(
-      { code: 'internal', message: 'An internal server error occurred' },
-      500
-    );
+
+  if (error && error.code !== "23505" && error.code !== "23514") {
+    console.error("Database error:", error);
+    return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
   }
 } catch (err) {
-  console.error('Unexpected error:', err);
-  return errorResponse(
-    { code: 'internal', message: 'An internal server error occurred' },
-    500
-  );
+  console.error("Unexpected error:", err);
+  return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
 }
 ```
 
@@ -592,15 +611,13 @@ try {
 **Scenariusz:** Nieoczekiwany błąd w kodzie (np. null reference, type error).
 
 **Obsługa:**
+
 ```typescript
 try {
   // ... endpoint logic
 } catch (err) {
-  console.error('Unexpected error:', err);
-  return errorResponse(
-    { code: 'internal', message: 'An internal server error occurred' },
-    500
-  );
+  console.error("Unexpected error:", err);
+  return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
 }
 ```
 
@@ -705,11 +722,13 @@ try {
 ### Krok 1: Utworzenie struktury katalogów
 
 1. Utworzenie katalogu dla API routes:
+
    ```
    src/pages/api/v1/me/profile.ts
    ```
 
 2. Utworzenie katalogu dla serwisów (jeśli nie istnieje):
+
    ```
    src/lib/services/
    ```
@@ -727,12 +746,14 @@ try {
    - Typy TypeScript dla schematu
 
 2. **Implementacja schematu:**
+
    ```typescript
    // src/lib/validation/profile.schema.ts
-   import { z } from 'zod';
+   import { z } from "zod";
 
-   const birthDateSchema = z.string()
-     .regex(/^\d{4}-\d{2}-\d{2}$/, 'birth_date must be in YYYY-MM-DD format')
+   const birthDateSchema = z
+     .string()
+     .regex(/^\d{4}-\d{2}-\d{2}$/, "birth_date must be in YYYY-MM-DD format")
      .refine((date) => {
        const dateObj = new Date(date);
        const today = new Date();
@@ -741,22 +762,25 @@ try {
        maxAge.setFullYear(today.getFullYear() - 120);
        maxAge.setHours(0, 0, 0, 0);
        return dateObj < today && dateObj >= maxAge;
-     }, 'birth_date must be in the past and not older than 120 years')
+     }, "birth_date must be in the past and not older than 120 years")
      .nullable()
      .optional();
 
    export const CreateProfileSchema = z.object({
-     monthly_expense: z.number()
-       .nonnegative('monthly_expense must be >= 0')
-       .finite('monthly_expense must be a finite number'),
-     withdrawal_rate_pct: z.number()
-       .min(0, 'withdrawal_rate_pct must be >= 0')
-       .max(100, 'withdrawal_rate_pct must be <= 100')
-       .finite('withdrawal_rate_pct must be a finite number'),
-     expected_return_pct: z.number()
-       .min(-100, 'expected_return_pct must be >= -100')
-       .max(1000, 'expected_return_pct must be <= 1000')
-       .finite('expected_return_pct must be a finite number'),
+     monthly_expense: z
+       .number()
+       .nonnegative("monthly_expense must be >= 0")
+       .finite("monthly_expense must be a finite number"),
+     withdrawal_rate_pct: z
+       .number()
+       .min(0, "withdrawal_rate_pct must be >= 0")
+       .max(100, "withdrawal_rate_pct must be <= 100")
+       .finite("withdrawal_rate_pct must be a finite number"),
+     expected_return_pct: z
+       .number()
+       .min(-100, "expected_return_pct must be >= -100")
+       .max(1000, "expected_return_pct must be <= 1000")
+       .finite("expected_return_pct must be a finite number"),
      birth_date: birthDateSchema,
    });
 
@@ -772,27 +796,24 @@ try {
    - Mapowanie `DbProfileRow` → `ProfileDto`
 
 2. **Implementacja serwisu:**
+
    ```typescript
    // src/lib/services/profile.service.ts
-   import type { SupabaseClient } from '@supabase/supabase-js';
-   import type { Database } from '../../db/database.types.ts';
-   import type { ProfileDto, CreateProfileCommand } from '../../types.ts';
-   import type { Tables } from '../../db/database.types.ts';
+   import type { SupabaseClient } from "@supabase/supabase-js";
+   import type { Database } from "../../db/database.types.ts";
+   import type { ProfileDto, CreateProfileCommand } from "../../types.ts";
+   import type { Tables } from "../../db/database.types.ts";
 
-   type DbProfileRow = Tables<'profiles'>;
+   type DbProfileRow = Tables<"profiles">;
 
    export async function getProfileByUserId(
      supabase: SupabaseClient<Database>,
      userId: string
    ): Promise<ProfileDto | null> {
-     const { data, error } = await supabase
-       .from('profiles')
-       .select('*')
-       .eq('user_id', userId)
-       .single();
+     const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userId).single();
 
      if (error) {
-       if (error.code === 'PGRST116') {
+       if (error.code === "PGRST116") {
          // No rows returned
          return null;
        }
@@ -808,7 +829,7 @@ try {
      command: CreateProfileCommand
    ): Promise<ProfileDto> {
      const { data, error } = await supabase
-       .from('profiles')
+       .from("profiles")
        .insert({
          user_id: userId,
          monthly_expense: command.monthly_expense,
@@ -836,21 +857,23 @@ try {
    - Zwracanie użytkownika lub null
 
 2. **Implementacja helpera:**
+
    ```typescript
    // src/lib/auth/helpers.ts
-   import type { SupabaseClient } from '@supabase/supabase-js';
-   import type { Database } from '../../db/database.types.ts';
-   import type { User } from '@supabase/supabase-js';
+   import type { SupabaseClient } from "@supabase/supabase-js";
+   import type { Database } from "../../db/database.types.ts";
+   import type { User } from "@supabase/supabase-js";
 
-   export async function getAuthenticatedUser(
-     supabase: SupabaseClient<Database>
-   ): Promise<User | null> {
-     const { data: { user }, error } = await supabase.auth.getUser();
-     
+   export async function getAuthenticatedUser(supabase: SupabaseClient<Database>): Promise<User | null> {
+     const {
+       data: { user },
+       error,
+     } = await supabase.auth.getUser();
+
      if (error || !user) {
        return null;
      }
-     
+
      return user;
    }
    ```
@@ -863,21 +886,22 @@ try {
    - Funkcje do serializacji DTO
 
 2. **Implementacja helpera:**
+
    ```typescript
    // src/lib/api/response.ts
-   import type { ApiError } from '../../types.ts';
+   import type { ApiError } from "../../types.ts";
 
    export function jsonResponse<T>(data: T, status: number = 200): Response {
      return new Response(JSON.stringify(data), {
        status,
-       headers: { 'Content-Type': 'application/json' },
+       headers: { "Content-Type": "application/json" },
      });
    }
 
-   export function errorResponse(error: ApiError['error'], status: number): Response {
+   export function errorResponse(error: ApiError["error"], status: number): Response {
      return new Response(JSON.stringify({ error }), {
        status,
-       headers: { 'Content-Type': 'application/json' },
+       headers: { "Content-Type": "application/json" },
      });
    }
    ```
@@ -894,14 +918,15 @@ try {
    - Zwrócenie odpowiedzi
 
 2. **Implementacja endpointu:**
+
    ```typescript
    // src/pages/api/v1/me/profile.ts
-   import type { APIRoute } from 'astro';
-   import { getAuthenticatedUser } from '../../../lib/auth/helpers.ts';
-   import { getProfileByUserId, createProfile } from '../../../lib/services/profile.service.ts';
-   import { jsonResponse, errorResponse } from '../../../lib/api/response.ts';
-   import { CreateProfileSchema } from '../../../lib/validation/profile.schema.ts';
-   import type { CreateProfileCommand } from '../../../types.ts';
+   import type { APIRoute } from "astro";
+   import { getAuthenticatedUser } from "../../../lib/auth/helpers.ts";
+   import { getProfileByUserId, createProfile } from "../../../lib/services/profile.service.ts";
+   import { jsonResponse, errorResponse } from "../../../lib/api/response.ts";
+   import { CreateProfileSchema } from "../../../lib/validation/profile.schema.ts";
+   import type { CreateProfileCommand } from "../../../types.ts";
 
    export const prerender = false;
 
@@ -909,10 +934,7 @@ try {
      // 1. Authentication check
      const user = await getAuthenticatedUser(locals.supabase);
      if (!user) {
-       return errorResponse(
-         { code: 'unauthorized', message: 'Missing or invalid authentication token' },
-         401
-       );
+       return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
      }
 
      // 2. Parse request body
@@ -920,10 +942,7 @@ try {
      try {
        body = await request.json();
      } catch (error) {
-       return errorResponse(
-         { code: 'bad_request', message: 'Invalid JSON in request body' },
-         400
-       );
+       return errorResponse({ code: "bad_request", message: "Invalid JSON in request body" }, 400);
      }
 
      // 3. Validate request body
@@ -931,14 +950,14 @@ try {
      if (!validationResult.success) {
        const fieldErrors: Record<string, string> = {};
        validationResult.error.errors.forEach((error) => {
-         const field = error.path.join('.');
+         const field = error.path.join(".");
          fieldErrors[field] = error.message;
        });
-       
+
        return errorResponse(
          {
-           code: 'bad_request',
-           message: 'Validation failed',
+           code: "bad_request",
+           message: "Validation failed",
            fields: fieldErrors,
          },
          400
@@ -951,17 +970,11 @@ try {
      try {
        const existingProfile = await getProfileByUserId(locals.supabase, user.id);
        if (existingProfile) {
-         return errorResponse(
-           { code: 'conflict', message: 'Profile already exists for this user' },
-           409
-         );
+         return errorResponse({ code: "conflict", message: "Profile already exists for this user" }, 409);
        }
      } catch (error) {
-       console.error('Error checking existing profile:', error);
-       return errorResponse(
-         { code: 'internal', message: 'An internal server error occurred' },
-         500
-       );
+       console.error("Error checking existing profile:", error);
+       return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
      }
 
      // 5. Create profile
@@ -969,34 +982,28 @@ try {
        const profile = await createProfile(locals.supabase, user.id, command);
        return jsonResponse(profile, 201);
      } catch (error: any) {
-       console.error('Error creating profile:', error);
-       
+       console.error("Error creating profile:", error);
+
        // Handle database errors
-       if (error.code === '23505') {
+       if (error.code === "23505") {
          // Unique constraint violation
-         return errorResponse(
-           { code: 'conflict', message: 'Profile already exists for this user' },
-           409
-         );
+         return errorResponse({ code: "conflict", message: "Profile already exists for this user" }, 409);
        }
-       
-       if (error.code === '23514') {
+
+       if (error.code === "23514") {
          // Check constraint violation
          return errorResponse(
            {
-             code: 'bad_request',
-             message: 'Data validation failed',
-             fields: { [error.column || 'unknown']: error.message },
+             code: "bad_request",
+             message: "Data validation failed",
+             fields: { [error.column || "unknown"]: error.message },
            },
            400
          );
        }
-       
+
        // Other database errors
-       return errorResponse(
-         { code: 'internal', message: 'An internal server error occurred' },
-         500
-       );
+       return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
      }
    };
    ```
@@ -1004,6 +1011,7 @@ try {
 ### Krok 7: Instalacja zależności
 
 1. Sprawdzenie, czy `zod` jest zainstalowany:
+
    ```bash
    npm install zod
    ```
@@ -1180,7 +1188,6 @@ Content-Type: application/json
 
 ---
 
-*Plan wdrożenia utworzony: 2025-01-15*
-*Wersja: 1.0*
-*Autor: AI Assistant*
-
+_Plan wdrożenia utworzony: 2025-01-15_
+_Wersja: 1.0_
+_Autor: AI Assistant_

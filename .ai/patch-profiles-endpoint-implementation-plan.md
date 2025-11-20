@@ -115,5 +115,3 @@ Endpoint `PATCH /v1/me/profile` umożliwia częściową aktualizację danych pro
 8. **Dokumentacja i readiness:**
    - Zaktualizuj `api-plan.md`/Changelog jeśli wymagane.
    - Przygotuj opis zmian do PR, podkreślając walidację i obsługę błędów.
-
-

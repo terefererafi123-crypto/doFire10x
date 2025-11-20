@@ -5,6 +5,7 @@
 Endpoint `GET /v1/investments/{id}` służy do pobierania pojedynczej inwestycji użytkownika na podstawie identyfikatora. Endpoint wymaga autoryzacji i zwraca tylko te inwestycje, które należą do zalogowanego użytkownika (weryfikacja przez Row Level Security w bazie danych). Jest to podstawowy endpoint do odczytu pojedynczego zasobu, używany w scenariuszach, gdy klient potrzebuje szczegółowych informacji o konkretnej inwestycji (np. w widoku szczegółów, formularzu edycji).
 
 **Kluczowe cechy:**
+
 - Wymaga autoryzacji (Bearer JWT token)
 - Zwraca pojedynczy zasób inwestycji
 - Automatyczna filtracja przez RLS (tylko inwestycje użytkownika)
@@ -33,19 +34,20 @@ Endpoint `GET /v1/investments/{id}` służy do pobierania pojedynczej inwestycji
 Endpoint wykorzystuje typ `InvestmentDto` zdefiniowany w `src/types.ts`:
 
 ```typescript
-export type InvestmentDto = Omit<DbInvestmentRow, "user_id">
+export type InvestmentDto = Omit<DbInvestmentRow, "user_id">;
 ```
 
 **Struktura odpowiedzi (200 OK):**
+
 ```typescript
 {
-  id: string                    // UUID
-  type: AssetType              // "etf" | "bond" | "stock" | "cash"
-  amount: number               // Money (PLN, 2 miejsca po przecinku)
-  acquired_at: ISODateString   // "YYYY-MM-DD"
-  notes: string | null         // Opcjonalne notatki (max 1000 znaków)
-  created_at: TimestampString  // RFC 3339 timestamp
-  updated_at: TimestampString  // RFC 3339 timestamp
+  id: string; // UUID
+  type: AssetType; // "etf" | "bond" | "stock" | "cash"
+  amount: number; // Money (PLN, 2 miejsca po przecinku)
+  acquired_at: ISODateString; // "YYYY-MM-DD"
+  notes: string | null; // Opcjonalne notatki (max 1000 znaków)
+  created_at: TimestampString; // RFC 3339 timestamp
+  updated_at: TimestampString; // RFC 3339 timestamp
 }
 ```
 
@@ -58,10 +60,10 @@ Endpoint wykorzystuje typ `ApiError` zdefiniowany w `src/types.ts`:
 ```typescript
 export interface ApiError {
   error: {
-    code: "unauthorized" | "not_found" | "bad_request" | "internal"
-    message: string
-    fields?: Record<string, string>
-  }
+    code: "unauthorized" | "not_found" | "bad_request" | "internal";
+    message: string;
+    fields?: Record<string, string>;
+  };
 }
 ```
 
@@ -77,10 +79,10 @@ export interface ApiError {
 Parametr `id` powinien być walidowany za pomocą schematu Zod:
 
 ```typescript
-import { z } from 'zod';
+import { z } from "zod";
 
 const InvestmentIdParamSchema = z.object({
-  id: z.string().uuid('Invalid investment ID format')
+  id: z.string().uuid("Invalid investment ID format"),
 });
 ```
 
@@ -91,11 +93,12 @@ const InvestmentIdParamSchema = z.object({
 **Status:** `200 OK`
 
 **Body:**
+
 ```json
 {
   "id": "ef2a1b2c-3d4e-5f6a-7b8c-9d0e1f2a3b4c",
   "type": "etf",
-  "amount": 12000.00,
+  "amount": 12000.0,
   "acquired_at": "2024-11-01",
   "notes": "IKZE",
   "created_at": "2024-11-01T10:11:12Z",
@@ -104,6 +107,7 @@ const InvestmentIdParamSchema = z.object({
 ```
 
 **Nagłówki:**
+
 - `Content-Type: application/json`
 - `ETag` (opcjonalnie, dla cache'owania)
 - `Last-Modified` (opcjonalnie, dla cache'owania)
@@ -113,6 +117,7 @@ const InvestmentIdParamSchema = z.object({
 **Status:** `401 Unauthorized`
 
 **Body:**
+
 ```json
 {
   "error": {
@@ -123,6 +128,7 @@ const InvestmentIdParamSchema = z.object({
 ```
 
 **Scenariusze:**
+
 - Brak nagłówka `Authorization`
 - Nieprawidłowy format tokenu
 - Token wygasł
@@ -133,6 +139,7 @@ const InvestmentIdParamSchema = z.object({
 **Status:** `404 Not Found`
 
 **Body:**
+
 ```json
 {
   "error": {
@@ -143,6 +150,7 @@ const InvestmentIdParamSchema = z.object({
 ```
 
 **Scenariusze:**
+
 - Inwestycja o podanym ID nie istnieje
 - Inwestycja istnieje, ale należy do innego użytkownika (RLS blokuje dostęp)
 - Nieprawidłowy format UUID (powinien być obsłużony jako 400, ale RLS może zwrócić 404)
@@ -152,6 +160,7 @@ const InvestmentIdParamSchema = z.object({
 **Status:** `400 Bad Request`
 
 **Body:**
+
 ```json
 {
   "error": {
@@ -165,6 +174,7 @@ const InvestmentIdParamSchema = z.object({
 ```
 
 **Scenariusze:**
+
 - Parametr `id` nie jest prawidłowym UUID
 - Parametr `id` jest pusty lub nieprawidłowy
 
@@ -173,6 +183,7 @@ const InvestmentIdParamSchema = z.object({
 **Status:** `500 Internal Server Error`
 
 **Body:**
+
 ```json
 {
   "error": {
@@ -183,6 +194,7 @@ const InvestmentIdParamSchema = z.object({
 ```
 
 **Scenariusze:**
+
 - Błąd połączenia z bazą danych
 - Nieoczekiwany błąd podczas przetwarzania żądania
 - Błąd konwersji danych
@@ -241,8 +253,9 @@ Client Response
 ### 5.3. Interakcje z bazą danych
 
 **Zapytanie SQL (wykonywane przez Supabase):**
+
 ```sql
-SELECT 
+SELECT
   id,
   type,
   amount,
@@ -257,10 +270,12 @@ LIMIT 1;
 ```
 
 **Wykorzystywane indeksy:**
+
 - `investments_pkey` (PRIMARY KEY na `id`) - główny indeks dla wyszukiwania po ID
 - `investments_user_id_idx` (B-tree na `user_id`) - wspomaga filtrowanie RLS
 
 **Wydajność:**
+
 - Zapytanie jest bardzo wydajne dzięki indeksowi PRIMARY KEY
 - RLS dodaje minimalne obciążenie (warunek `user_id = auth.uid()` jest zoptymalizowany)
 - Oczekiwany czas odpowiedzi: < 50ms w normalnych warunkach
@@ -307,15 +322,15 @@ LIMIT 1;
 
 ### 7.1. Scenariusze błędów i odpowiedzi
 
-| Scenariusz | Kod statusu | Kod błędu | Komunikat |
-|------------|-------------|-----------|-----------|
-| Brak tokenu autoryzacji | 401 | `unauthorized` | "Missing or invalid authentication token" |
-| Nieprawidłowy/wygasły token | 401 | `unauthorized` | "Missing or invalid authentication token" |
-| Nieprawidłowy format UUID | 400 | `bad_request` | "Invalid investment ID format" |
-| Inwestycja nie istnieje | 404 | `not_found` | "Investment not found" |
-| Inwestycja należy do innego użytkownika | 404 | `not_found` | "Investment not found" |
-| Błąd połączenia z bazą danych | 500 | `internal` | "An internal server error occurred" |
-| Nieoczekiwany błąd | 500 | `internal` | "An internal server error occurred" |
+| Scenariusz                              | Kod statusu | Kod błędu      | Komunikat                                 |
+| --------------------------------------- | ----------- | -------------- | ----------------------------------------- |
+| Brak tokenu autoryzacji                 | 401         | `unauthorized` | "Missing or invalid authentication token" |
+| Nieprawidłowy/wygasły token             | 401         | `unauthorized` | "Missing or invalid authentication token" |
+| Nieprawidłowy format UUID               | 400         | `bad_request`  | "Invalid investment ID format"            |
+| Inwestycja nie istnieje                 | 404         | `not_found`    | "Investment not found"                    |
+| Inwestycja należy do innego użytkownika | 404         | `not_found`    | "Investment not found"                    |
+| Błąd połączenia z bazą danych           | 500         | `internal`     | "An internal server error occurred"       |
+| Nieoczekiwany błąd                      | 500         | `internal`     | "An internal server error occurred"       |
 
 ### 7.2. Strategia obsługi błędów
 
@@ -341,6 +356,7 @@ LIMIT 1;
 ### 7.3. Logowanie błędów
 
 **Struktura logu błędu:**
+
 ```typescript
 {
   level: 'error' | 'warn' | 'info',
@@ -360,6 +376,7 @@ LIMIT 1;
 ```
 
 **Poziomy logowania:**
+
 - `error`: Błędy 500, błędy bazy danych
 - `warn`: Błędy 401 (potencjalne próby nieautoryzowanego dostępu)
 - `info`: Błędy 404 (normalne zachowanie, użytkownik może szukać nieistniejącego zasobu)
@@ -426,11 +443,12 @@ LIMIT 1;
 1. **Utworzenie schematu walidacji:**
    - Utworzenie pliku `src/lib/validators/investment.validator.ts` (jeśli nie istnieje)
    - Implementacja schematu Zod dla parametru ID:
+
      ```typescript
-     import { z } from 'zod';
-     
+     import { z } from "zod";
+
      export const InvestmentIdParamSchema = z.object({
-       id: z.string().uuid('Invalid investment ID format')
+       id: z.string().uuid("Invalid investment ID format"),
      });
      ```
 
@@ -528,54 +546,54 @@ LIMIT 1;
 ### 10.1. Endpoint (`src/pages/api/v1/investments/[id].ts`)
 
 ```typescript
-import type { APIContext } from 'astro';
-import { z } from 'zod';
-import { getInvestmentById } from '../../../lib/services/investment.service';
-import { unauthorized, notFound, badRequest, internalError } from '../../../lib/utils/api-error';
+import type { APIContext } from "astro";
+import { z } from "zod";
+import { getInvestmentById } from "../../../lib/services/investment.service";
+import { unauthorized, notFound, badRequest, internalError } from "../../../lib/utils/api-error";
 
 export const prerender = false;
 
 const InvestmentIdParamSchema = z.object({
-  id: z.string().uuid('Invalid investment ID format')
+  id: z.string().uuid("Invalid investment ID format"),
 });
 
 export async function GET(context: APIContext) {
   // Weryfikacja autoryzacji
   const supabase = context.locals.supabase;
   if (!supabase) {
-    return unauthorized('Missing or invalid authentication token');
+    return unauthorized("Missing or invalid authentication token");
   }
 
   // Walidacja parametrów
   const { id } = context.params;
   if (!id) {
-    return badRequest('Investment ID is required');
+    return badRequest("Investment ID is required");
   }
 
   const validationResult = InvestmentIdParamSchema.safeParse({ id });
   if (!validationResult.success) {
-    return badRequest('Invalid investment ID format', {
-      id: 'must_be_valid_uuid'
+    return badRequest("Invalid investment ID format", {
+      id: "must_be_valid_uuid",
     });
   }
 
   // Pobranie inwestycji
   try {
     const investment = await getInvestmentById(validationResult.data.id, supabase);
-    
+
     if (!investment) {
-      return notFound('Investment not found');
+      return notFound("Investment not found");
     }
 
     return new Response(JSON.stringify(investment), {
       status: 200,
       headers: {
-        'Content-Type': 'application/json'
-      }
+        "Content-Type": "application/json",
+      },
     });
   } catch (error) {
-    console.error('Error fetching investment:', error);
-    return internalError('An internal server error occurred');
+    console.error("Error fetching investment:", error);
+    return internalError("An internal server error occurred");
   }
 }
 ```
@@ -583,23 +601,16 @@ export async function GET(context: APIContext) {
 ### 10.2. Serwis (`src/lib/services/investment.service.ts`)
 
 ```typescript
-import type { SupabaseClient } from '../../db/supabase.client';
-import type { InvestmentDto } from '../../types';
-import { toInvestmentDto } from '../../types';
+import type { SupabaseClient } from "../../db/supabase.client";
+import type { InvestmentDto } from "../../types";
+import { toInvestmentDto } from "../../types";
 
-export async function getInvestmentById(
-  id: string,
-  supabase: SupabaseClient
-): Promise<InvestmentDto | null> {
-  const { data, error } = await supabase
-    .from('investments')
-    .select('*')
-    .eq('id', id)
-    .single();
+export async function getInvestmentById(id: string, supabase: SupabaseClient): Promise<InvestmentDto | null> {
+  const { data, error } = await supabase.from("investments").select("*").eq("id", id).single();
 
   if (error) {
     // Jeśli błąd to "not found", zwróć null
-    if (error.code === 'PGRST116') {
+    if (error.code === "PGRST116") {
       return null;
     }
     // Inne błędy rzucamy dalej
@@ -617,68 +628,65 @@ export async function getInvestmentById(
 ### 10.3. Helper błędów (`src/lib/utils/api-error.ts`)
 
 ```typescript
-import type { ApiError } from '../../types';
+import type { ApiError } from "../../types";
 
-export function unauthorized(message = 'Missing or invalid authentication token') {
+export function unauthorized(message = "Missing or invalid authentication token") {
   return new Response(
     JSON.stringify({
       error: {
-        code: 'unauthorized' as const,
-        message
-      }
+        code: "unauthorized" as const,
+        message,
+      },
     } satisfies ApiError),
     {
       status: 401,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
   );
 }
 
-export function notFound(message = 'Resource not found') {
+export function notFound(message = "Resource not found") {
   return new Response(
     JSON.stringify({
       error: {
-        code: 'not_found' as const,
-        message
-      }
+        code: "not_found" as const,
+        message,
+      },
     } satisfies ApiError),
     {
       status: 404,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
   );
 }
 
-export function badRequest(
-  message: string,
-  fields?: Record<string, string>
-) {
+export function badRequest(message: string, fields?: Record<string, string>) {
   return new Response(
     JSON.stringify({
       error: {
-        code: 'bad_request' as const,
+        code: "bad_request" as const,
         message,
-        ...(fields && { fields })
-      }
+        ...(fields && { fields }),
+      },
     } satisfies ApiError),
     {
       status: 400,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
   );
 }
 
-export function internalError(message = 'An internal server error occurred') {
+export function internalError(message = "An internal server error occurred") {
   return new Response(
     JSON.stringify({
       error: {
-        code: 'internal' as const,
-        message
-      }
+        code: "internal" as const,
+        message,
+      },
     } satisfies ApiError),
     {
       status: 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { "Content-Type": "application/json" },
     }
   );
 }
@@ -695,7 +703,3 @@ Endpoint `GET /v1/investments/{id}` jest prostym, ale krytycznym endpointem do p
 - **Typy:** Pełne typowanie TypeScript zapewnia bezpieczeństwo typów end-to-end
 
 Plan wdrożenia jest gotowy do implementacji przez zespół programistów i zapewnia wszystkie niezbędne wskazówki dla skutecznego i poprawnego wdrożenia endpointu.
-
-
-
-

@@ -270,10 +270,12 @@ pages/
 ## Rekomendacje
 
 **Najlepsze punkty startowe do analizy:**
+
 1. `DashboardContent.tsx` - główny komponent dashboardu, pokazuje pełną strukturę
 2. `OnboardingContainer.tsx` - główny komponent onboarding, pokazuje formularze i walidację
 
 **Struktura folderów:**
+
 - `src/components/dashboard/` - komponenty dashboardu
 - `src/components/onboarding/` - komponenty onboarding
 - `src/components/ui/` - komponenty UI (Shadcn)
@@ -281,4 +283,3 @@ pages/
 - `src/lib/hooks/` - custom hooks
 - `src/lib/utils/` - funkcje pomocnicze
 - `src/lib/contexts/` - konteksty React
-

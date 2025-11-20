@@ -14,11 +14,6 @@ export interface FormErrorSummaryProps {
  * Shows a list of errors with optional links to scroll to fields
  */
 export function FormErrorSummary({ errors, onFieldClick, className }: FormErrorSummaryProps) {
-  // Don't render if there are no errors
-  if (Object.keys(errors).length === 0) {
-    return null;
-  }
-
   const errorEntries = Object.entries(errors);
 
   const handleFieldClick = React.useCallback(
@@ -37,6 +32,11 @@ export function FormErrorSummary({ errors, onFieldClick, className }: FormErrorS
     },
     [onFieldClick]
   );
+
+  // Don't render if there are no errors
+  if (errorEntries.length === 0) {
+    return null;
+  }
 
   return (
     <Alert variant="destructive" className={cn("mb-4", className)} role="alert">

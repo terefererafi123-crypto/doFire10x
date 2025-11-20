@@ -14,10 +14,11 @@ export class ResetPasswordService {
 
   /**
    * Resets user password
-   * @param _newPassword New password (currently unused, TODO: implement)
+   * @param newPassword New password (currently unused, TODO: implement)
    * @returns ResetPasswordResult with success status and error details
    */
-  async resetPassword(_newPassword: string): Promise<ResetPasswordResult> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async resetPassword(newPassword: string): Promise<ResetPasswordResult> {
     try {
       // TODO: Implement actual password reset with Supabase
       // const updatePromise = supabaseClient.auth.updateUser({

@@ -5,6 +5,7 @@
 Widok logowania (`/login`) umożliwia użytkownikom uwierzytelnienie w aplikacji DoFIRE za pomocą magic linka wysyłanego na adres e-mail. Widok jest publiczny (nie wymaga autoryzacji) i stanowi punkt wejścia do aplikacji dla niezalogowanych użytkowników. Po pomyślnym zalogowaniu użytkownik jest przekierowywany do `/dashboard` lub `/onboarding` (jeśli nie ma jeszcze profilu).
 
 Główne funkcje widoku:
+
 - Wprowadzanie adresu e-mail przez użytkownika
 - Wysyłanie magic linka przez Supabase SDK
 - Wyświetlanie komunikatów o statusie operacji (sukces/błąd)
@@ -35,6 +36,7 @@ LoginPage (Astro)
 ```
 
 **Hierarchia komponentów:**
+
 - `LoginPage` - główna strona Astro, zawiera layout i integruje React komponenty
 - `LoginForm` - React komponent zarządzający stanem formularza i logiką logowania
 - `EmailField` - wrapper dla pola e-mail z walidacją i obsługą błędów
@@ -200,6 +202,7 @@ interface LoginFormState {
 ```
 
 **Pola:**
+
 - `email: string` - wartość wprowadzona w polu e-mail
 - `errors: LoginFormErrors` - obiekt zawierający błędy walidacji
 - `isLoading: boolean` - flaga wskazująca, czy trwa wysyłanie magic linka
@@ -216,6 +219,7 @@ interface LoginFormErrors {
 ```
 
 **Pola:**
+
 - `email?: string` - błąd walidacji pola e-mail (np. "Nieprawidłowy format e-mail", "Pole e-mail jest wymagane")
 - `submit?: string` - błąd ogólny podczas wysyłania (np. "Nie udało się wysłać linku. Spróbuj ponownie.")
 
@@ -237,6 +241,7 @@ interface EmailFieldProps {
 ```
 
 **Pola:**
+
 - `value: string` - aktualna wartość pola (controlled input)
 - `onChange: (value: string) => void` - callback wywoływany przy zmianie wartości
 - `error?: string` - opcjonalny komunikat błędu do wyświetlenia
@@ -260,6 +265,7 @@ interface SubmitButtonProps {
 ```
 
 **Pola:**
+
 - `isLoading?: boolean` - czy przycisk jest w stanie ładowania
 - `disabled?: boolean` - czy przycisk jest wyłączony
 - `onClick?: () => void` - opcjonalny callback wywoływany przy kliknięciu
@@ -276,6 +282,7 @@ interface AuthSessionDto {
 ```
 
 **Pola:**
+
 - `user_id: string` - identyfikator użytkownika z Supabase
 - `roles: string[]` - tablica ról użytkownika (zazwyczaj `["authenticated"]`)
 - `iat: number` - timestamp wydania tokenu (issued at)
@@ -293,6 +300,7 @@ interface SupabaseAuthResponse {
 ```
 
 **Pola:**
+
 - `data.user: User | null` - obiekt użytkownika po pomyślnym logowaniu
 - `data.session: Session | null` - obiekt sesji Supabase
 - `error: AuthError | null` - błąd autoryzacji, jeśli wystąpił
@@ -300,6 +308,7 @@ interface SupabaseAuthResponse {
 ## 6. Zarządzanie stanem
 
 Widok logowania wykorzystuje lokalny stan React (`useState`) w komponencie `LoginForm` do zarządzania:
+
 - wartością pola e-mail (`email: string`)
 - błędami walidacji (`errors: LoginFormErrors`)
 - stanem ładowania (`isLoading: boolean`)
@@ -312,7 +321,7 @@ Jeśli logika stanie się zbyt złożona, można wyodrębnić ją do custom hook
 ```typescript
 function useLoginForm() {
   const [state, setState] = useState<LoginFormState>({
-    email: '',
+    email: "",
     errors: {},
     isLoading: false,
     isSuccess: false,
@@ -336,11 +345,13 @@ function useLoginForm() {
 ```
 
 **Integracja z Supabase:**
+
 - Supabase client jest importowany bezpośrednio w komponencie: `import { supabaseClient } from '@/db/supabase.client'`
 - Sesja jest automatycznie zarządzana przez Supabase SDK (`persistSession: true` w konfiguracji)
 - Po pomyślnym logowaniu Supabase automatycznie zapisuje sesję w localStorage
 
 **Przekierowania:**
+
 - Po pomyślnym wysłaniu magic linka: wyświetlenie komunikatu sukcesu (bez automatycznego przekierowania, użytkownik musi kliknąć w link)
 - Po kliknięciu w magic link (obsługiwane przez Supabase): automatyczne przekierowanie do `/dashboard` lub `/onboarding` (sprawdzenie przez `GET /v1/auth/session` i `GET /v1/me/profile`)
 
@@ -354,6 +365,7 @@ function useLoginForm() {
 **Typ odpowiedzi:** `SupabaseAuthResponse`
 
 **Implementacja:**
+
 ```typescript
 const { data, error } = await supabaseClient.auth.signInWithOtp({
   email: email,
@@ -364,6 +376,7 @@ const { data, error } = await supabaseClient.auth.signInWithOtp({
 ```
 
 **Obsługa odpowiedzi:**
+
 - Sukces (`error === null`): ustawienie `isSuccess = true`, wyświetlenie komunikatu "Sprawdź swoją skrzynkę e-mail"
 - Błąd (`error !== null`): ustawienie błędu w `errors.submit`, wyświetlenie neutralnego komunikatu (nie ujawniającego, czy e-mail istnieje)
 
@@ -375,10 +388,11 @@ const { data, error } = await supabaseClient.auth.signInWithOtp({
 **Typ odpowiedzi:** `AuthSessionDto`
 
 **Implementacja:**
+
 ```typescript
-const response = await fetch('/api/v1/auth/session', {
+const response = await fetch("/api/v1/auth/session", {
   headers: {
-    'Authorization': `Bearer ${session.access_token}`,
+    Authorization: `Bearer ${session.access_token}`,
   },
 });
 
@@ -389,6 +403,7 @@ if (response.ok) {
 ```
 
 **Obsługa błędów:**
+
 - `401 Unauthorized`: wyświetlenie komunikatu "Zaloguj ponownie", przekierowanie do `/login`
 - `500 Internal Server Error`: wyświetlenie komunikatu "Problem po naszej stronie. Spróbuj ponownie."
 
@@ -400,6 +415,7 @@ if (response.ok) {
 
 **Akcja użytkownika:** Wprowadzenie tekstu w pole e-mail  
 **Oczekiwany wynik:**
+
 - Wartość pola jest aktualizowana w czasie rzeczywistym (`onChange`)
 - Jeśli wcześniej był błąd walidacji, jest on czyszczony
 - Przycisk "Wyślij link logowania" jest włączany/wyłączany w zależności od poprawności e-maila
@@ -408,6 +424,7 @@ if (response.ok) {
 
 **Akcja użytkownika:** Kliknięcie poza pole e-mail lub przejście do innego elementu  
 **Oczekiwany wynik:**
+
 - Jeśli e-mail jest nieprawidłowy, wyświetlenie komunikatu błędu pod polem
 - Pole otrzymuje `aria-invalid="true"` i `aria-describedby` wskazujący na komunikat błędu
 
@@ -415,6 +432,7 @@ if (response.ok) {
 
 **Akcja użytkownika:** Kliknięcie przycisku "Wyślij link logowania" lub naciśnięcie Enter w polu e-mail  
 **Oczekiwany wynik:**
+
 - Walidacja e-maila przed wysłaniem
 - Jeśli e-mail jest nieprawidłowy: wyświetlenie błędu, formularz nie jest wysyłany
 - Jeśli e-mail jest prawidłowy:
@@ -427,6 +445,7 @@ if (response.ok) {
 
 **Akcja użytkownika:** Otwarcie magic linka w przeglądarce  
 **Oczekiwany wynik:**
+
 - Supabase automatycznie loguje użytkownika i zapisuje sesję
 - Frontend nasłuchuje na `onAuthStateChange` i przekierowuje do `/dashboard`
 - Jeśli użytkownik nie ma profilu (`GET /v1/me/profile` zwraca 404), przekierowanie do `/onboarding`
@@ -435,6 +454,7 @@ if (response.ok) {
 
 **Akcja użytkownika:** Wpisanie `/login` w przeglądarce podczas bycia zalogowanym  
 **Oczekiwany wynik:**
+
 - Sprawdzenie sesji przez `supabase.auth.getSession()`
 - Jeśli sesja istnieje, automatyczne przekierowanie do `/dashboard`
 
@@ -442,6 +462,7 @@ if (response.ok) {
 
 **Akcja użytkownika:** Kliknięcie w wygasły magic link lub próba użycia nieprawidłowego tokenu  
 **Oczekiwany wynik:**
+
 - Wyświetlenie komunikatu "Link logowania wygasł lub jest nieprawidłowy. Zaloguj się ponownie."
 - Możliwość ponownego wprowadzenia e-maila i wysłania nowego magic linka
 
@@ -450,6 +471,7 @@ if (response.ok) {
 ### Walidacja pola e-mail (client-side)
 
 **Warunki:**
+
 1. **Pole wymagane:** E-mail nie może być pusty
    - Komunikat: "Pole e-mail jest wymagane"
    - Sprawdzane: przy `onBlur` i `onSubmit`
@@ -460,16 +482,19 @@ if (response.ok) {
    - Sprawdzane: przy `onBlur` i `onSubmit`
 
 **Komponenty odpowiedzialne:**
+
 - `EmailField` - wyświetlanie błędów walidacji
 - `LoginForm` - logika walidacji i zarządzanie stanem błędów
 
 **Wpływ na stan interfejsu:**
+
 - Jeśli e-mail jest nieprawidłowy: pole otrzymuje `aria-invalid="true"`, wyświetlany jest komunikat błędu, przycisk "Wyślij link logowania" jest wyłączony
 - Jeśli e-mail jest prawidłowy: błędy są czyszczone, przycisk jest włączony
 
 ### Walidacja po stronie Supabase
 
 **Warunki:**
+
 1. **E-mail nie istnieje w systemie:** Supabase zawsze zwraca sukces (dla bezpieczeństwa), ale nie wysyła e-maila do nieistniejących adresów
    - Frontend nie może rozróżnić tego przypadku (neutralne komunikaty)
 
@@ -478,14 +503,17 @@ if (response.ok) {
    - Sprawdzane: w `handleSubmit` po wywołaniu `signInWithOtp()`
 
 **Komponenty odpowiedzialne:**
+
 - `LoginForm` - obsługa błędów z Supabase SDK
 
 **Wpływ na stan interfejsu:**
+
 - Jeśli wystąpi błąd: wyświetlenie komunikatu błędu w `Toast` lub pod formularzem, przycisk jest ponownie włączony
 
 ### Sprawdzanie sesji
 
 **Warunki:**
+
 1. **Użytkownik już zalogowany:** Sprawdzenie przez `supabase.auth.getSession()` przy montowaniu komponentu
    - Przekierowanie do `/dashboard` jeśli sesja istnieje
 
@@ -494,6 +522,7 @@ if (response.ok) {
    - Jeśli `200`: kontynuacja do `/dashboard` lub `/onboarding`
 
 **Komponenty odpowiedzialne:**
+
 - `LoginPage` (Astro) - sprawdzenie sesji przy ładowaniu strony
 - `LoginForm` - nasłuchiwanie na `onAuthStateChange` i przekierowania
 
@@ -503,6 +532,7 @@ if (response.ok) {
 
 **Scenariusz:** Użytkownik wprowadza nieprawidłowy format e-maila  
 **Obsługa:**
+
 - Wyświetlenie komunikatu błędu pod polem e-mail
 - Pole otrzymuje `aria-invalid="true"` i `aria-describedby`
 - Przycisk "Wyślij link logowania" jest wyłączony
@@ -510,6 +540,7 @@ if (response.ok) {
 
 **Scenariusz:** Użytkownik próbuje wysłać formularz z pustym polem e-mail  
 **Obsługa:**
+
 - Wyświetlenie komunikatu "Pole e-mail jest wymagane"
 - Formularz nie jest wysyłany
 
@@ -517,12 +548,14 @@ if (response.ok) {
 
 **Scenariusz:** Błąd wysyłania magic linka (np. problem z konfiguracją Supabase)  
 **Obsługa:**
+
 - Wyświetlenie neutralnego komunikatu: "Nie udało się wysłać linku. Spróbuj ponownie za chwilę."
 - Przycisk jest ponownie włączony, użytkownik może spróbować ponownie
 - Błąd jest logowany w konsoli dla debugowania (w trybie development)
 
 **Scenariusz:** Rate limiting (zbyt wiele prób wysłania magic linka)  
 **Obsługa:**
+
 - Wyświetlenie komunikatu: "Zbyt wiele prób. Spróbuj ponownie za kilka minut."
 - Przycisk jest wyłączony na określony czas (np. 60 sekund)
 
@@ -530,16 +563,19 @@ if (response.ok) {
 
 **Scenariusz:** Wygasły lub nieprawidłowy token w magic linku  
 **Obsługa:**
+
 - Wyświetlenie komunikatu: "Link logowania wygasł lub jest nieprawidłowy. Zaloguj się ponownie."
 - Użytkownik może ponownie wprowadzić e-mail i wysłać nowy magic link
 
 **Scenariusz:** Błąd 401 z `GET /v1/auth/session`  
 **Obsługa:**
+
 - Przekierowanie do `/login` z komunikatem "Sesja wygasła. Zaloguj się ponownie."
 - Sesja Supabase jest czyszczona (`supabase.auth.signOut()`)
 
 **Scenariusz:** Błąd 500 z `GET /v1/auth/session`  
 **Obsługa:**
+
 - Wyświetlenie komunikatu: "Problem po naszej stronie. Spróbuj ponownie za chwilę."
 - Użytkownik może spróbować ponownie lub skontaktować się z supportem
 
@@ -547,11 +583,13 @@ if (response.ok) {
 
 **Scenariusz:** Brak połączenia z internetem  
 **Obsługa:**
+
 - Wyświetlenie komunikatu: "Brak połączenia z internetem. Sprawdź swoje połączenie i spróbuj ponownie."
 - Przycisk jest ponownie włączony po przywróceniu połączenia
 
 **Scenariusz:** Timeout żądania  
 **Obsługa:**
+
 - Wyświetlenie komunikatu: "Żądanie trwa zbyt długo. Spróbuj ponownie."
 - Przycisk jest ponownie włączony
 
@@ -629,7 +667,3 @@ if (response.ok) {
 10. **Dokumentacja (opcjonalnie)**
     - Dodanie komentarzy w kodzie dla złożonych fragmentów
     - Aktualizacja dokumentacji projektu (jeśli istnieje)
-
-
-
-

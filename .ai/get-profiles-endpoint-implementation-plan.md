@@ -5,12 +5,14 @@
 Endpoint `GET /v1/me/profile` służy do pobierania profilu użytkownika związanego z aktualnie zalogowanym użytkownikiem. Endpoint jest chroniony autoryzacją Bearer JWT i wykorzystuje Row Level Security (RLS) Supabase, aby zapewnić, że użytkownik może zobaczyć tylko swój własny profil.
 
 **Funkcjonalność:**
+
 - Pobiera dane profilu użytkownika z tabeli `profiles`
 - Zwraca wszystkie pola profilu w formacie DTO
 - Wykorzystuje RLS do automatycznej filtracji po `user_id`
 - Obsługuje przypadki, gdy profil nie istnieje (404)
 
 **Relacja z bazą danych:**
+
 - Tabela: `public.profiles`
 - Relacja: 1:1 z `auth.users` (przez `user_id`)
 - Indeks: `profiles_user_id_idx` (optymalizacja zapytań)
@@ -20,20 +22,24 @@ Endpoint `GET /v1/me/profile` służy do pobierania profilu użytkownika związa
 ## 2. Szczegóły żądania
 
 ### Metoda HTTP
+
 - `GET`
 
 ### Struktura URL
+
 ```
 GET /v1/me/profile
 ```
 
 ### Parametry
+
 - **Wymagane:** Brak
 - **Opcjonalne:** Brak
 - **Query string:** Brak
 - **Request body:** Brak
 
 ### Headers
+
 - **Wymagane:**
   - `Authorization: Bearer <JWT_TOKEN>` - Token JWT z Supabase Auth
 - **Opcjonalne:**
@@ -47,38 +53,42 @@ GET /v1/me/profile
 ### DTO (Data Transfer Objects)
 
 #### ProfileDto
+
 ```typescript
 interface ProfileDto {
-  id: string;                    // UUID profilu
-  user_id: string;               // UUID użytkownika (z auth.users)
-  monthly_expense: number;       // Miesięczne wydatki (PLN, numeric(16,2))
-  withdrawal_rate_pct: number;   // Roczna stopa wypłaty (%, numeric(5,2))
-  expected_return_pct: number;   // Oczekiwana stopa zwrotu (%, numeric(5,2))
-  birth_date: string | null;     // Data urodzenia (ISO 8601 date string) lub null
-  created_at: string;            // Timestamp utworzenia (RFC 3339)
-  updated_at: string;            // Timestamp ostatniej aktualizacji (RFC 3339)
+  id: string; // UUID profilu
+  user_id: string; // UUID użytkownika (z auth.users)
+  monthly_expense: number; // Miesięczne wydatki (PLN, numeric(16,2))
+  withdrawal_rate_pct: number; // Roczna stopa wypłaty (%, numeric(5,2))
+  expected_return_pct: number; // Oczekiwana stopa zwrotu (%, numeric(5,2))
+  birth_date: string | null; // Data urodzenia (ISO 8601 date string) lub null
+  created_at: string; // Timestamp utworzenia (RFC 3339)
+  updated_at: string; // Timestamp ostatniej aktualizacji (RFC 3339)
 }
 ```
 
 #### ApiError
+
 ```typescript
 interface ApiError {
   error: {
     code: "unauthorized" | "not_found" | "internal";
     message: string;
     fields?: Record<string, string>;
-  }
+  };
 }
 ```
 
 ### Typy z bazy danych
 
 #### DbProfileRow
+
 ```typescript
-type DbProfileRow = Tables<"profiles">
+type DbProfileRow = Tables<"profiles">;
 ```
 
 **Mapowanie DbProfileRow → ProfileDto:**
+
 - Mapowanie jest bezpośrednie (1:1)
 - Wszystkie pola są zgodne z typami
 - `birth_date` może być `null`
@@ -92,13 +102,14 @@ type DbProfileRow = Tables<"profiles">
 **Status Code:** `200 OK`
 
 **Response Body:**
+
 ```json
 {
   "id": "c0a1dba8-1234-5678-9abc-def012345678",
   "user_id": "3b9c1234-5678-9abc-def0-123456789abc",
-  "monthly_expense": 4500.00,
-  "withdrawal_rate_pct": 4.00,
-  "expected_return_pct": 7.00,
+  "monthly_expense": 4500.0,
+  "withdrawal_rate_pct": 4.0,
+  "expected_return_pct": 7.0,
   "birth_date": "1992-05-12",
   "created_at": "2025-01-02T09:00:12Z",
   "updated_at": "2025-01-02T09:00:12Z"
@@ -106,6 +117,7 @@ type DbProfileRow = Tables<"profiles">
 ```
 
 **Headers:**
+
 - `Content-Type: application/json`
 - `ETag: <hash>` (opcjonalnie, dla cache)
 - `Last-Modified: <timestamp>` (opcjonalnie, dla cache)
@@ -117,6 +129,7 @@ type DbProfileRow = Tables<"profiles">
 **Status Code:** `401 Unauthorized`
 
 **Przyczyny:**
+
 - Brak nagłówka `Authorization`
 - Nieprawidłowy format tokenu JWT
 - Token JWT wygasł
@@ -124,6 +137,7 @@ type DbProfileRow = Tables<"profiles">
 - Użytkownik nie jest zalogowany
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -138,10 +152,12 @@ type DbProfileRow = Tables<"profiles">
 **Status Code:** `404 Not Found`
 
 **Przyczyny:**
+
 - Profil użytkownika nie istnieje w bazie danych
 - RLS zwróciło pusty wynik (teoretycznie nie powinno się zdarzyć, jeśli użytkownik jest zalogowany)
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -156,11 +172,13 @@ type DbProfileRow = Tables<"profiles">
 **Status Code:** `500 Internal Server Error`
 
 **Przyczyny:**
+
 - Błąd połączenia z bazą danych
 - Błąd zapytania SQL
 - Nieoczekiwany błąd serwera
 
 **Response Body:**
+
 ```json
 {
   "error": {
@@ -284,21 +302,25 @@ API Route Handler (GET /v1/me/profile)
 **Scenariusz:** Klient nie przesłał nagłówka `Authorization` lub token jest nieprawidłowy.
 
 **Obsługa:**
+
 ```typescript
-const authHeader = request.headers.get('Authorization');
-if (!authHeader || !authHeader.startsWith('Bearer ')) {
+const authHeader = request.headers.get("Authorization");
+if (!authHeader || !authHeader.startsWith("Bearer ")) {
   return new Response(
-    JSON.stringify({ error: { code: 'unauthorized', message: 'Missing or invalid authentication token' } }),
-    { status: 401, headers: { 'Content-Type': 'application/json' } }
+    JSON.stringify({ error: { code: "unauthorized", message: "Missing or invalid authentication token" } }),
+    { status: 401, headers: { "Content-Type": "application/json" } }
   );
 }
 
-const { data: { user }, error: authError } = await supabase.auth.getUser();
+const {
+  data: { user },
+  error: authError,
+} = await supabase.auth.getUser();
 if (authError || !user) {
-  return new Response(
-    JSON.stringify({ error: { code: 'unauthorized', message: 'Invalid or expired token' } }),
-    { status: 401, headers: { 'Content-Type': 'application/json' } }
-  );
+  return new Response(JSON.stringify({ error: { code: "unauthorized", message: "Invalid or expired token" } }), {
+    status: 401,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 ```
 
@@ -307,19 +329,17 @@ if (authError || !user) {
 **Scenariusz:** Użytkownik jest zalogowany, ale nie ma profilu w bazie danych.
 
 **Obsługa:**
+
 ```typescript
-const { data: profile, error } = await supabase
-  .from('profiles')
-  .select('*')
-  .eq('user_id', user.id)
-  .single();
+const { data: profile, error } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
 
 if (error) {
-  if (error.code === 'PGRST116') { // No rows returned
-    return new Response(
-      JSON.stringify({ error: { code: 'not_found', message: 'Profile not found' } }),
-      { status: 404, headers: { 'Content-Type': 'application/json' } }
-    );
+  if (error.code === "PGRST116") {
+    // No rows returned
+    return new Response(JSON.stringify({ error: { code: "not_found", message: "Profile not found" } }), {
+      status: 404,
+      headers: { "Content-Type": "application/json" },
+    });
   }
   // Other database errors → 500
   throw error;
@@ -331,27 +351,24 @@ if (error) {
 **Scenariusz:** Błąd połączenia z bazą danych lub błąd zapytania SQL.
 
 **Obsługa:**
+
 ```typescript
 try {
-  const { data: profile, error } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
-  
-  if (error && error.code !== 'PGRST116') {
-    console.error('Database error:', error);
-    return new Response(
-      JSON.stringify({ error: { code: 'internal', message: 'An internal server error occurred' } }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+  const { data: profile, error } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
+
+  if (error && error.code !== "PGRST116") {
+    console.error("Database error:", error);
+    return new Response(JSON.stringify({ error: { code: "internal", message: "An internal server error occurred" } }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 } catch (err) {
-  console.error('Unexpected error:', err);
-  return new Response(
-    JSON.stringify({ error: { code: 'internal', message: 'An internal server error occurred' } }),
-    { status: 500, headers: { 'Content-Type': 'application/json' } }
-  );
+  console.error("Unexpected error:", err);
+  return new Response(JSON.stringify({ error: { code: "internal", message: "An internal server error occurred" } }), {
+    status: 500,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 ```
 
@@ -360,15 +377,16 @@ try {
 **Scenariusz:** Nieoczekiwany błąd w kodzie (np. null reference, type error).
 
 **Obsługa:**
+
 ```typescript
 try {
   // ... endpoint logic
 } catch (err) {
-  console.error('Unexpected error:', err);
-  return new Response(
-    JSON.stringify({ error: { code: 'internal', message: 'An internal server error occurred' } }),
-    { status: 500, headers: { 'Content-Type': 'application/json' } }
-  );
+  console.error("Unexpected error:", err);
+  return new Response(JSON.stringify({ error: { code: "internal", message: "An internal server error occurred" } }), {
+    status: 500,
+    headers: { "Content-Type": "application/json" },
+  });
 }
 ```
 
@@ -460,6 +478,7 @@ try {
 ### Krok 1: Utworzenie struktury katalogów
 
 1. Utworzenie katalogu dla API routes:
+
    ```
    src/pages/api/v1/me/profile.ts
    ```
@@ -477,63 +496,62 @@ try {
    - Mapowanie `DbProfileRow` → `ProfileDto`
 
 2. **Implementacja serwisu:**
+
    ```typescript
    // src/lib/services/profile.service.ts
-   import type { SupabaseClient } from '../db/supabase.client.ts';
-   import type { Database } from '../db/database.types.ts';
-   import type { ProfileDto } from '../../types.ts';
-   import type { Tables } from '../db/database.types.ts';
+   import type { SupabaseClient } from "../db/supabase.client.ts";
+   import type { Database } from "../db/database.types.ts";
+   import type { ProfileDto } from "../../types.ts";
+   import type { Tables } from "../db/database.types.ts";
 
-   type DbProfileRow = Tables<'profiles'>;
+   type DbProfileRow = Tables<"profiles">;
 
    export async function getProfileByUserId(
      supabase: SupabaseClient<Database>,
      userId: string
    ): Promise<ProfileDto | null> {
-     const { data, error } = await supabase
-       .from('profiles')
-       .select('*')
-       .eq('user_id', userId)
-       .single();
+     const { data, error } = await supabase.from("profiles").select("*").eq("user_id", userId).single();
 
      if (error) {
-       if (error.code === 'PGRST116') {
+       if (error.code === "PGRST116") {
          // No rows returned
          return null;
-      }
-      throw error;
-    }
+       }
+       throw error;
+     }
 
-    return data as ProfileDto;
-  }
-  ```
+     return data as ProfileDto;
+   }
+   ```
+
+````
 
 ### Krok 3: Utworzenie helpera autoryzacji
 
 1. Utworzenie pliku `src/lib/auth/helpers.ts`:
-   - Funkcja `getAuthenticatedUser(supabase)`
-   - Obsługa błędów autoryzacji
-   - Zwracanie użytkownika lub null
+ - Funkcja `getAuthenticatedUser(supabase)`
+ - Obsługa błędów autoryzacji
+ - Zwracanie użytkownika lub null
 
 2. **Implementacja helpera:**
-   ```typescript
-   // src/lib/auth/helpers.ts
-   import type { SupabaseClient } from '../db/supabase.client.ts';
-   import type { Database } from '../db/database.types.ts';
-   import type { User } from '@supabase/supabase-js';
+ ```typescript
+ // src/lib/auth/helpers.ts
+ import type { SupabaseClient } from '../db/supabase.client.ts';
+ import type { Database } from '../db/database.types.ts';
+ import type { User } from '@supabase/supabase-js';
 
-   export async function getAuthenticatedUser(
-     supabase: SupabaseClient<Database>
-   ): Promise<User | null> {
-     const { data: { user }, error } = await supabase.auth.getUser();
-     
-     if (error || !user) {
-       return null;
-     }
-     
-     return user;
+ export async function getAuthenticatedUser(
+   supabase: SupabaseClient<Database>
+ ): Promise<User | null> {
+   const { data: { user }, error } = await supabase.auth.getUser();
+
+   if (error || !user) {
+     return null;
    }
-   ```
+
+   return user;
+ }
+````
 
 ### Krok 4: Utworzenie helpera odpowiedzi API
 
@@ -543,21 +561,22 @@ try {
    - Funkcje do serializacji DTO
 
 2. **Implementacja helpera:**
+
    ```typescript
    // src/lib/api/response.ts
-   import type { ApiError } from '../../types.ts';
+   import type { ApiError } from "../../types.ts";
 
    export function jsonResponse<T>(data: T, status: number = 200): Response {
      return new Response(JSON.stringify(data), {
        status,
-       headers: { 'Content-Type': 'application/json' },
+       headers: { "Content-Type": "application/json" },
      });
    }
 
-   export function errorResponse(error: ApiError['error'], status: number): Response {
+   export function errorResponse(error: ApiError["error"], status: number): Response {
      return new Response(JSON.stringify({ error }), {
        status,
-       headers: { 'Content-Type': 'application/json' },
+       headers: { "Content-Type": "application/json" },
      });
    }
    ```
@@ -571,12 +590,13 @@ try {
    - Zwrócenie odpowiedzi
 
 2. **Implementacja endpointu:**
+
    ```typescript
    // src/pages/api/v1/me/profile.ts
-   import type { APIRoute } from 'astro';
-   import { getAuthenticatedUser } from '../../../lib/auth/helpers.ts';
-   import { getProfileByUserId } from '../../../lib/services/profile.service.ts';
-   import { jsonResponse, errorResponse } from '../../../lib/api/response.ts';
+   import type { APIRoute } from "astro";
+   import { getAuthenticatedUser } from "../../../lib/auth/helpers.ts";
+   import { getProfileByUserId } from "../../../lib/services/profile.service.ts";
+   import { jsonResponse, errorResponse } from "../../../lib/api/response.ts";
 
    export const prerender = false;
 
@@ -584,30 +604,21 @@ try {
      // 1. Authentication check
      const user = await getAuthenticatedUser(locals.supabase);
      if (!user) {
-       return errorResponse(
-         { code: 'unauthorized', message: 'Missing or invalid authentication token' },
-         401
-       );
+       return errorResponse({ code: "unauthorized", message: "Missing or invalid authentication token" }, 401);
      }
 
      // 2. Get profile
      try {
        const profile = await getProfileByUserId(locals.supabase, user.id);
-       
+
        if (!profile) {
-         return errorResponse(
-           { code: 'not_found', message: 'Profile not found' },
-           404
-         );
+         return errorResponse({ code: "not_found", message: "Profile not found" }, 404);
        }
 
        return jsonResponse(profile, 200);
      } catch (error) {
-       console.error('Error fetching profile:', error);
-       return errorResponse(
-         { code: 'internal', message: 'An internal server error occurred' },
-         500
-       );
+       console.error("Error fetching profile:", error);
+       return errorResponse({ code: "internal", message: "An internal server error occurred" }, 500);
      }
    };
    ```
@@ -632,7 +643,6 @@ try {
    - Test: pobranie profilu z nieprawidłowym tokenem
    - Test: pobranie profilu bez tokenu
    - Test: pobranie profilu, który nie istnieje
- 
 
 ### Krok 9: Code review
 
@@ -742,7 +752,6 @@ Content-Type: application/json
 
 ---
 
-*Plan wdrożenia utworzony: 2025-01-15*
-*Wersja: 1.0*
-*Autor: AI Assistant*
-
+_Plan wdrożenia utworzony: 2025-01-15_
+_Wersja: 1.0_
+_Autor: AI Assistant_

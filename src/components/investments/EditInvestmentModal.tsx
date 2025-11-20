@@ -57,8 +57,7 @@ export function EditInvestmentModal({ investment, open, onOpenChange, onSuccess 
     // Clear error for this field when user starts typing
     if (errors[field]) {
       setErrors((prev) => {
-        const newErrors = { ...prev };
-        delete newErrors[field];
+        const { [field]: _, ...newErrors } = prev;
         return newErrors;
       });
     }

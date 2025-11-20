@@ -16,8 +16,8 @@ jobs:
       - name: Instalacja Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
+          node-version-file: ".nvmrc"
+          cache: "npm"
 
       - name: Instalacja zależności
         run: npm ci
@@ -36,8 +36,8 @@ jobs:
       - name: Instalacja Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'npm'
+          node-version-file: ".nvmrc"
+          cache: "npm"
 
       - name: Instalacja zależności
         run: npm ci
@@ -106,7 +106,7 @@ jobs:
           else
             COVERAGE_LINE="- **Pokrycie kodu**: N/A"
           fi
-          
+
           cat > comment-body.md << 'COMMENT_EOF'
           ## ✅ Status workflow Pull Request
 
@@ -128,4 +128,3 @@ jobs:
         with:
           message-path: comment-body.md
           recreate: true
-

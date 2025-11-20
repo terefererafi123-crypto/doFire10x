@@ -1,4 +1,5 @@
 # DoFIRE
+
 #workflow test
 
 A simple FIRE (Financial Independence, Retire Early) calculator web application that helps users calculate their FIRE number, time to financial independence, and the age at which they can achieve it.
@@ -18,6 +19,7 @@ DoFIRE is a web-based financial calculator designed to help users track their pr
 ### Problem Statement
 
 Most FIRE calculators limit themselves to static calculations without context or financial analysis. Users struggle to understand:
+
 - How their investment decisions affect risk and progress
 - How to balance their investment portfolio
 - How quickly they can achieve independence with current expenses and return rates
@@ -27,6 +29,7 @@ DoFIRE solves this by offering a simple, dynamic tool with brief result interpre
 ## Tech Stack
 
 ### Frontend
+
 - **[Astro](https://astro.build/)** v5.13.7 - Modern web framework for building fast, content-focused websites
 - **[React](https://react.dev/)** v19.1.1 - UI library for building interactive components
 - **[TypeScript](https://www.typescriptlang.org/)** v5 - Type-safe JavaScript
@@ -34,6 +37,7 @@ DoFIRE solves this by offering a simple, dynamic tool with brief result interpre
 - **[Shadcn/ui](https://ui.shadcn.com/)** - Accessible React component library
 
 ### Backend
+
 - **[Supabase](https://supabase.com/)** - Backend-as-a-Service providing:
   - PostgreSQL database
   - User authentication (magic links)
@@ -41,15 +45,18 @@ DoFIRE solves this by offering a simple, dynamic tool with brief result interpre
   - TypeScript SDK
 
 ### Development & Testing
+
 - **[Playwright](https://playwright.dev/)** - End-to-end testing framework
 - **[ESLint](https://eslint.org/)** - Code linting
 - **[Prettier](https://prettier.io/)** - Code formatting
 
 ### CI/CD & Hosting
+
 - **[GitHub Actions](https://github.com/features/actions)** - CI/CD pipelines
 - **DigitalOcean** - Application hosting via Docker
 
 ### AI Integration
+
 - **Openrouter.ai** - Access to various AI models (OpenAI, Anthropic, Google, etc.) with API cost controls
 
 ## Getting Started Locally
@@ -106,15 +113,15 @@ npm run preview
 
 ## Available Scripts
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start the development server |
-| `npm run build` | Build the application for production |
-| `npm run preview` | Preview the production build locally |
-| `npm run astro` | Run Astro CLI commands |
-| `npm run lint` | Run ESLint to check for code issues |
-| `npm run lint:fix` | Automatically fix ESLint issues |
-| `npm run format` | Format code using Prettier |
+| Script             | Description                          |
+| ------------------ | ------------------------------------ |
+| `npm run dev`      | Start the development server         |
+| `npm run build`    | Build the application for production |
+| `npm run preview`  | Preview the production build locally |
+| `npm run astro`    | Run Astro CLI commands               |
+| `npm run lint`     | Run ESLint to check for code issues  |
+| `npm run lint:fix` | Automatically fix ESLint issues      |
+| `npm run format`   | Format code using Prettier           |
 
 ## Project Scope
 
@@ -149,6 +156,7 @@ The following features are explicitly **not** included in the MVP:
 ### Investment Types
 
 The application supports the following investment types:
+
 - **ETF** - Exchange-Traded Funds
 - **Bond** - Bonds
 - **Stock** - Stocks
@@ -178,12 +186,12 @@ This project is currently in development as part of the 10xDevs training program
 
 ### Success Metrics
 
-| Metric | Description | Success Criteria |
-|--------|-------------|------------------|
-| Authentication | User can log in and maintain session | 100% successful logins |
-| CRUD Operations | Adding, editing, deleting investments works correctly | All CRUD operations return success |
-| Calculations | Results generated after clicking "Calculate metrics" | Results match formulas |
-| Testing | E2E tests and CI/CD work correctly | All Playwright tests and GitHub Actions succeed |
+| Metric          | Description                                           | Success Criteria                                |
+| --------------- | ----------------------------------------------------- | ----------------------------------------------- |
+| Authentication  | User can log in and maintain session                  | 100% successful logins                          |
+| CRUD Operations | Adding, editing, deleting investments works correctly | All CRUD operations return success              |
+| Calculations    | Results generated after clicking "Calculate metrics"  | Results match formulas                          |
+| Testing         | E2E tests and CI/CD work correctly                    | All Playwright tests and GitHub Actions succeed |
 
 ## Project Structure
 

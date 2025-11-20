@@ -1,64 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/lib/validators/profile.validator.test.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../../index.html">All files</a> /
-          <a href="index.html">src/lib/validators</a> profile.validator.test.ts
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">340/340</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">38/38</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/0</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">340/340</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/lib/validators</a> profile.validator.test.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>340/340</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>38/38</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>340/340</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -1173,19 +1177,19 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from 'vitest';
-import { validateCreateProfile, validateUpdateProfile } from './profile.validator';
-import type { CreateProfileCommand, UpdateProfileCommand } from '@/types';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from "vitest";
+import { validateCreateProfile, validateUpdateProfile } from "./profile.validator";
+import type { CreateProfileCommand, UpdateProfileCommand } from "@/types";
 &nbsp;
-describe('profile.validator', () =&gt; {
-  describe('validateCreateProfile', () =&gt; {
-    it('should validate correct profile data', () =&gt; {
+describe("profile.validator", () =&gt; {
+  describe("validateCreateProfile", () =&gt; {
+    it("should validate correct profile data", () =&gt; {
       // Arrange
       const validData: CreateProfileCommand = {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: '1992-05-12',
+        birth_date: "1992-05-12",
       };
 &nbsp;
       // Act
@@ -1198,7 +1202,7 @@ describe('profile.validator', () =&gt; {
       }
     });
 &nbsp;
-    it('should validate profile without birth_date', () =&gt; {
+    it("should validate profile without birth_date", () =&gt; {
       // Arrange
       const validData: CreateProfileCommand = {
         monthly_expense: 4500.0,
@@ -1213,7 +1217,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject negative monthly_expense', () =&gt; {
+    it("should reject negative monthly_expense", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: -100,
@@ -1228,7 +1232,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject undefined monthly_expense', () =&gt; {
+    it("should reject undefined monthly_expense", () =&gt; {
       // Arrange
       const invalidData = {
         withdrawal_rate_pct: 4.0,
@@ -1242,7 +1246,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject null monthly_expense', () =&gt; {
+    it("should reject null monthly_expense", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: null,
@@ -1257,7 +1261,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject NaN monthly_expense', () =&gt; {
+    it("should reject NaN monthly_expense", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: NaN,
@@ -1272,7 +1276,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject Infinity monthly_expense', () =&gt; {
+    it("should reject Infinity monthly_expense", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: Infinity,
@@ -1287,7 +1291,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept zero monthly_expense', () =&gt; {
+    it("should accept zero monthly_expense", () =&gt; {
       // Arrange
       const validData: CreateProfileCommand = {
         monthly_expense: 0,
@@ -1302,7 +1306,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject withdrawal_rate_pct less than 0', () =&gt; {
+    it("should reject withdrawal_rate_pct less than 0", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 4500.0,
@@ -1317,7 +1321,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject withdrawal_rate_pct greater than 100', () =&gt; {
+    it("should reject withdrawal_rate_pct greater than 100", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 4500.0,
@@ -1332,7 +1336,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept withdrawal_rate_pct at boundaries (0 and 100)', () =&gt; {
+    it("should accept withdrawal_rate_pct at boundaries (0 and 100)", () =&gt; {
       // Arrange
       const dataAt0: CreateProfileCommand = {
         monthly_expense: 4500.0,
@@ -1354,7 +1358,7 @@ describe('profile.validator', () =&gt; {
       expect(result100.success).toBe(true);
     });
 &nbsp;
-    it('should reject expected_return_pct less than -100', () =&gt; {
+    it("should reject expected_return_pct less than -100", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 4500.0,
@@ -1369,7 +1373,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject expected_return_pct greater than 1000', () =&gt; {
+    it("should reject expected_return_pct greater than 1000", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 4500.0,
@@ -1384,7 +1388,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept expected_return_pct at boundaries (-100 and 1000)', () =&gt; {
+    it("should accept expected_return_pct at boundaries (-100 and 1000)", () =&gt; {
       // Arrange
       const dataAtMinus100: CreateProfileCommand = {
         monthly_expense: 4500.0,
@@ -1406,7 +1410,7 @@ describe('profile.validator', () =&gt; {
       expect(result1000.success).toBe(true);
     });
 &nbsp;
-    it('should reject birth_date in the future', () =&gt; {
+    it("should reject birth_date in the future", () =&gt; {
       // Arrange
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
@@ -1414,7 +1418,7 @@ describe('profile.validator', () =&gt; {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: tomorrow.toISOString().split('T')[0],
+        birth_date: tomorrow.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1424,7 +1428,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject birth_date older than 120 years', () =&gt; {
+    it("should reject birth_date older than 120 years", () =&gt; {
       // Arrange
       const tooOld = new Date();
       tooOld.setFullYear(tooOld.getFullYear() - 121);
@@ -1432,7 +1436,7 @@ describe('profile.validator', () =&gt; {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: tooOld.toISOString().split('T')[0],
+        birth_date: tooOld.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1442,7 +1446,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept birth_date exactly 120 years ago', () =&gt; {
+    it("should accept birth_date exactly 120 years ago", () =&gt; {
       // Arrange
       // Walidacja używa dateObj &gt;= maxAge, więc data musi być &gt;= maxAge
       // Problem: new Date(dateStr) tworzy datę w UTC, a maxAge.setHours(0,0,0,0) używa lokalnej strefy czasowej
@@ -1460,7 +1464,7 @@ describe('profile.validator', () =&gt; {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: testDate.toISOString().split('T')[0],
+        birth_date: testDate.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1470,13 +1474,13 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject invalid date format', () =&gt; {
+    it("should reject invalid date format", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: '1992/05/12', // Nieprawidłowy format
+        birth_date: "1992/05/12", // Nieprawidłowy format
       };
 &nbsp;
       // Act
@@ -1486,7 +1490,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept null birth_date', () =&gt; {
+    it("should accept null birth_date", () =&gt; {
       // Arrange
       const validData: CreateProfileCommand = {
         monthly_expense: 4500.0,
@@ -1502,13 +1506,13 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject unknown fields (strict mode)', () =&gt; {
+    it("should reject unknown fields (strict mode)", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        unknown_field: 'value',
+        unknown_field: "value",
       };
 &nbsp;
       // Act
@@ -1518,7 +1522,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject missing required fields', () =&gt; {
+    it("should reject missing required fields", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 4500.0,
@@ -1534,14 +1538,14 @@ describe('profile.validator', () =&gt; {
     });
   });
 &nbsp;
-  describe('validateUpdateProfile', () =&gt; {
-    it('should validate update with all fields', () =&gt; {
+  describe("validateUpdateProfile", () =&gt; {
+    it("should validate update with all fields", () =&gt; {
       // Arrange
       const validData: UpdateProfileCommand = {
         monthly_expense: 5000.0,
         withdrawal_rate_pct: 4.5,
         expected_return_pct: 8.0,
-        birth_date: '1990-01-01',
+        birth_date: "1990-01-01",
       };
 &nbsp;
       // Act
@@ -1551,7 +1555,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should validate update with single field', () =&gt; {
+    it("should validate update with single field", () =&gt; {
       // Arrange
       const validData: UpdateProfileCommand = {
         monthly_expense: 5000.0,
@@ -1564,7 +1568,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject update with no fields', () =&gt; {
+    it("should reject update with no fields", () =&gt; {
       // Arrange
       const invalidData = {};
 &nbsp;
@@ -1575,7 +1579,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject update with all fields undefined', () =&gt; {
+    it("should reject update with all fields undefined", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: undefined,
@@ -1591,7 +1595,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate monthly_expense update', () =&gt; {
+    it("should validate monthly_expense update", () =&gt; {
       // Arrange
       const validData: UpdateProfileCommand = {
         monthly_expense: 6000.0,
@@ -1604,7 +1608,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject negative monthly_expense in update', () =&gt; {
+    it("should reject negative monthly_expense in update", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: -100,
@@ -1617,7 +1621,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject monthly_expense exceeding maximum in update', () =&gt; {
+    it("should reject monthly_expense exceeding maximum in update", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 9999999999999.99 + 0.01, // Przekracza maksimum
@@ -1630,7 +1634,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate withdrawal_rate_pct with max 2 decimal places', () =&gt; {
+    it("should validate withdrawal_rate_pct with max 2 decimal places", () =&gt; {
       // Arrange
       const validData: UpdateProfileCommand = {
         withdrawal_rate_pct: 4.25, // 2 miejsca po przecinku
@@ -1643,7 +1647,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject withdrawal_rate_pct with more than 2 decimal places', () =&gt; {
+    it("should reject withdrawal_rate_pct with more than 2 decimal places", () =&gt; {
       // Arrange
       const invalidData = {
         withdrawal_rate_pct: 4.256, // 3 miejsca po przecinku
@@ -1656,7 +1660,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate expected_return_pct update', () =&gt; {
+    it("should validate expected_return_pct update", () =&gt; {
       // Arrange
       const validData: UpdateProfileCommand = {
         expected_return_pct: 8.0,
@@ -1669,7 +1673,7 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject expected_return_pct outside range in update', () =&gt; {
+    it("should reject expected_return_pct outside range in update", () =&gt; {
       // Arrange
       const invalidData1 = {
         expected_return_pct: -101,
@@ -1687,10 +1691,10 @@ describe('profile.validator', () =&gt; {
       expect(result2.success).toBe(false);
     });
 &nbsp;
-    it('should validate birth_date update', () =&gt; {
+    it("should validate birth_date update", () =&gt; {
       // Arrange
       const validData: UpdateProfileCommand = {
-        birth_date: '1990-01-01',
+        birth_date: "1990-01-01",
       };
 &nbsp;
       // Act
@@ -1700,12 +1704,12 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject birth_date in future in update', () =&gt; {
+    it("should reject birth_date in future in update", () =&gt; {
       // Arrange
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const invalidData = {
-        birth_date: tomorrow.toISOString().split('T')[0],
+        birth_date: tomorrow.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1715,11 +1719,11 @@ describe('profile.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject unknown fields in update (strict mode)', () =&gt; {
+    it("should reject unknown fields in update (strict mode)", () =&gt; {
       // Arrange
       const invalidData = {
         monthly_expense: 5000.0,
-        unknown_field: 'value',
+        unknown_field: "value",
       };
 &nbsp;
       // Act
@@ -1732,22 +1736,21 @@ describe('profile.validator', () =&gt; {
 });
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../../sorter.js"></script>
-    <script src="../../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
 </html>
+    

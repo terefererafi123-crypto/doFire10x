@@ -1,63 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/components/ErrorMessage.test.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../index.html">All files</a> / <a href="index.html">src/components</a> ErrorMessage.test.tsx
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">46/46</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">8/8</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/0</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">46/46</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/components</a> ErrorMessage.test.tsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>46/46</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>8/8</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>46/46</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -135,8 +140,7 @@
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
 <a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L78'></a><a href='#L78'>78</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -213,73 +217,72 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { ErrorMessage } from './ErrorMessage';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { ErrorMessage } from "./ErrorMessage";
 &nbsp;
-describe('ErrorMessage', () =&gt; {
-  it('should render inline variant by default', () =&gt; {
+describe("ErrorMessage", () =&gt; {
+  it("should render inline variant by default", () =&gt; {
     // Arrange &amp; Act
     render(&lt;ErrorMessage message="Test error message" /&gt;);
 &nbsp;
     // Assert
-    const errorElement = screen.getByText('Test error message');
+    const errorElement = screen.getByText("Test error message");
     expect(errorElement).toBeInTheDocument();
-    expect(errorElement.tagName).toBe('P');
-    expect(errorElement).toHaveAttribute('role', 'alert');
+    expect(errorElement.tagName).toBe("P");
+    expect(errorElement).toHaveAttribute("role", "alert");
   });
 &nbsp;
-  it('should render inline variant explicitly', () =&gt; {
+  it("should render inline variant explicitly", () =&gt; {
     // Arrange &amp; Act
     render(&lt;ErrorMessage message="Test error message" variant="inline" /&gt;);
 &nbsp;
     // Assert
-    const errorElement = screen.getByText('Test error message');
+    const errorElement = screen.getByText("Test error message");
     expect(errorElement).toBeInTheDocument();
-    expect(errorElement.tagName).toBe('P');
-    expect(errorElement).toHaveClass('text-destructive');
+    expect(errorElement.tagName).toBe("P");
+    expect(errorElement).toHaveClass("text-destructive");
   });
 &nbsp;
-  it('should render AlertCircle icon in banner variant', () =&gt; {
+  it("should render AlertCircle icon in banner variant", () =&gt; {
     // Arrange &amp; Act
     render(&lt;ErrorMessage message="Test error message" variant="banner" /&gt;);
 &nbsp;
     // Assert
     // Sprawdzamy czy ikona jest renderowana (lucide-react renderuje jako SVG)
-    const errorElement = screen.getByText('Test error message').parentElement;
+    const errorElement = screen.getByText("Test error message").parentElement;
     expect(errorElement).toBeInTheDocument();
     // Ikona powinna być w kontenerze
-    const icon = errorElement?.querySelector('svg');
+    const icon = errorElement?.querySelector("svg");
     expect(icon).toBeInTheDocument();
   });
 &nbsp;
-  it('should not render icon in inline variant', () =&gt; {
+  it("should not render icon in inline variant", () =&gt; {
     // Arrange &amp; Act
     const { container } = render(&lt;ErrorMessage message="Test error message" variant="inline" /&gt;);
 &nbsp;
     // Assert
     // W inline variant nie powinno być ikony
-    const svg = container.querySelector('svg');
+    const svg = container.querySelector("svg");
     expect(svg).not.toBeInTheDocument();
   });
 &nbsp;
-  it('should apply custom className', () =&gt; {
+  it("should apply custom className", () =&gt; {
     // Arrange &amp; Act
     render(&lt;ErrorMessage message="Test error message" className="custom-class" /&gt;);
 &nbsp;
     // Assert
-    const errorElement = screen.getByText('Test error message');
-    expect(errorElement).toHaveClass('custom-class');
+    const errorElement = screen.getByText("Test error message");
+    expect(errorElement).toHaveClass("custom-class");
   });
 &nbsp;
-  it('should apply id attribute when provided', () =&gt; {
+  it("should apply id attribute when provided", () =&gt; {
     // Arrange &amp; Act
     render(&lt;ErrorMessage message="Test error message" id="test-error-id" /&gt;);
 &nbsp;
     // Assert
-    const errorElement = screen.getByText('Test error message');
-    expect(errorElement).toHaveAttribute('id', 'test-error-id');
+    const errorElement = screen.getByText("Test error message");
+    expect(errorElement).toHaveAttribute("id", "test-error-id");
   });
 &nbsp;
   it('should have aria-live="polite" in inline variant', () =&gt; {
@@ -287,29 +290,27 @@ describe('ErrorMessage', () =&gt; {
     render(&lt;ErrorMessage message="Test error message" variant="inline" /&gt;);
 &nbsp;
     // Assert
-    const errorElement = screen.getByText('Test error message');
-    expect(errorElement).toHaveAttribute('aria-live', 'polite');
+    const errorElement = screen.getByText("Test error message");
+    expect(errorElement).toHaveAttribute("aria-live", "polite");
   });
 });
-&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../sorter.js"></script>
-    <script src="../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
 </html>
+    

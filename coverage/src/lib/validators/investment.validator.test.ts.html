@@ -1,64 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/lib/validators/investment.validator.test.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../../index.html">All files</a> /
-          <a href="index.html">src/lib/validators</a> investment.validator.test.ts
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">432/432</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">57/57</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/0</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">432/432</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/lib/validators</a> investment.validator.test.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>432/432</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>57/57</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>432/432</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -1521,24 +1525,24 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from 'vitest';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from "vitest";
 import {
   validateCreateInvestment,
   validateUpdateInvestment,
   validateInvestmentListQuery,
   investmentIdParamSchema,
-} from './investment.validator';
-import type { CreateInvestmentCommand, UpdateInvestmentCommand, InvestmentListQuery } from '@/types';
+} from "./investment.validator";
+import type { CreateInvestmentCommand, UpdateInvestmentCommand, InvestmentListQuery } from "@/types";
 &nbsp;
-describe('investment.validator', () =&gt; {
-  describe('validateCreateInvestment', () =&gt; {
-    it('should validate correct investment data', () =&gt; {
+describe("investment.validator", () =&gt; {
+  describe("validateCreateInvestment", () =&gt; {
+    it("should validate correct investment data", () =&gt; {
       // Arrange
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 10000.0,
-        acquired_at: '2024-01-15',
-        notes: 'ETF SP500',
+        acquired_at: "2024-01-15",
+        notes: "ETF SP500",
       };
 &nbsp;
       // Act
@@ -1547,18 +1551,18 @@ describe('investment.validator', () =&gt; {
       // Assert
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.type).toBe('etf');
+        expect(result.data.type).toBe("etf");
         expect(result.data.amount).toBe(10000.0);
-        expect(result.data.acquired_at).toBe('2024-01-15');
+        expect(result.data.acquired_at).toBe("2024-01-15");
       }
     });
 &nbsp;
-    it('should validate investment without notes', () =&gt; {
+    it("should validate investment without notes", () =&gt; {
       // Arrange
       const validData: CreateInvestmentCommand = {
-        type: 'bond',
+        type: "bond",
         amount: 5000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1568,28 +1572,28 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should validate all asset types', () =&gt; {
+    it("should validate all asset types", () =&gt; {
       // Arrange
-      const types: Array&lt;CreateInvestmentCommand['type']&gt; = ['etf', 'bond', 'stock', 'cash'];
+      const types: CreateInvestmentCommand["type"][] = ["etf", "bond", "stock", "cash"];
 &nbsp;
       // Act &amp; Assert
       types.forEach((type) =&gt; {
         const data: CreateInvestmentCommand = {
           type,
           amount: 1000.0,
-          acquired_at: '2024-01-15',
+          acquired_at: "2024-01-15",
         };
         const result = validateCreateInvestment(data);
         expect(result.success).toBe(true);
       });
     });
 &nbsp;
-    it('should reject invalid asset type', () =&gt; {
+    it("should reject invalid asset type", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'invalid_type',
+        type: "invalid_type",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1599,17 +1603,17 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject amount &lt;= 0', () =&gt; {
+    it("should reject amount &lt;= 0", () =&gt; {
       // Arrange
       const invalidData1 = {
-        type: 'etf',
+        type: "etf",
         amount: 0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
       const invalidData2 = {
-        type: 'etf',
+        type: "etf",
         amount: -100,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1621,12 +1625,12 @@ describe('investment.validator', () =&gt; {
       expect(result2.success).toBe(false);
     });
 &nbsp;
-    it('should reject amount exceeding maximum', () =&gt; {
+    it("should reject amount exceeding maximum", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 999999999999.99 + 0.01, // Przekracza maksimum
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1636,12 +1640,12 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject NaN amount', () =&gt; {
+    it("should reject NaN amount", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: NaN,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1651,12 +1655,12 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject Infinity amount', () =&gt; {
+    it("should reject Infinity amount", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: Infinity,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1666,14 +1670,14 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject future acquired_at date', () =&gt; {
+    it("should reject future acquired_at date", () =&gt; {
       // Arrange
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: tomorrow.toISOString().split('T')[0],
+        acquired_at: tomorrow.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1683,13 +1687,13 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept today as acquired_at date', () =&gt; {
+    it("should accept today as acquired_at date", () =&gt; {
       // Arrange
       const today = new Date();
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: today.toISOString().split('T')[0],
+        acquired_at: today.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1699,12 +1703,12 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject invalid date format', () =&gt; {
+    it("should reject invalid date format", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024/01/15', // Nieprawidłowy format
+        acquired_at: "2024/01/15", // Nieprawidłowy format
       };
 &nbsp;
       // Act
@@ -1714,10 +1718,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject missing acquired_at', () =&gt; {
+    it("should reject missing acquired_at", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
         // brak acquired_at
       };
@@ -1729,13 +1733,13 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should transform empty notes string to null', () =&gt; {
+    it("should transform empty notes string to null", () =&gt; {
       // Arrange
       const data = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: '', // Pusty string
+        acquired_at: "2024-01-15",
+        notes: "", // Pusty string
       };
 &nbsp;
       // Act
@@ -1748,13 +1752,13 @@ describe('investment.validator', () =&gt; {
       }
     });
 &nbsp;
-    it('should transform whitespace-only notes to null', () =&gt; {
+    it("should transform whitespace-only notes to null", () =&gt; {
       // Arrange
       const data = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: '   ', // Tylko białe znaki
+        acquired_at: "2024-01-15",
+        notes: "   ", // Tylko białe znaki
       };
 &nbsp;
       // Act
@@ -1767,13 +1771,13 @@ describe('investment.validator', () =&gt; {
       }
     });
 &nbsp;
-    it('should reject notes exceeding 1000 characters', () =&gt; {
+    it("should reject notes exceeding 1000 characters", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: 'a'.repeat(1001), // 1001 znaków
+        acquired_at: "2024-01-15",
+        notes: "a".repeat(1001), // 1001 znaków
       };
 &nbsp;
       // Act
@@ -1783,13 +1787,13 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept notes with exactly 1000 characters', () =&gt; {
+    it("should accept notes with exactly 1000 characters", () =&gt; {
       // Arrange
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: 'a'.repeat(1000), // Dokładnie 1000 znaków
+        acquired_at: "2024-01-15",
+        notes: "a".repeat(1000), // Dokładnie 1000 znaków
       };
 &nbsp;
       // Act
@@ -1799,13 +1803,13 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject unknown fields (strict mode)', () =&gt; {
+    it("should reject unknown fields (strict mode)", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        unknown_field: 'value',
+        acquired_at: "2024-01-15",
+        unknown_field: "value",
       };
 &nbsp;
       // Act
@@ -1816,14 +1820,14 @@ describe('investment.validator', () =&gt; {
     });
   });
 &nbsp;
-  describe('validateUpdateInvestment', () =&gt; {
-    it('should validate update with all fields', () =&gt; {
+  describe("validateUpdateInvestment", () =&gt; {
+    it("should validate update with all fields", () =&gt; {
       // Arrange
       const validData: UpdateInvestmentCommand = {
-        type: 'stock',
+        type: "stock",
         amount: 15000.0,
-        acquired_at: '2024-02-01',
-        notes: 'Updated notes',
+        acquired_at: "2024-02-01",
+        notes: "Updated notes",
       };
 &nbsp;
       // Act
@@ -1833,7 +1837,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should validate update with single field', () =&gt; {
+    it("should validate update with single field", () =&gt; {
       // Arrange
       const validData: UpdateInvestmentCommand = {
         amount: 15000.0,
@@ -1846,7 +1850,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject update with no fields', () =&gt; {
+    it("should reject update with no fields", () =&gt; {
       // Arrange
       const invalidData = {};
 &nbsp;
@@ -1857,10 +1861,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate type update', () =&gt; {
+    it("should validate type update", () =&gt; {
       // Arrange
       const validData: UpdateInvestmentCommand = {
-        type: 'cash',
+        type: "cash",
       };
 &nbsp;
       // Act
@@ -1870,10 +1874,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject invalid type in update', () =&gt; {
+    it("should reject invalid type in update", () =&gt; {
       // Arrange
       const invalidData = {
-        type: 'invalid_type',
+        type: "invalid_type",
       };
 &nbsp;
       // Act
@@ -1883,7 +1887,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate amount update', () =&gt; {
+    it("should validate amount update", () =&gt; {
       // Arrange
       const validData: UpdateInvestmentCommand = {
         amount: 20000.0,
@@ -1896,7 +1900,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject amount &lt;= 0 in update', () =&gt; {
+    it("should reject amount &lt;= 0 in update", () =&gt; {
       // Arrange
       const invalidData = {
         amount: 0,
@@ -1909,7 +1913,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject amount exceeding maximum in update', () =&gt; {
+    it("should reject amount exceeding maximum in update", () =&gt; {
       // Arrange
       // Używamy wartości wyraźnie większej niż maksimum, aby uniknąć problemów z precyzją JavaScript
       // JavaScript ma ograniczoną precyzję dla liczb zmiennoprzecinkowych (~15-17 cyfr znaczących)
@@ -1926,10 +1930,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate acquired_at update', () =&gt; {
+    it("should validate acquired_at update", () =&gt; {
       // Arrange
       const validData: UpdateInvestmentCommand = {
-        acquired_at: '2024-01-20',
+        acquired_at: "2024-01-20",
       };
 &nbsp;
       // Act
@@ -1939,12 +1943,12 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject future acquired_at in update', () =&gt; {
+    it("should reject future acquired_at in update", () =&gt; {
       // Arrange
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const invalidData = {
-        acquired_at: tomorrow.toISOString().split('T')[0],
+        acquired_at: tomorrow.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1954,10 +1958,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate notes update', () =&gt; {
+    it("should validate notes update", () =&gt; {
       // Arrange
       const validData: UpdateInvestmentCommand = {
-        notes: 'New notes',
+        notes: "New notes",
       };
 &nbsp;
       // Act
@@ -1967,7 +1971,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should accept null notes in update', () =&gt; {
+    it("should accept null notes in update", () =&gt; {
       // Arrange
       const validData: UpdateInvestmentCommand = {
         notes: null,
@@ -1980,10 +1984,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject notes exceeding 1000 characters in update', () =&gt; {
+    it("should reject notes exceeding 1000 characters in update", () =&gt; {
       // Arrange
       const invalidData = {
-        notes: 'a'.repeat(1001),
+        notes: "a".repeat(1001),
       };
 &nbsp;
       // Act
@@ -1993,11 +1997,11 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject unknown fields in update (strict mode)', () =&gt; {
+    it("should reject unknown fields in update (strict mode)", () =&gt; {
       // Arrange
       const invalidData = {
         amount: 15000.0,
-        unknown_field: 'value',
+        unknown_field: "value",
       };
 &nbsp;
       // Act
@@ -2008,13 +2012,13 @@ describe('investment.validator', () =&gt; {
     });
   });
 &nbsp;
-  describe('validateInvestmentListQuery', () =&gt; {
-    it('should validate correct query parameters', () =&gt; {
+  describe("validateInvestmentListQuery", () =&gt; {
+    it("should validate correct query parameters", () =&gt; {
       // Arrange
       const validQuery: InvestmentListQuery = {
         limit: 50,
-        type: 'etf',
-        sort: 'amount_desc',
+        type: "etf",
+        sort: "amount_desc",
       };
 &nbsp;
       // Act
@@ -2024,7 +2028,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should use default limit of 25 when not provided', () =&gt; {
+    it("should use default limit of 25 when not provided", () =&gt; {
       // Arrange
       const query = {};
 &nbsp;
@@ -2038,7 +2042,7 @@ describe('investment.validator', () =&gt; {
       }
     });
 &nbsp;
-    it('should use default sort when not provided', () =&gt; {
+    it("should use default sort when not provided", () =&gt; {
       // Arrange
       const query = {};
 &nbsp;
@@ -2048,14 +2052,14 @@ describe('investment.validator', () =&gt; {
       // Assert
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.sort).toBe('acquired_at_desc');
+        expect(result.data.sort).toBe("acquired_at_desc");
       }
     });
 &nbsp;
-    it('should coerce string limit to number', () =&gt; {
+    it("should coerce string limit to number", () =&gt; {
       // Arrange
       const query = {
-        limit: '50',
+        limit: "50",
       };
 &nbsp;
       // Act
@@ -2068,7 +2072,7 @@ describe('investment.validator', () =&gt; {
       }
     });
 &nbsp;
-    it('should reject limit less than 1', () =&gt; {
+    it("should reject limit less than 1", () =&gt; {
       // Arrange
       const query = {
         limit: 0,
@@ -2081,7 +2085,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject limit greater than 200', () =&gt; {
+    it("should reject limit greater than 200", () =&gt; {
       // Arrange
       const query = {
         limit: 201,
@@ -2094,7 +2098,7 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should accept limit at boundaries (1 and 200)', () =&gt; {
+    it("should accept limit at boundaries (1 and 200)", () =&gt; {
       // Arrange
       const query1 = { limit: 1 };
       const query2 = { limit: 200 };
@@ -2108,9 +2112,9 @@ describe('investment.validator', () =&gt; {
       expect(result2.success).toBe(true);
     });
 &nbsp;
-    it('should validate all sort options', () =&gt; {
+    it("should validate all sort options", () =&gt; {
       // Arrange
-      const sortOptions = ['acquired_at_desc', 'acquired_at_asc', 'amount_desc', 'amount_asc'];
+      const sortOptions = ["acquired_at_desc", "acquired_at_asc", "amount_desc", "amount_asc"];
 &nbsp;
       // Act &amp; Assert
       sortOptions.forEach((sort) =&gt; {
@@ -2120,10 +2124,10 @@ describe('investment.validator', () =&gt; {
       });
     });
 &nbsp;
-    it('should reject invalid sort option', () =&gt; {
+    it("should reject invalid sort option", () =&gt; {
       // Arrange
       const query = {
-        sort: 'invalid_sort',
+        sort: "invalid_sort",
       };
 &nbsp;
       // Act
@@ -2133,9 +2137,9 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate all asset types in query', () =&gt; {
+    it("should validate all asset types in query", () =&gt; {
       // Arrange
-      const types = ['etf', 'bond', 'stock', 'cash'];
+      const types = ["etf", "bond", "stock", "cash"];
 &nbsp;
       // Act &amp; Assert
       types.forEach((type) =&gt; {
@@ -2145,10 +2149,10 @@ describe('investment.validator', () =&gt; {
       });
     });
 &nbsp;
-    it('should reject invalid asset type in query', () =&gt; {
+    it("should reject invalid asset type in query", () =&gt; {
       // Arrange
       const query = {
-        type: 'invalid_type',
+        type: "invalid_type",
       };
 &nbsp;
       // Act
@@ -2158,10 +2162,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate date format for acquired_at_from', () =&gt; {
+    it("should validate date format for acquired_at_from", () =&gt; {
       // Arrange
       const query = {
-        acquired_at_from: '2024-01-01',
+        acquired_at_from: "2024-01-01",
       };
 &nbsp;
       // Act
@@ -2171,10 +2175,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject invalid date format for acquired_at_from', () =&gt; {
+    it("should reject invalid date format for acquired_at_from", () =&gt; {
       // Arrange
       const query = {
-        acquired_at_from: '2024/01/01',
+        acquired_at_from: "2024/01/01",
       };
 &nbsp;
       // Act
@@ -2184,10 +2188,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should validate date format for acquired_at_to', () =&gt; {
+    it("should validate date format for acquired_at_to", () =&gt; {
       // Arrange
       const query = {
-        acquired_at_to: '2024-12-31',
+        acquired_at_to: "2024-12-31",
       };
 &nbsp;
       // Act
@@ -2197,10 +2201,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should accept optional cursor', () =&gt; {
+    it("should accept optional cursor", () =&gt; {
       // Arrange
       const query = {
-        cursor: 'some-opaque-cursor-string',
+        cursor: "some-opaque-cursor-string",
       };
 &nbsp;
       // Act
@@ -2211,11 +2215,11 @@ describe('investment.validator', () =&gt; {
     });
   });
 &nbsp;
-  describe('investmentIdParamSchema', () =&gt; {
-    it('should validate correct UUID', () =&gt; {
+  describe("investmentIdParamSchema", () =&gt; {
+    it("should validate correct UUID", () =&gt; {
       // Arrange
       const validId = {
-        id: '123e4567-e89b-12d3-a456-426614174000',
+        id: "123e4567-e89b-12d3-a456-426614174000",
       };
 &nbsp;
       // Act
@@ -2225,10 +2229,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(true);
     });
 &nbsp;
-    it('should reject invalid UUID format', () =&gt; {
+    it("should reject invalid UUID format", () =&gt; {
       // Arrange
       const invalidId = {
-        id: 'not-a-uuid',
+        id: "not-a-uuid",
       };
 &nbsp;
       // Act
@@ -2238,10 +2242,10 @@ describe('investment.validator', () =&gt; {
       expect(result.success).toBe(false);
     });
 &nbsp;
-    it('should reject empty string as UUID', () =&gt; {
+    it("should reject empty string as UUID", () =&gt; {
       // Arrange
       const invalidId = {
-        id: '',
+        id: "",
       };
 &nbsp;
       // Act
@@ -2254,22 +2258,21 @@ describe('investment.validator', () =&gt; {
 });
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../../sorter.js"></script>
-    <script src="../../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
 </html>
+    

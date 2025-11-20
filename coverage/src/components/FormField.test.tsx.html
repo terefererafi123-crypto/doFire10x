@@ -1,61 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/components/FormField.test.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
         <h1><a href="../../index.html">All files</a> / <a href="index.html">src/components</a> FormField.test.tsx</h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">98.7% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">153/155</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">94.44% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">17/18</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/0</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">98.7% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">153/155</span>
-          </div>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">98.7% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>153/155</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">94.44% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>17/18</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">98.7% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>153/155</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -278,8 +285,7 @@
 <a name='L220'></a><a href='#L220'>220</a>
 <a name='L221'></a><a href='#L221'>221</a>
 <a name='L222'></a><a href='#L222'>222</a>
-<a name='L223'></a><a href='#L223'>223</a>
-<a name='L224'></a><a href='#L224'>224</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L223'></a><a href='#L223'>223</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -501,13 +507,12 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { FormField } from './FormField';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { FormField } from "./FormField";
 &nbsp;
-describe('FormField', () =&gt; {
-  it('should render label correctly', () =&gt; {
+describe("FormField", () =&gt; {
+  it("should render label correctly", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test"&gt;
@@ -516,10 +521,10 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    expect(screen.getByText('Test Label')).toBeInTheDocument();
+    expect(screen.getByText("Test Label")).toBeInTheDocument();
   });
 &nbsp;
-  it('should render required indicator when required is true', () =&gt; {
+  it("should render required indicator when required is true", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" required&gt;
@@ -528,14 +533,14 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const label = screen.getByText('Test Label');
+    const label = screen.getByText("Test Label");
     expect(label).toBeInTheDocument();
     // Sprawdzamy czy jest gwiazdka (required indicator)
-    const requiredIndicator = label.querySelector('.text-destructive');
+    const requiredIndicator = label.querySelector(".text-destructive");
     expect(requiredIndicator).toBeInTheDocument();
   });
 &nbsp;
-  it('should not render required indicator when required is false', () =&gt; {
+  it("should not render required indicator when required is false", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" required={false}&gt;
@@ -544,15 +549,15 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const label = screen.getByText('Test Label');
-    const requiredIndicator = label.querySelector('.text-destructive');
+    const label = screen.getByText("Test Label");
+    const requiredIndicator = label.querySelector(".text-destructive");
     // Może być undefined lub null, ale nie powinno być widoczne
     if (requiredIndicator) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >      expect(requiredIndicator.textContent).not.toBe('*');</span>
+<span class="cstat-no" title="statement not covered" >      expect(requiredIndicator.textContent).not.toBe("*");</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
   });
 &nbsp;
-  it('should render error message when error is provided', () =&gt; {
+  it("should render error message when error is provided", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" error="Test error message"&gt;
@@ -561,11 +566,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    expect(screen.getByText('Test error message')).toBeInTheDocument();
-    expect(screen.getByText('Test error message')).toHaveAttribute('role', 'alert');
+    expect(screen.getByText("Test error message")).toBeInTheDocument();
+    expect(screen.getByText("Test error message")).toHaveAttribute("role", "alert");
   });
 &nbsp;
-  it('should not render error message when error is not provided', () =&gt; {
+  it("should not render error message when error is not provided", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test"&gt;
@@ -574,10 +579,10 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    expect(screen.queryByRole("alert")).not.toBeInTheDocument();
   });
 &nbsp;
-  it('should render helper text when provided and no error', () =&gt; {
+  it("should render helper text when provided and no error", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" helperText="Helper text"&gt;
@@ -586,10 +591,10 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    expect(screen.getByText('Helper text')).toBeInTheDocument();
+    expect(screen.getByText("Helper text")).toBeInTheDocument();
   });
 &nbsp;
-  it('should not render helper text when error is present', () =&gt; {
+  it("should not render helper text when error is present", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" error="Error" helperText="Helper text"&gt;
@@ -598,11 +603,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    expect(screen.queryByText('Helper text')).not.toBeInTheDocument();
-    expect(screen.getByText('Error')).toBeInTheDocument();
+    expect(screen.queryByText("Helper text")).not.toBeInTheDocument();
+    expect(screen.getByText("Error")).toBeInTheDocument();
   });
 &nbsp;
-  it('should add aria-invalid attribute to child when error is present', () =&gt; {
+  it("should add aria-invalid attribute to child when error is present", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" error="Error"&gt;
@@ -611,11 +616,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-invalid', 'true');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-invalid", "true");
   });
 &nbsp;
-  it('should add id attribute to child', () =&gt; {
+  it("should add id attribute to child", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test"&gt;
@@ -624,11 +629,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('id', 'test');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("id", "test");
   });
 &nbsp;
-  it('should add aria-describedby when error is present', () =&gt; {
+  it("should add aria-describedby when error is present", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" error="Error"&gt;
@@ -637,11 +642,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-describedby', 'test-error');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-describedby", "test-error");
   });
 &nbsp;
-  it('should add aria-describedby when helperText is present', () =&gt; {
+  it("should add aria-describedby when helperText is present", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" helperText="Helper"&gt;
@@ -650,11 +655,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-describedby', 'test-helper');
+    const input = screen.getByRole("textbox");
+    expect(input).toHaveAttribute("aria-describedby", "test-helper");
   });
 &nbsp;
-  it('should add aria-describedby with both error and helper IDs when both present', () =&gt; {
+  it("should add aria-describedby with both error and helper IDs when both present", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" error="Error" helperText="Helper"&gt;
@@ -663,13 +668,13 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const input = screen.getByRole('textbox');
-    const describedBy = input.getAttribute('aria-describedby');
-    expect(describedBy).toContain('test-error');
+    const input = screen.getByRole("textbox");
+    const describedBy = input.getAttribute("aria-describedby");
+    expect(describedBy).toContain("test-error");
     // Helper text nie powinien być w describedBy gdy jest error
   });
 &nbsp;
-  it('should add error styling classes to child when error is present', () =&gt; {
+  it("should add error styling classes to child when error is present", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" error="Error"&gt;
@@ -678,11 +683,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const input = screen.getByRole('textbox');
-    expect(input.className).toContain('border-destructive');
+    const input = screen.getByRole("textbox");
+    expect(input.className).toContain("border-destructive");
   });
 &nbsp;
-  it('should preserve child className when adding error classes', () =&gt; {
+  it("should preserve child className when adding error classes", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test" error="Error"&gt;
@@ -691,12 +696,12 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    const input = screen.getByRole('textbox');
-    expect(input.className).toContain('custom-class');
-    expect(input.className).toContain('border-destructive');
+    const input = screen.getByRole("textbox");
+    expect(input.className).toContain("custom-class");
+    expect(input.className).toContain("border-destructive");
   });
 &nbsp;
-  it('should handle non-input children correctly', () =&gt; {
+  it("should handle non-input children correctly", () =&gt; {
     // Arrange &amp; Act
     render(
       &lt;FormField label="Test Label" name="test"&gt;
@@ -707,11 +712,11 @@ describe('FormField', () =&gt; {
     );
 &nbsp;
     // Assert
-    expect(screen.getByText('Test Label')).toBeInTheDocument();
-    expect(screen.getByRole('combobox')).toBeInTheDocument();
+    expect(screen.getByText("Test Label")).toBeInTheDocument();
+    expect(screen.getByRole("combobox")).toBeInTheDocument();
   });
 &nbsp;
-  it('should apply custom className', () =&gt; {
+  it("should apply custom className", () =&gt; {
     // Arrange &amp; Act
     const { container } = render(
       &lt;FormField label="Test Label" name="test" className="custom-wrapper"&gt;
@@ -721,28 +726,26 @@ describe('FormField', () =&gt; {
 &nbsp;
     // Assert
     const wrapper = container.firstChild;
-    expect(wrapper).toHaveClass('custom-wrapper');
+    expect(wrapper).toHaveClass("custom-wrapper");
   });
 });
-&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../sorter.js"></script>
-    <script src="../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
 </html>
+    

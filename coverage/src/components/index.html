@@ -1,445 +1,371 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/components</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
         <h1><a href="../../index.html">All files</a> src/components</h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">24.43% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">467/1911</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">82.27% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">65/79</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">25% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">4/16</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">24.43% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">467/1911</span>
-          </div>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">23.94% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>419/1750</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">82.27% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>65/79</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">25% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>4/16</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">23.94% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>419/1750</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line low"></div>
-      <div class="pad1">
-        <table class="coverage-summary">
-          <thead>
-            <tr>
-              <th data-col="file" data-fmt="html" data-html="true" class="file">File</th>
-              <th data-col="pic" data-type="number" data-fmt="html" data-html="true" class="pic"></th>
-              <th data-col="statements" data-type="number" data-fmt="pct" class="pct">Statements</th>
-              <th data-col="statements_raw" data-type="number" data-fmt="html" class="abs"></th>
-              <th data-col="branches" data-type="number" data-fmt="pct" class="pct">Branches</th>
-              <th data-col="branches_raw" data-type="number" data-fmt="html" class="abs"></th>
-              <th data-col="functions" data-type="number" data-fmt="pct" class="pct">Functions</th>
-              <th data-col="functions_raw" data-type="number" data-fmt="html" class="abs"></th>
-              <th data-col="lines" data-type="number" data-fmt="pct" class="pct">Lines</th>
-              <th data-col="lines_raw" data-type="number" data-fmt="html" class="abs"></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="file low" data-value="EmailField.tsx"><a href="EmailField.tsx.html">EmailField.tsx</a></td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="90" class="abs low">0/90</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="90" class="abs low">0/90</td>
-            </tr>
-
-            <tr>
-              <td class="file high" data-value="ErrorMessage.test.tsx">
-                <a href="ErrorMessage.test.tsx.html">ErrorMessage.test.tsx</a>
-              </td>
-              <td data-value="100" class="pic high">
-                <div class="chart">
-                  <div class="cover-fill cover-full" style="width: 100%"></div>
-                  <div class="cover-empty" style="width: 0%"></div>
-                </div>
-              </td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="46" class="abs high">46/46</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="8" class="abs high">8/8</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="0" class="abs high">0/0</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="46" class="abs high">46/46</td>
-            </tr>
-
-            <tr>
-              <td class="file high" data-value="ErrorMessage.tsx">
-                <a href="ErrorMessage.tsx.html">ErrorMessage.tsx</a>
-              </td>
-              <td data-value="100" class="pic high">
-                <div class="chart">
-                  <div class="cover-fill cover-full" style="width: 100%"></div>
-                  <div class="cover-empty" style="width: 0%"></div>
-                </div>
-              </td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="29" class="abs high">29/29</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="3" class="abs high">3/3</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="1" class="abs high">1/1</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="29" class="abs high">29/29</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="ForgotPasswordForm.tsx">
-                <a href="ForgotPasswordForm.tsx.html">ForgotPasswordForm.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="155" class="abs low">0/155</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="155" class="abs low">0/155</td>
-            </tr>
-
-            <tr>
-              <td class="file high" data-value="FormErrorSummary.test.tsx">
-                <a href="FormErrorSummary.test.tsx.html">FormErrorSummary.test.tsx</a>
-              </td>
-              <td data-value="100" class="pic high">
-                <div class="chart">
-                  <div class="cover-fill cover-full" style="width: 100%"></div>
-                  <div class="cover-empty" style="width: 0%"></div>
-                </div>
-              </td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="144" class="abs high">144/144</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="15" class="abs high">15/15</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="0" class="abs high">0/0</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="144" class="abs high">144/144</td>
-            </tr>
-
-            <tr>
-              <td class="file high" data-value="FormErrorSummary.tsx">
-                <a href="FormErrorSummary.tsx.html">FormErrorSummary.tsx</a>
-              </td>
-              <td data-value="100" class="pic high">
-                <div class="chart">
-                  <div class="cover-fill cover-full" style="width: 100%"></div>
-                  <div class="cover-empty" style="width: 0%"></div>
-                </div>
-              </td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="44" class="abs high">44/44</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="8" class="abs high">8/8</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="2" class="abs high">2/2</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="44" class="abs high">44/44</td>
-            </tr>
-
-            <tr>
-              <td class="file high" data-value="FormField.test.tsx">
-                <a href="FormField.test.tsx.html">FormField.test.tsx</a>
-              </td>
-              <td data-value="98.7" class="pic high">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 98%"></div>
-                  <div class="cover-empty" style="width: 2%"></div>
-                </div>
-              </td>
-              <td data-value="98.7" class="pct high">98.7%</td>
-              <td data-value="155" class="abs high">153/155</td>
-              <td data-value="94.44" class="pct high">94.44%</td>
-              <td data-value="18" class="abs high">17/18</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="0" class="abs high">0/0</td>
-              <td data-value="98.7" class="pct high">98.7%</td>
-              <td data-value="155" class="abs high">153/155</td>
-            </tr>
-
-            <tr>
-              <td class="file high" data-value="FormField.tsx"><a href="FormField.tsx.html">FormField.tsx</a></td>
-              <td data-value="98.07" class="pic high">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 98%"></div>
-                  <div class="cover-empty" style="width: 2%"></div>
-                </div>
-              </td>
-              <td data-value="98.07" class="pct high">98.07%</td>
-              <td data-value="52" class="abs high">51/52</td>
-              <td data-value="93.33" class="pct high">93.33%</td>
-              <td data-value="15" class="abs high">14/15</td>
-              <td data-value="100" class="pct high">100%</td>
-              <td data-value="1" class="abs high">1/1</td>
-              <td data-value="98.07" class="pct high">98.07%</td>
-              <td data-value="52" class="abs high">51/52</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="GlobalErrorBanner.tsx">
-                <a href="GlobalErrorBanner.tsx.html">GlobalErrorBanner.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="137" class="abs low">0/137</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="137" class="abs low">0/137</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="GlobalErrorBannerWrapper.tsx">
-                <a href="GlobalErrorBannerWrapper.tsx.html">GlobalErrorBannerWrapper.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="23" class="abs low">0/23</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="23" class="abs low">0/23</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="GlobalErrorProviderWrapper.tsx">
-                <a href="GlobalErrorProviderWrapper.tsx.html">GlobalErrorProviderWrapper.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="22" class="abs low">0/22</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="22" class="abs low">0/22</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="LoginForm.tsx"><a href="LoginForm.tsx.html">LoginForm.tsx</a></td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="167" class="abs low">0/167</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="167" class="abs low">0/167</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="LogoutButton.tsx">
-                <a href="LogoutButton.tsx.html">LogoutButton.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="66" class="abs low">0/66</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="66" class="abs low">0/66</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="PasswordField.tsx">
-                <a href="PasswordField.tsx.html">PasswordField.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="126" class="abs low">0/126</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="126" class="abs low">0/126</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="RegisterForm.tsx">
-                <a href="RegisterForm.tsx.html">RegisterForm.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="199" class="abs low">0/199</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="199" class="abs low">0/199</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="ResetPasswordForm.tsx">
-                <a href="ResetPasswordForm.tsx.html">ResetPasswordForm.tsx</a>
-              </td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="175" class="abs low">0/175</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="175" class="abs low">0/175</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="TopNav.tsx"><a href="TopNav.tsx.html">TopNav.tsx</a></td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="190" class="abs low">0/190</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="190" class="abs low">0/190</td>
-            </tr>
-
-            <tr>
-              <td class="file low" data-value="Welcome.astro"><a href="Welcome.astro.html">Welcome.astro</a></td>
-              <td data-value="0" class="pic low">
-                <div class="chart">
-                  <div class="cover-fill" style="width: 0%"></div>
-                  <div class="cover-empty" style="width: 100%"></div>
-                </div>
-              </td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="91" class="abs low">0/91</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="1" class="abs low">0/1</td>
-              <td data-value="0" class="pct low">0%</td>
-              <td data-value="91" class="abs low">0/91</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="push"></div>
-      <!-- for sticky footer -->
     </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../sorter.js"></script>
-    <script src="../../block-navigation.js"></script>
-  </body>
+    <div class='status-line low'></div>
+    <div class="pad1">
+<table class="coverage-summary">
+<thead>
+<tr>
+   <th data-col="file" data-fmt="html" data-html="true" class="file">File</th>
+   <th data-col="pic" data-type="number" data-fmt="html" data-html="true" class="pic"></th>
+   <th data-col="statements" data-type="number" data-fmt="pct" class="pct">Statements</th>
+   <th data-col="statements_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="branches" data-type="number" data-fmt="pct" class="pct">Branches</th>
+   <th data-col="branches_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="functions" data-type="number" data-fmt="pct" class="pct">Functions</th>
+   <th data-col="functions_raw" data-type="number" data-fmt="html" class="abs"></th>
+   <th data-col="lines" data-type="number" data-fmt="pct" class="pct">Lines</th>
+   <th data-col="lines_raw" data-type="number" data-fmt="html" class="abs"></th>
+</tr>
+</thead>
+<tbody><tr>
+	<td class="file low" data-value="EmailField.tsx"><a href="EmailField.tsx.html">EmailField.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="70" class="abs low">0/70</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="70" class="abs low">0/70</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="ErrorMessage.test.tsx"><a href="ErrorMessage.test.tsx.html">ErrorMessage.test.tsx</a></td>
+	<td data-value="100" class="pic high">
+	<div class="chart"><div class="cover-fill cover-full" style="width: 100%"></div><div class="cover-empty" style="width: 0%"></div></div>
+	</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="46" class="abs high">46/46</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="8" class="abs high">8/8</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="0" class="abs high">0/0</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="46" class="abs high">46/46</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="ErrorMessage.tsx"><a href="ErrorMessage.tsx.html">ErrorMessage.tsx</a></td>
+	<td data-value="100" class="pic high">
+	<div class="chart"><div class="cover-fill cover-full" style="width: 100%"></div><div class="cover-empty" style="width: 0%"></div></div>
+	</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="20" class="abs high">20/20</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="3" class="abs high">3/3</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="1" class="abs high">1/1</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="20" class="abs high">20/20</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="ForgotPasswordForm.tsx"><a href="ForgotPasswordForm.tsx.html">ForgotPasswordForm.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="146" class="abs low">0/146</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="146" class="abs low">0/146</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="FormErrorSummary.test.tsx"><a href="FormErrorSummary.test.tsx.html">FormErrorSummary.test.tsx</a></td>
+	<td data-value="100" class="pic high">
+	<div class="chart"><div class="cover-fill cover-full" style="width: 100%"></div><div class="cover-empty" style="width: 0%"></div></div>
+	</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="129" class="abs high">129/129</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="15" class="abs high">15/15</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="0" class="abs high">0/0</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="129" class="abs high">129/129</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="FormErrorSummary.tsx"><a href="FormErrorSummary.tsx.html">FormErrorSummary.tsx</a></td>
+	<td data-value="100" class="pic high">
+	<div class="chart"><div class="cover-fill cover-full" style="width: 100%"></div><div class="cover-empty" style="width: 0%"></div></div>
+	</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="40" class="abs high">40/40</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="8" class="abs high">8/8</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="2" class="abs high">2/2</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="40" class="abs high">40/40</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="FormField.test.tsx"><a href="FormField.test.tsx.html">FormField.test.tsx</a></td>
+	<td data-value="98.7" class="pic high">
+	<div class="chart"><div class="cover-fill" style="width: 98%"></div><div class="cover-empty" style="width: 2%"></div></div>
+	</td>
+	<td data-value="98.7" class="pct high">98.7%</td>
+	<td data-value="155" class="abs high">153/155</td>
+	<td data-value="94.44" class="pct high">94.44%</td>
+	<td data-value="18" class="abs high">17/18</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="0" class="abs high">0/0</td>
+	<td data-value="98.7" class="pct high">98.7%</td>
+	<td data-value="155" class="abs high">153/155</td>
+	</tr>
+
+<tr>
+	<td class="file high" data-value="FormField.tsx"><a href="FormField.tsx.html">FormField.tsx</a></td>
+	<td data-value="96.87" class="pic high">
+	<div class="chart"><div class="cover-fill" style="width: 96%"></div><div class="cover-empty" style="width: 4%"></div></div>
+	</td>
+	<td data-value="96.87" class="pct high">96.87%</td>
+	<td data-value="32" class="abs high">31/32</td>
+	<td data-value="93.33" class="pct high">93.33%</td>
+	<td data-value="15" class="abs high">14/15</td>
+	<td data-value="100" class="pct high">100%</td>
+	<td data-value="1" class="abs high">1/1</td>
+	<td data-value="96.87" class="pct high">96.87%</td>
+	<td data-value="32" class="abs high">31/32</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="GlobalErrorBanner.tsx"><a href="GlobalErrorBanner.tsx.html">GlobalErrorBanner.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="119" class="abs low">0/119</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="119" class="abs low">0/119</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="GlobalErrorBannerWrapper.tsx"><a href="GlobalErrorBannerWrapper.tsx.html">GlobalErrorBannerWrapper.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="17" class="abs low">0/17</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="17" class="abs low">0/17</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="GlobalErrorProviderWrapper.tsx"><a href="GlobalErrorProviderWrapper.tsx.html">GlobalErrorProviderWrapper.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="20" class="abs low">0/20</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="20" class="abs low">0/20</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="LoginForm.tsx"><a href="LoginForm.tsx.html">LoginForm.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="162" class="abs low">0/162</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="162" class="abs low">0/162</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="LogoutButton.tsx"><a href="LogoutButton.tsx.html">LogoutButton.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="63" class="abs low">0/63</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="63" class="abs low">0/63</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="PasswordField.tsx"><a href="PasswordField.tsx.html">PasswordField.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="117" class="abs low">0/117</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="117" class="abs low">0/117</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="RegisterForm.tsx"><a href="RegisterForm.tsx.html">RegisterForm.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="189" class="abs low">0/189</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="189" class="abs low">0/189</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="ResetPasswordForm.tsx"><a href="ResetPasswordForm.tsx.html">ResetPasswordForm.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="165" class="abs low">0/165</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="165" class="abs low">0/165</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="TopNav.tsx"><a href="TopNav.tsx.html">TopNav.tsx</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="169" class="abs low">0/169</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="169" class="abs low">0/169</td>
+	</tr>
+
+<tr>
+	<td class="file low" data-value="Welcome.astro"><a href="Welcome.astro.html">Welcome.astro</a></td>
+	<td data-value="0" class="pic low">
+	<div class="chart"><div class="cover-fill" style="width: 0%"></div><div class="cover-empty" style="width: 100%"></div></div>
+	</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="91" class="abs low">0/91</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="1" class="abs low">0/1</td>
+	<td data-value="0" class="pct low">0%</td>
+	<td data-value="91" class="abs low">0/91</td>
+	</tr>
+
+</tbody>
+</table>
+</div>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
+    </body>
 </html>
+    

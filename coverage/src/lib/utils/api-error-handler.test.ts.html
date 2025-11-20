@@ -1,63 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/lib/utils/api-error-handler.test.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../../index.html">All files</a> / <a href="index.html">src/lib/utils</a> api-error-handler.test.ts
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">203/203</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">28/28</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/0</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">203/203</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/lib/utils</a> api-error-handler.test.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>203/203</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>28/28</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>203/203</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -742,25 +747,25 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from 'vitest';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from "vitest";
 import {
   shouldHandleGlobally,
   isAuthError,
   isServerError,
   isRateLimitError,
   mapOpenRouterErrorToApiError,
-} from './api-error-handler';
-import type { ApiError } from '@/types';
-import { OpenRouterApiError } from '../services/openrouter.errors';
+} from "./api-error-handler";
+import type { ApiError } from "@/types";
+import { OpenRouterApiError } from "../services/openrouter.errors";
 &nbsp;
-describe('api-error-handler', () =&gt; {
-  describe('shouldHandleGlobally', () =&gt; {
-    it('should return true for unauthorized error', () =&gt; {
+describe("api-error-handler", () =&gt; {
+  describe("shouldHandleGlobally", () =&gt; {
+    it("should return true for unauthorized error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'unauthorized',
-          message: 'Authentication required',
+          code: "unauthorized",
+          message: "Authentication required",
         },
       };
 &nbsp;
@@ -771,12 +776,12 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(true);
     });
 &nbsp;
-    it('should return true for forbidden error', () =&gt; {
+    it("should return true for forbidden error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'forbidden',
-          message: 'Access denied',
+          code: "forbidden",
+          message: "Access denied",
         },
       };
 &nbsp;
@@ -787,12 +792,12 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(true);
     });
 &nbsp;
-    it('should return true for internal error', () =&gt; {
+    it("should return true for internal error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'internal',
-          message: 'Internal server error',
+          code: "internal",
+          message: "Internal server error",
         },
       };
 &nbsp;
@@ -803,12 +808,12 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(true);
     });
 &nbsp;
-    it('should return true for too_many_requests error', () =&gt; {
+    it("should return true for too_many_requests error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'too_many_requests',
-          message: 'Rate limit exceeded',
+          code: "too_many_requests",
+          message: "Rate limit exceeded",
         },
       };
 &nbsp;
@@ -819,12 +824,12 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(true);
     });
 &nbsp;
-    it('should return false for bad_request error', () =&gt; {
+    it("should return false for bad_request error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'bad_request',
-          message: 'Validation failed',
+          code: "bad_request",
+          message: "Validation failed",
         },
       };
 &nbsp;
@@ -835,12 +840,12 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(false);
     });
 &nbsp;
-    it('should return false for not_found error', () =&gt; {
+    it("should return false for not_found error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'not_found',
-          message: 'Resource not found',
+          code: "not_found",
+          message: "Resource not found",
         },
       };
 &nbsp;
@@ -851,80 +856,80 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(false);
     });
 &nbsp;
-    it('should return false for conflict error', () =&gt; {
+    it("should return false for conflict error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'conflict',
-          message: 'Resource conflict',
+          code: "conflict",
+          message: "Resource conflict",
         },
       };
 &nbsp;
       // Act
       const result = shouldHandleGlobally(error);
-&nbsp;
-      // Assert
-      expect(result).toBe(false);
-    });
-  });
-&nbsp;
-  describe('isAuthError', () =&gt; {
-    it('should return true for unauthorized error', () =&gt; {
-      // Arrange
-      const error: ApiError = {
-        error: {
-          code: 'unauthorized',
-          message: 'Authentication required',
-        },
-      };
-&nbsp;
-      // Act
-      const result = isAuthError(error);
-&nbsp;
-      // Assert
-      expect(result).toBe(true);
-    });
-&nbsp;
-    it('should return true for forbidden error', () =&gt; {
-      // Arrange
-      const error: ApiError = {
-        error: {
-          code: 'forbidden',
-          message: 'Access denied',
-        },
-      };
-&nbsp;
-      // Act
-      const result = isAuthError(error);
-&nbsp;
-      // Assert
-      expect(result).toBe(true);
-    });
-&nbsp;
-    it('should return false for other error codes', () =&gt; {
-      // Arrange
-      const error: ApiError = {
-        error: {
-          code: 'bad_request',
-          message: 'Validation failed',
-        },
-      };
-&nbsp;
-      // Act
-      const result = isAuthError(error);
 &nbsp;
       // Assert
       expect(result).toBe(false);
     });
   });
 &nbsp;
-  describe('isServerError', () =&gt; {
-    it('should return true for internal error', () =&gt; {
+  describe("isAuthError", () =&gt; {
+    it("should return true for unauthorized error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'internal',
-          message: 'Internal server error',
+          code: "unauthorized",
+          message: "Authentication required",
+        },
+      };
+&nbsp;
+      // Act
+      const result = isAuthError(error);
+&nbsp;
+      // Assert
+      expect(result).toBe(true);
+    });
+&nbsp;
+    it("should return true for forbidden error", () =&gt; {
+      // Arrange
+      const error: ApiError = {
+        error: {
+          code: "forbidden",
+          message: "Access denied",
+        },
+      };
+&nbsp;
+      // Act
+      const result = isAuthError(error);
+&nbsp;
+      // Assert
+      expect(result).toBe(true);
+    });
+&nbsp;
+    it("should return false for other error codes", () =&gt; {
+      // Arrange
+      const error: ApiError = {
+        error: {
+          code: "bad_request",
+          message: "Validation failed",
+        },
+      };
+&nbsp;
+      // Act
+      const result = isAuthError(error);
+&nbsp;
+      // Assert
+      expect(result).toBe(false);
+    });
+  });
+&nbsp;
+  describe("isServerError", () =&gt; {
+    it("should return true for internal error", () =&gt; {
+      // Arrange
+      const error: ApiError = {
+        error: {
+          code: "internal",
+          message: "Internal server error",
         },
       };
 &nbsp;
@@ -935,12 +940,12 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(true);
     });
 &nbsp;
-    it('should return false for other error codes', () =&gt; {
+    it("should return false for other error codes", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'bad_request',
-          message: 'Validation failed',
+          code: "bad_request",
+          message: "Validation failed",
         },
       };
 &nbsp;
@@ -952,13 +957,13 @@ describe('api-error-handler', () =&gt; {
     });
   });
 &nbsp;
-  describe('isRateLimitError', () =&gt; {
-    it('should return true for too_many_requests error', () =&gt; {
+  describe("isRateLimitError", () =&gt; {
+    it("should return true for too_many_requests error", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'too_many_requests',
-          message: 'Rate limit exceeded',
+          code: "too_many_requests",
+          message: "Rate limit exceeded",
         },
       };
 &nbsp;
@@ -969,12 +974,12 @@ describe('api-error-handler', () =&gt; {
       expect(result).toBe(true);
     });
 &nbsp;
-    it('should return false for other error codes', () =&gt; {
+    it("should return false for other error codes", () =&gt; {
       // Arrange
       const error: ApiError = {
         error: {
-          code: 'bad_request',
-          message: 'Validation failed',
+          code: "bad_request",
+          message: "Validation failed",
         },
       };
 &nbsp;
@@ -986,122 +991,121 @@ describe('api-error-handler', () =&gt; {
     });
   });
 &nbsp;
-  describe('mapOpenRouterErrorToApiError', () =&gt; {
-    it('should map 401 status to unauthorized error', () =&gt; {
+  describe("mapOpenRouterErrorToApiError", () =&gt; {
+    it("should map 401 status to unauthorized error", () =&gt; {
       // Arrange
-      const error = new OpenRouterApiError('Unauthorized', '401', 'unauthorized', 401);
+      const error = new OpenRouterApiError("Unauthorized", "401", "unauthorized", 401);
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('unauthorized');
-      expect(result.error.message).toBe('Authentication failed with AI service');
+      expect(result.error.code).toBe("unauthorized");
+      expect(result.error.message).toBe("Authentication failed with AI service");
     });
 &nbsp;
-    it('should map 403 status to unauthorized error', () =&gt; {
+    it("should map 403 status to unauthorized error", () =&gt; {
       // Arrange
-      const error = new OpenRouterApiError('Forbidden', '403', 'forbidden', 403);
+      const error = new OpenRouterApiError("Forbidden", "403", "forbidden", 403);
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('unauthorized');
-      expect(result.error.message).toBe('Authentication failed with AI service');
+      expect(result.error.code).toBe("unauthorized");
+      expect(result.error.message).toBe("Authentication failed with AI service");
     });
 &nbsp;
-    it('should map 429 status to too_many_requests error', () =&gt; {
+    it("should map 429 status to too_many_requests error", () =&gt; {
       // Arrange
-      const error = new OpenRouterApiError('Rate limit exceeded', '429', 'rate_limit', 429);
+      const error = new OpenRouterApiError("Rate limit exceeded", "429", "rate_limit", 429);
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('too_many_requests');
-      expect(result.error.message).toBe('Rate limit exceeded. Please try again later.');
+      expect(result.error.code).toBe("too_many_requests");
+      expect(result.error.message).toBe("Rate limit exceeded. Please try again later.");
     });
 &nbsp;
-    it('should map 4xx status (except 401/403/429) to bad_request error', () =&gt; {
+    it("should map 4xx status (except 401/403/429) to bad_request error", () =&gt; {
       // Arrange
-      const error = new OpenRouterApiError('Bad request', '400', 'bad_request', 400);
+      const error = new OpenRouterApiError("Bad request", "400", "bad_request", 400);
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('bad_request');
-      expect(result.error.message).toBe('Bad request');
+      expect(result.error.code).toBe("bad_request");
+      expect(result.error.message).toBe("Bad request");
     });
 &nbsp;
-    it('should map 404 status to bad_request error', () =&gt; {
+    it("should map 404 status to bad_request error", () =&gt; {
       // Arrange
-      const error = new OpenRouterApiError('Not found', '404', 'not_found', 404);
+      const error = new OpenRouterApiError("Not found", "404", "not_found", 404);
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('bad_request');
-      expect(result.error.message).toBe('Not found');
+      expect(result.error.code).toBe("bad_request");
+      expect(result.error.message).toBe("Not found");
     });
 &nbsp;
-    it('should map 5xx status to internal error', () =&gt; {
+    it("should map 5xx status to internal error", () =&gt; {
       // Arrange
-      const error = new OpenRouterApiError('Internal server error', '500', 'internal', 500);
+      const error = new OpenRouterApiError("Internal server error", "500", "internal", 500);
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('internal');
-      expect(result.error.message).toBe('Internal server error');
+      expect(result.error.code).toBe("internal");
+      expect(result.error.message).toBe("Internal server error");
     });
 &nbsp;
-    it('should map unknown error to internal error', () =&gt; {
+    it("should map unknown error to internal error", () =&gt; {
       // Arrange
-      const error = new Error('Unknown error');
+      const error = new Error("Unknown error");
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('internal');
-      expect(result.error.message).toBe('Unknown error');
+      expect(result.error.code).toBe("internal");
+      expect(result.error.message).toBe("Unknown error");
     });
 &nbsp;
-    it('should map non-Error object to internal error with default message', () =&gt; {
+    it("should map non-Error object to internal error with default message", () =&gt; {
       // Arrange
-      const error = { someProperty: 'value' };
+      const error = { someProperty: "value" };
 &nbsp;
       // Act
       const result = mapOpenRouterErrorToApiError(error);
 &nbsp;
       // Assert
-      expect(result.error.code).toBe('internal');
-      expect(result.error.message).toBe('Unknown error occurred');
+      expect(result.error.code).toBe("internal");
+      expect(result.error.message).toBe("Unknown error occurred");
     });
   });
 });
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../../sorter.js"></script>
-    <script src="../../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
 </html>
+    

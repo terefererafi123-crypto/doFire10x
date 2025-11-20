@@ -1,64 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/lib/hooks/useOnboardingForm.test.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../../index.html">All files</a> /
-          <a href="index.html">src/lib/hooks</a> useOnboardingForm.test.tsx
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">385/385</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">72/72</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/0</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">385/385</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/lib/hooks</a> useOnboardingForm.test.tsx</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>385/385</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>72/72</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>385/385</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -648,8 +652,7 @@
 <a name='L587'></a><a href='#L587'>587</a>
 <a name='L588'></a><a href='#L588'>588</a>
 <a name='L589'></a><a href='#L589'>589</a>
-<a name='L590'></a><a href='#L590'>590</a>
-<a name='L591'></a><a href='#L591'>591</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L590'></a><a href='#L590'>590</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1238,22 +1241,21 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useOnboardingForm } from './useOnboardingForm';
-import type { CreateProfileCommand, CreateInvestmentCommand } from '@/types';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from "vitest";
+import { renderHook } from "@testing-library/react";
+import { useOnboardingForm } from "./useOnboardingForm";
+import type { CreateProfileCommand, CreateInvestmentCommand } from "@/types";
 &nbsp;
-describe('useOnboardingForm', () =&gt; {
-  describe('validateProfileForm', () =&gt; {
-    it('should return no errors for valid profile data', () =&gt; {
+describe("useOnboardingForm", () =&gt; {
+  describe("validateProfileForm", () =&gt; {
+    it("should return no errors for valid profile data", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const validData: CreateProfileCommand = {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: '1992-05-12',
+        birth_date: "1992-05-12",
       };
 &nbsp;
       // Act
@@ -1263,7 +1265,7 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors).toEqual({});
     });
 &nbsp;
-    it('should return no errors for profile without birth_date', () =&gt; {
+    it("should return no errors for profile without birth_date", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const validData: CreateProfileCommand = {
@@ -1279,7 +1281,7 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors).toEqual({});
     });
 &nbsp;
-    it('should return error for undefined monthly_expense', () =&gt; {
+    it("should return error for undefined monthly_expense", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
@@ -1291,10 +1293,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 &nbsp;
-    it('should return error for null monthly_expense', () =&gt; {
+    it("should return error for null monthly_expense", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
@@ -1307,10 +1309,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 &nbsp;
-    it('should return error for NaN monthly_expense', () =&gt; {
+    it("should return error for NaN monthly_expense", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -1323,10 +1325,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 &nbsp;
-    it('should return error for Infinity monthly_expense', () =&gt; {
+    it("should return error for Infinity monthly_expense", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -1339,10 +1341,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki są wymagane');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki są wymagane");
     });
 &nbsp;
-    it('should return error for negative monthly_expense', () =&gt; {
+    it("should return error for negative monthly_expense", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -1355,10 +1357,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.monthly_expense).toBe('Miesięczne wydatki muszą być &gt;= 0');
+      expect(errors.monthly_expense).toBe("Miesięczne wydatki muszą być &gt;= 0");
     });
 &nbsp;
-    it('should accept zero monthly_expense', () =&gt; {
+    it("should accept zero monthly_expense", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const validData: CreateProfileCommand = {
@@ -1374,7 +1376,7 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors.monthly_expense).toBeUndefined();
     });
 &nbsp;
-    it('should return error for undefined withdrawal_rate_pct', () =&gt; {
+    it("should return error for undefined withdrawal_rate_pct", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
@@ -1386,10 +1388,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.withdrawal_rate_pct).toBe('Stopa wypłat jest wymagana');
+      expect(errors.withdrawal_rate_pct).toBe("Stopa wypłat jest wymagana");
     });
 &nbsp;
-    it('should return error for withdrawal_rate_pct &lt; 0', () =&gt; {
+    it("should return error for withdrawal_rate_pct &lt; 0", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -1402,10 +1404,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.withdrawal_rate_pct).toBe('Stopa wypłat musi być w zakresie 0-100');
+      expect(errors.withdrawal_rate_pct).toBe("Stopa wypłat musi być w zakresie 0-100");
     });
 &nbsp;
-    it('should return error for withdrawal_rate_pct &gt; 100', () =&gt; {
+    it("should return error for withdrawal_rate_pct &gt; 100", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -1418,10 +1420,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.withdrawal_rate_pct).toBe('Stopa wypłat musi być w zakresie 0-100');
+      expect(errors.withdrawal_rate_pct).toBe("Stopa wypłat musi być w zakresie 0-100");
     });
 &nbsp;
-    it('should accept withdrawal_rate_pct at boundaries (0 and 100)', () =&gt; {
+    it("should accept withdrawal_rate_pct at boundaries (0 and 100)", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const dataAt0: CreateProfileCommand = {
@@ -1444,7 +1446,7 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors100.withdrawal_rate_pct).toBeUndefined();
     });
 &nbsp;
-    it('should return error for expected_return_pct &lt; -100', () =&gt; {
+    it("should return error for expected_return_pct &lt; -100", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -1457,10 +1459,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.expected_return_pct).toBe('Oczekiwany zwrot musi być w zakresie -100 do 1000');
+      expect(errors.expected_return_pct).toBe("Oczekiwany zwrot musi być w zakresie -100 do 1000");
     });
 &nbsp;
-    it('should return error for expected_return_pct &gt; 1000', () =&gt; {
+    it("should return error for expected_return_pct &gt; 1000", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateProfileCommand = {
@@ -1473,10 +1475,10 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.expected_return_pct).toBe('Oczekiwany zwrot musi być w zakresie -100 do 1000');
+      expect(errors.expected_return_pct).toBe("Oczekiwany zwrot musi być w zakresie -100 do 1000");
     });
 &nbsp;
-    it('should accept expected_return_pct at boundaries (-100 and 1000)', () =&gt; {
+    it("should accept expected_return_pct at boundaries (-100 and 1000)", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const dataAtMinus100: CreateProfileCommand = {
@@ -1499,7 +1501,7 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors1000.expected_return_pct).toBeUndefined();
     });
 &nbsp;
-    it('should return error for birth_date in the future', () =&gt; {
+    it("should return error for birth_date in the future", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const tomorrow = new Date();
@@ -1508,17 +1510,17 @@ describe('useOnboardingForm', () =&gt; {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: tomorrow.toISOString().split('T')[0],
+        birth_date: tomorrow.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.birth_date).toBe('Data urodzenia musi być w przeszłości');
+      expect(errors.birth_date).toBe("Data urodzenia musi być w przeszłości");
     });
 &nbsp;
-    it('should return error for birth_date older than 120 years', () =&gt; {
+    it("should return error for birth_date older than 120 years", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const tooOld = new Date();
@@ -1527,17 +1529,17 @@ describe('useOnboardingForm', () =&gt; {
         monthly_expense: 4500.0,
         withdrawal_rate_pct: 4.0,
         expected_return_pct: 7.0,
-        birth_date: tooOld.toISOString().split('T')[0],
+        birth_date: tooOld.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
       const errors = result.current.validateProfileForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.birth_date).toBe('Data urodzenia nie może być starsza niż 120 lat');
+      expect(errors.birth_date).toBe("Data urodzenia nie może być starsza niż 120 lat");
     });
 &nbsp;
-    it('should return multiple errors for multiple invalid fields', () =&gt; {
+    it("should return multiple errors for multiple invalid fields", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
@@ -1556,15 +1558,15 @@ describe('useOnboardingForm', () =&gt; {
     });
   });
 &nbsp;
-  describe('validateInvestmentForm', () =&gt; {
-    it('should return no errors for valid investment data', () =&gt; {
+  describe("validateInvestmentForm", () =&gt; {
+    it("should return no errors for valid investment data", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 10000.0,
-        acquired_at: '2024-01-15',
-        notes: 'ETF SP500',
+        acquired_at: "2024-01-15",
+        notes: "ETF SP500",
       };
 &nbsp;
       // Act
@@ -1574,13 +1576,13 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors).toEqual({});
     });
 &nbsp;
-    it('should return no errors for investment without notes', () =&gt; {
+    it("should return no errors for investment without notes", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'bond',
+        type: "bond",
         amount: 5000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1590,66 +1592,66 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors).toEqual({});
     });
 &nbsp;
-    it('should return error for invalid type', () =&gt; {
+    it("should return error for invalid type", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
-        type: 'invalid_type',
+        type: "invalid_type",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       } as CreateInvestmentCommand;
 &nbsp;
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.type).toBe('Wybierz typ inwestycji');
+      expect(errors.type).toBe("Wybierz typ inwestycji");
     });
 &nbsp;
-    it('should return error for undefined type', () =&gt; {
+    it("should return error for undefined type", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
         amount: 1000.0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       } as CreateInvestmentCommand;
 &nbsp;
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.type).toBe('Wybierz typ inwestycji');
+      expect(errors.type).toBe("Wybierz typ inwestycji");
     });
 &nbsp;
-    it('should validate all valid asset types', () =&gt; {
+    it("should validate all valid asset types", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
-      const types: Array&lt;CreateInvestmentCommand['type']&gt; = ['etf', 'bond', 'stock', 'cash'];
+      const types: CreateInvestmentCommand["type"][] = ["etf", "bond", "stock", "cash"];
 &nbsp;
       // Act &amp; Assert
       types.forEach((type) =&gt; {
         const data: CreateInvestmentCommand = {
           type,
           amount: 1000.0,
-          acquired_at: '2024-01-15',
+          acquired_at: "2024-01-15",
         };
         const errors = result.current.validateInvestmentForm(data);
         expect(errors.type).toBeUndefined();
       });
     });
 &nbsp;
-    it('should return error for amount &lt;= 0', () =&gt; {
+    it("should return error for amount &lt;= 0", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData1: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 0,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
       const invalidData2: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: -100,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
@@ -1657,62 +1659,62 @@ describe('useOnboardingForm', () =&gt; {
       const errors2 = result.current.validateInvestmentForm(invalidData2);
 &nbsp;
       // Assert
-      expect(errors1.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
-      expect(errors2.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors1.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
+      expect(errors2.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 &nbsp;
-    it('should return error for amount &gt; max', () =&gt; {
+    it("should return error for amount &gt; max", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 999999999999.99 + 0.01,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 &nbsp;
-    it('should return error for undefined amount', () =&gt; {
+    it("should return error for undefined amount", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
-        type: 'etf',
-        acquired_at: '2024-01-15',
+        type: "etf",
+        acquired_at: "2024-01-15",
       } as CreateInvestmentCommand;
 &nbsp;
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 &nbsp;
-    it('should return error for NaN amount', () =&gt; {
+    it("should return error for NaN amount", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: NaN,
-        acquired_at: '2024-01-15',
+        acquired_at: "2024-01-15",
       };
 &nbsp;
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.amount).toBe('Kwota musi być większa od 0 i mniejsza niż 999999999999.99');
+      expect(errors.amount).toBe("Kwota musi być większa od 0 i mniejsza niż 999999999999.99");
     });
 &nbsp;
-    it('should return error for missing acquired_at', () =&gt; {
+    it("should return error for missing acquired_at", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
       } as CreateInvestmentCommand;
 &nbsp;
@@ -1720,35 +1722,35 @@ describe('useOnboardingForm', () =&gt; {
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.acquired_at).toBe('Data nabycia jest wymagana');
+      expect(errors.acquired_at).toBe("Data nabycia jest wymagana");
     });
 &nbsp;
-    it('should return error for future acquired_at', () =&gt; {
+    it("should return error for future acquired_at", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: tomorrow.toISOString().split('T')[0],
+        acquired_at: tomorrow.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.acquired_at).toBe('Data nabycia nie może być w przyszłości');
+      expect(errors.acquired_at).toBe("Data nabycia nie może być w przyszłości");
     });
 &nbsp;
-    it('should accept today as acquired_at', () =&gt; {
+    it("should accept today as acquired_at", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const today = new Date();
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: today.toISOString().split('T')[0],
+        acquired_at: today.toISOString().split("T")[0],
       };
 &nbsp;
       // Act
@@ -1758,31 +1760,31 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors.acquired_at).toBeUndefined();
     });
 &nbsp;
-    it('should return error for notes exceeding 1000 characters', () =&gt; {
+    it("should return error for notes exceeding 1000 characters", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: 'a'.repeat(1001),
+        acquired_at: "2024-01-15",
+        notes: "a".repeat(1001),
       };
 &nbsp;
       // Act
       const errors = result.current.validateInvestmentForm(invalidData);
 &nbsp;
       // Assert
-      expect(errors.notes).toBe('Notatki nie mogą przekraczać 1000 znaków');
+      expect(errors.notes).toBe("Notatki nie mogą przekraczać 1000 znaków");
     });
 &nbsp;
-    it('should accept notes with exactly 1000 characters', () =&gt; {
+    it("should accept notes with exactly 1000 characters", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: 'a'.repeat(1000),
+        acquired_at: "2024-01-15",
+        notes: "a".repeat(1000),
       };
 &nbsp;
       // Act
@@ -1792,14 +1794,14 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors.notes).toBeUndefined();
     });
 &nbsp;
-    it('should accept empty string notes (optional)', () =&gt; {
+    it("should accept empty string notes (optional)", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const validData: CreateInvestmentCommand = {
-        type: 'etf',
+        type: "etf",
         amount: 1000.0,
-        acquired_at: '2024-01-15',
-        notes: '',
+        acquired_at: "2024-01-15",
+        notes: "",
       };
 &nbsp;
       // Act
@@ -1809,11 +1811,11 @@ describe('useOnboardingForm', () =&gt; {
       expect(errors.notes).toBeUndefined();
     });
 &nbsp;
-    it('should return multiple errors for multiple invalid fields', () =&gt; {
+    it("should return multiple errors for multiple invalid fields", () =&gt; {
       // Arrange
       const { result } = renderHook(() =&gt; useOnboardingForm());
       const invalidData = {
-        type: 'invalid_type',
+        type: "invalid_type",
         amount: -100,
         // brak acquired_at
       } as CreateInvestmentCommand;
@@ -1828,25 +1830,23 @@ describe('useOnboardingForm', () =&gt; {
     });
   });
 });
-&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../../sorter.js"></script>
-    <script src="../../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
 </html>
+    

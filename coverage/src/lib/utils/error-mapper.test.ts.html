@@ -1,63 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/lib/utils/error-mapper.test.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../../index.html">All files</a> / <a href="index.html">src/lib/utils</a> error-mapper.test.ts
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">127/127</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">20/20</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/0</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">127/127</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/lib/utils</a> error-mapper.test.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>123/123</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>20/20</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/0</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>123/123</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -270,11 +275,7 @@
 <a name='L210'></a><a href='#L210'>210</a>
 <a name='L211'></a><a href='#L211'>211</a>
 <a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a>
-<a name='L214'></a><a href='#L214'>214</a>
-<a name='L215'></a><a href='#L215'>215</a>
-<a name='L216'></a><a href='#L216'>216</a>
-<a name='L217'></a><a href='#L217'>217</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L213'></a><a href='#L213'>213</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -486,68 +487,64 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from 'vitest';
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { describe, it, expect } from "vitest";
 import {
   mapApiErrorCode,
   mapApiErrorsToFormErrors,
   investmentErrorMessages,
   profileErrorMessages,
-} from './error-mapper';
+} from "./error-mapper";
 &nbsp;
-describe('error-mapper', () =&gt; {
-  describe('mapApiErrorCode', () =&gt; {
-    it('should map investment error codes correctly', () =&gt; {
+describe("error-mapper", () =&gt; {
+  describe("mapApiErrorCode", () =&gt; {
+    it("should map investment error codes correctly", () =&gt; {
       // Arrange
-      const code = 'amount_must_be_positive';
+      const code = "amount_must_be_positive";
 &nbsp;
       // Act
       const result = mapApiErrorCode(code);
 &nbsp;
       // Assert
-      expect(result).toBe('Kwota musi być większa od zera');
+      expect(result).toBe("Kwota musi być większa od zera");
     });
 &nbsp;
-    it('should map profile error codes correctly', () =&gt; {
+    it("should map profile error codes correctly", () =&gt; {
       // Arrange
-      const code = 'must_be_gte_zero';
+      const code = "must_be_gte_zero";
 &nbsp;
       // Act
       const result = mapApiErrorCode(code);
 &nbsp;
       // Assert
-      expect(result).toBe('Wartość musi być &gt;= 0');
+      expect(result).toBe("Wartość musi być &gt;= 0");
     });
 &nbsp;
-    it('should return default message for unknown error code', () =&gt; {
+    it("should return default message for unknown error code", () =&gt; {
       // Arrange
-      const code = 'unknown_error_code_12345';
+      const code = "unknown_error_code_12345";
 &nbsp;
       // Act
       const result = mapApiErrorCode(code);
 &nbsp;
       // Assert
-      expect(result).toBe('Wystąpił błąd walidacji');
+      expect(result).toBe("Wystąpił błąd walidacji");
     });
 &nbsp;
-    it('should use custom error message map when provided', () =&gt; {
+    it("should use custom error message map when provided", () =&gt; {
       // Arrange
-      const code = 'custom_error';
+      const code = "custom_error";
       const customMap = {
-        custom_error: 'Niestandardowy komunikat błędu',
+        custom_error: "Niestandardowy komunikat błędu",
       };
 &nbsp;
       // Act
       const result = mapApiErrorCode(code, customMap);
 &nbsp;
       // Assert
-      expect(result).toBe('Niestandardowy komunikat błędu');
+      expect(result).toBe("Niestandardowy komunikat błędu");
     });
 &nbsp;
-    it('should map all investment error messages', () =&gt; {
+    it("should map all investment error messages", () =&gt; {
       // Arrange &amp; Act &amp; Assert
       // Testujemy, że wszystkie kody z investmentErrorMessages są mapowane
       Object.entries(investmentErrorMessages).forEach(([code, message]) =&gt; {
@@ -556,7 +553,7 @@ describe('error-mapper', () =&gt; {
       });
     });
 &nbsp;
-    it('should map all profile error messages', () =&gt; {
+    it("should map all profile error messages", () =&gt; {
       // Arrange &amp; Act &amp; Assert
       // Testujemy, że wszystkie kody z profileErrorMessages są mapowane
       Object.entries(profileErrorMessages).forEach(([code, message]) =&gt; {
@@ -565,20 +562,20 @@ describe('error-mapper', () =&gt; {
       });
     });
 &nbsp;
-    it('should handle empty string as error code', () =&gt; {
+    it("should handle empty string as error code", () =&gt; {
       // Arrange
-      const code = '';
+      const code = "";
 &nbsp;
       // Act
       const result = mapApiErrorCode(code);
 &nbsp;
       // Assert
-      expect(result).toBe('Wystąpił błąd walidacji');
+      expect(result).toBe("Wystąpił błąd walidacji");
     });
   });
 &nbsp;
-  describe('mapApiErrorsToFormErrors', () =&gt; {
-    it('should return empty object when fields is undefined', () =&gt; {
+  describe("mapApiErrorsToFormErrors", () =&gt; {
+    it("should return empty object when fields is undefined", () =&gt; {
       // Arrange
       const fields = undefined;
 &nbsp;
@@ -589,7 +586,7 @@ describe('error-mapper', () =&gt; {
       expect(result).toEqual({});
     });
 &nbsp;
-    it('should return empty object when fields is empty', () =&gt; {
+    it("should return empty object when fields is empty", () =&gt; {
       // Arrange
       const fields = {};
 &nbsp;
@@ -600,10 +597,10 @@ describe('error-mapper', () =&gt; {
       expect(result).toEqual({});
     });
 &nbsp;
-    it('should map single field error correctly', () =&gt; {
+    it("should map single field error correctly", () =&gt; {
       // Arrange
       const fields = {
-        amount: 'amount_must_be_positive',
+        amount: "amount_must_be_positive",
       };
 &nbsp;
       // Act
@@ -611,16 +608,16 @@ describe('error-mapper', () =&gt; {
 &nbsp;
       // Assert
       expect(result).toEqual({
-        amount: 'Kwota musi być większa od zera',
+        amount: "Kwota musi być większa od zera",
       });
     });
 &nbsp;
-    it('should map multiple field errors correctly', () =&gt; {
+    it("should map multiple field errors correctly", () =&gt; {
       // Arrange
       const fields = {
-        amount: 'amount_must_be_positive',
-        acquired_at: 'acquired_at_cannot_be_future',
-        type: 'must_be_one_of_etf_bond_stock_cash',
+        amount: "amount_must_be_positive",
+        acquired_at: "acquired_at_cannot_be_future",
+        type: "must_be_one_of_etf_bond_stock_cash",
       };
 &nbsp;
       // Act
@@ -628,17 +625,17 @@ describe('error-mapper', () =&gt; {
 &nbsp;
       // Assert
       expect(result).toEqual({
-        amount: 'Kwota musi być większa od zera',
-        acquired_at: 'Data nabycia nie może być z przyszłości',
-        type: 'Typ musi być jednym z: ETF, Obligacja, Akcja, Gotówka',
+        amount: "Kwota musi być większa od zera",
+        acquired_at: "Data nabycia nie może być z przyszłości",
+        type: "Typ musi być jednym z: ETF, Obligacja, Akcja, Gotówka",
       });
     });
 &nbsp;
-    it('should handle unknown error codes in fields', () =&gt; {
+    it("should handle unknown error codes in fields", () =&gt; {
       // Arrange
       const fields = {
-        amount: 'unknown_error_code',
-        monthly_expense: 'must_be_gte_zero',
+        amount: "unknown_error_code",
+        monthly_expense: "must_be_gte_zero",
       };
 &nbsp;
       // Act
@@ -646,18 +643,18 @@ describe('error-mapper', () =&gt; {
 &nbsp;
       // Assert
       expect(result).toEqual({
-        amount: 'Wystąpił błąd walidacji',
-        monthly_expense: 'Wartość musi być &gt;= 0',
+        amount: "Wystąpił błąd walidacji",
+        monthly_expense: "Wartość musi być &gt;= 0",
       });
     });
 &nbsp;
-    it('should use custom error message map when provided', () =&gt; {
+    it("should use custom error message map when provided", () =&gt; {
       // Arrange
       const fields = {
-        custom_field: 'custom_error',
+        custom_field: "custom_error",
       };
       const customMap = {
-        custom_error: 'Niestandardowy komunikat',
+        custom_error: "Niestandardowy komunikat",
       };
 &nbsp;
       // Act
@@ -665,65 +662,60 @@ describe('error-mapper', () =&gt; {
 &nbsp;
       // Assert
       expect(result).toEqual({
-        custom_field: 'Niestandardowy komunikat',
+        custom_field: "Niestandardowy komunikat",
       });
     });
 &nbsp;
-    it('should handle mixed known and unknown error codes', () =&gt; {
+    it("should handle mixed known and unknown error codes", () =&gt; {
       // Arrange
       const fields = {
-        amount: 'amount_must_be_positive', // znany kod
-        notes: 'unknown_code_123', // nieznany kod
-        type: 'invalid_enum_value', // znany kod
+        amount: "amount_must_be_positive", // znany kod
+        notes: "unknown_code_123", // nieznany kod
+        type: "invalid_enum_value", // znany kod
       };
 &nbsp;
       // Act
       const result = mapApiErrorsToFormErrors(fields);
 &nbsp;
       // Assert
-      expect(result.amount).toBe('Kwota musi być większa od zera');
-      expect(result.notes).toBe('Wystąpił błąd walidacji');
-      expect(result.type).toBe('Nieprawidłowa wartość');
+      expect(result.amount).toBe("Kwota musi być większa od zera");
+      expect(result.notes).toBe("Wystąpił błąd walidacji");
+      expect(result.type).toBe("Nieprawidłowa wartość");
     });
 &nbsp;
-    it('should preserve field names exactly as provided', () =&gt; {
+    it("should preserve field names exactly as provided", () =&gt; {
       // Arrange
       const fields = {
-        'monthly_expense': 'must_be_gte_zero',
-        'withdrawal_rate_pct': 'must_be_lte_100',
-        'expected_return_pct': 'must_be_lte_1000',
+        monthly_expense: "must_be_gte_zero",
+        withdrawal_rate_pct: "must_be_lte_100",
+        expected_return_pct: "must_be_lte_1000",
       };
 &nbsp;
       // Act
       const result = mapApiErrorsToFormErrors(fields);
 &nbsp;
       // Assert
-      expect(Object.keys(result)).toEqual([
-        'monthly_expense',
-        'withdrawal_rate_pct',
-        'expected_return_pct',
-      ]);
+      expect(Object.keys(result)).toEqual(["monthly_expense", "withdrawal_rate_pct", "expected_return_pct"]);
     });
   });
 });
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../../sorter.js"></script>
-    <script src="../../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
 </html>
+    

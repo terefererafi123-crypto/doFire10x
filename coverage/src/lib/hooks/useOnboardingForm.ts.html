@@ -1,63 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/lib/hooks/useOnboardingForm.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../../index.html">All files</a> / <a href="index.html">src/lib/hooks</a> useOnboardingForm.ts
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">98% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">98/100</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">97.14% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">34/35</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">100% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">1/1</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">98% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">98/100</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/lib/hooks</a> useOnboardingForm.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">98.76% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>80/81</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">97.14% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>34/35</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">100% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>1/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">98.76% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>80/81</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line high"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line high'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -173,33 +178,7 @@
 <a name='L113'></a><a href='#L113'>113</a>
 <a name='L114'></a><a href='#L114'>114</a>
 <a name='L115'></a><a href='#L115'>115</a>
-<a name='L116'></a><a href='#L116'>116</a>
-<a name='L117'></a><a href='#L117'>117</a>
-<a name='L118'></a><a href='#L118'>118</a>
-<a name='L119'></a><a href='#L119'>119</a>
-<a name='L120'></a><a href='#L120'>120</a>
-<a name='L121'></a><a href='#L121'>121</a>
-<a name='L122'></a><a href='#L122'>122</a>
-<a name='L123'></a><a href='#L123'>123</a>
-<a name='L124'></a><a href='#L124'>124</a>
-<a name='L125'></a><a href='#L125'>125</a>
-<a name='L126'></a><a href='#L126'>126</a>
-<a name='L127'></a><a href='#L127'>127</a>
-<a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a>
-<a name='L130'></a><a href='#L130'>130</a>
-<a name='L131'></a><a href='#L131'>131</a>
-<a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a>
-<a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a>
-<a name='L138'></a><a href='#L138'>138</a>
-<a name='L139'></a><a href='#L139'>139</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L116'></a><a href='#L116'>116</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,15 +191,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">34x</span>
-<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">20x</span>
@@ -245,11 +219,7 @@
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">19x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -269,22 +239,15 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">19x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -299,7 +262,6 @@
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
@@ -324,8 +286,6 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">34x</span>
@@ -333,12 +293,8 @@
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-yes">34x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { useCallback } from "react";
-import type {
-  CreateProfileCommand,
-  CreateInvestmentCommand,
-} from "@/types";
+import type { CreateProfileCommand, CreateInvestmentCommand } from "@/types";
 &nbsp;
 export type ProfileFormData = CreateProfileCommand;
 export type InvestmentFormData = CreateInvestmentCommand;
@@ -349,147 +305,126 @@ export type InvestmentFormErrors = Record&lt;string, string&gt;;
  * Custom hook for onboarding form validation
  */
 export function useOnboardingForm() {
-  const validateProfileForm = useCallback(
-    (data: ProfileFormData): ProfileFormErrors =&gt; {
-      const errors: ProfileFormErrors = {};
+  const validateProfileForm = useCallback((data: ProfileFormData): ProfileFormErrors =&gt; {
+    const errors: ProfileFormErrors = {};
 &nbsp;
-      // Validate monthly_expense
-      // Note: 0 is a valid value (user can have 0 monthly expenses)
-      if (
-        data.monthly_expense === undefined ||
-        data.monthly_expense === null ||
-        !isFinite(data.monthly_expense)
-      ) {
-        errors.monthly_expense = "Miesięczne wydatki są wymagane";
-      } else if (data.monthly_expense &lt; 0) {
-        errors.monthly_expense = "Miesięczne wydatki muszą być &gt;= 0";
+    // Validate monthly_expense
+    // Note: 0 is a valid value (user can have 0 monthly expenses)
+    if (data.monthly_expense === undefined || data.monthly_expense === null || !isFinite(data.monthly_expense)) {
+      errors.monthly_expense = "Miesięczne wydatki są wymagane";
+    } else if (data.monthly_expense &lt; 0) {
+      errors.monthly_expense = "Miesięczne wydatki muszą być &gt;= 0";
+    }
+&nbsp;
+    // Validate withdrawal_rate_pct
+    if (
+      data.withdrawal_rate_pct === undefined ||
+      data.withdrawal_rate_pct === null ||
+      !isFinite(data.withdrawal_rate_pct)
+    ) {
+      errors.withdrawal_rate_pct = "Stopa wypłat jest wymagana";
+    } else if (data.withdrawal_rate_pct &lt; 0 || data.withdrawal_rate_pct &gt; 100) {
+      errors.withdrawal_rate_pct = "Stopa wypłat musi być w zakresie 0-100";
+    }
+&nbsp;
+    // Validate expected_return_pct
+    if (
+      data.expected_return_pct === undefined ||
+      data.expected_return_pct === null ||
+      !isFinite(data.expected_return_pct)
+    ) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+<span class="cstat-no" title="statement not covered" >      errors.expected_return_pct = "Oczekiwany zwrot jest wymagany";</span>
+    } else if (data.expected_return_pct &lt; -100 || data.expected_return_pct &gt; 1000) {
+      errors.expected_return_pct = "Oczekiwany zwrot musi być w zakresie -100 do 1000";
+    }
+&nbsp;
+    // Validate birth_date (optional)
+    if (data.birth_date) {
+      const date = new Date(data.birth_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const maxAge = new Date();
+      maxAge.setFullYear(today.getFullYear() - 120);
+      maxAge.setHours(0, 0, 0, 0);
+&nbsp;
+      date.setHours(0, 0, 0, 0);
+&nbsp;
+      if (date &gt;= today) {
+        errors.birth_date = "Data urodzenia musi być w przeszłości";
+      } else if (date &lt; maxAge) {
+        errors.birth_date = "Data urodzenia nie może być starsza niż 120 lat";
       }
+    }
 &nbsp;
-      // Validate withdrawal_rate_pct
-      if (
-        data.withdrawal_rate_pct === undefined ||
-        data.withdrawal_rate_pct === null ||
-        !isFinite(data.withdrawal_rate_pct)
-      ) {
-        errors.withdrawal_rate_pct = "Stopa wypłat jest wymagana";
-      } else if (data.withdrawal_rate_pct &lt; 0 || data.withdrawal_rate_pct &gt; 100) {
-        errors.withdrawal_rate_pct = "Stopa wypłat musi być w zakresie 0-100";
+    return errors;
+  }, []);
+&nbsp;
+  const validateInvestmentForm = useCallback((data: InvestmentFormData): InvestmentFormErrors =&gt; {
+    const errors: InvestmentFormErrors = {};
+&nbsp;
+    // Validate type
+    if (!data.type || !["etf", "bond", "stock", "cash"].includes(data.type)) {
+      errors.type = "Wybierz typ inwestycji";
+    }
+&nbsp;
+    // Validate amount
+    if (
+      data.amount === undefined ||
+      data.amount === null ||
+      !isFinite(data.amount) ||
+      data.amount &lt;= 0 ||
+      data.amount &gt; 999999999999.99
+    ) {
+      errors.amount = "Kwota musi być większa od 0 i mniejsza niż 999999999999.99";
+    }
+&nbsp;
+    // Validate acquired_at
+    if (!data.acquired_at) {
+      errors.acquired_at = "Data nabycia jest wymagana";
+    } else {
+      const date = new Date(data.acquired_at);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      date.setHours(0, 0, 0, 0);
+&nbsp;
+      if (date &gt; today) {
+        errors.acquired_at = "Data nabycia nie może być w przyszłości";
       }
+    }
 &nbsp;
-      // Validate expected_return_pct
-      if (
-        data.expected_return_pct === undefined ||
-        data.expected_return_pct === null ||
-        !isFinite(data.expected_return_pct)
-      ) <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
-<span class="cstat-no" title="statement not covered" >        errors.expected_return_pct = "Oczekiwany zwrot jest wymagany";</span>
-<span class="cstat-no" title="statement not covered" >      } else if (</span>
-        data.expected_return_pct &lt; -100 ||
-        data.expected_return_pct &gt; 1000
-      ) {
-        errors.expected_return_pct =
-          "Oczekiwany zwrot musi być w zakresie -100 do 1000";
+    // Validate notes (optional)
+    if (data.notes !== undefined &amp;&amp; data.notes !== null) {
+      const trimmed = data.notes.trim();
+      if (trimmed.length &gt; 0 &amp;&amp; trimmed.length &gt; 1000) {
+        errors.notes = "Notatki nie mogą przekraczać 1000 znaków";
       }
+    }
 &nbsp;
-      // Validate birth_date (optional)
-      if (data.birth_date) {
-        const date = new Date(data.birth_date);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const maxAge = new Date();
-        maxAge.setFullYear(today.getFullYear() - 120);
-        maxAge.setHours(0, 0, 0, 0);
-&nbsp;
-        date.setHours(0, 0, 0, 0);
-&nbsp;
-        if (date &gt;= today) {
-          errors.birth_date = "Data urodzenia musi być w przeszłości";
-        } else if (date &lt; maxAge) {
-          errors.birth_date =
-            "Data urodzenia nie może być starsza niż 120 lat";
-        }
-      }
-&nbsp;
-      return errors;
-    },
-    []
-  );
-&nbsp;
-  const validateInvestmentForm = useCallback(
-    (data: InvestmentFormData): InvestmentFormErrors =&gt; {
-      const errors: InvestmentFormErrors = {};
-&nbsp;
-      // Validate type
-      if (
-        !data.type ||
-        !["etf", "bond", "stock", "cash"].includes(data.type)
-      ) {
-        errors.type = "Wybierz typ inwestycji";
-      }
-&nbsp;
-      // Validate amount
-      if (
-        data.amount === undefined ||
-        data.amount === null ||
-        !isFinite(data.amount) ||
-        data.amount &lt;= 0 ||
-        data.amount &gt; 999999999999.99
-      ) {
-        errors.amount =
-          "Kwota musi być większa od 0 i mniejsza niż 999999999999.99";
-      }
-&nbsp;
-      // Validate acquired_at
-      if (!data.acquired_at) {
-        errors.acquired_at = "Data nabycia jest wymagana";
-      } else {
-        const date = new Date(data.acquired_at);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        date.setHours(0, 0, 0, 0);
-&nbsp;
-        if (date &gt; today) {
-          errors.acquired_at = "Data nabycia nie może być w przyszłości";
-        }
-      }
-&nbsp;
-      // Validate notes (optional)
-      if (data.notes !== undefined &amp;&amp; data.notes !== null) {
-        const trimmed = data.notes.trim();
-        if (trimmed.length &gt; 0 &amp;&amp; trimmed.length &gt; 1000) {
-          errors.notes = "Notatki nie mogą przekraczać 1000 znaków";
-        }
-      }
-&nbsp;
-      return errors;
-    },
-    []
-  );
+    return errors;
+  }, []);
 &nbsp;
   return {
     validateProfileForm,
     validateInvestmentForm,
   };
 }
-&nbsp;
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../../sorter.js"></script>
-    <script src="../../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
 </html>
+    

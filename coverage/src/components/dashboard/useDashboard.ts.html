@@ -1,64 +1,68 @@
+
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <title>Code coverage report for src/components/dashboard/useDashboard.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
     <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <style type="text/css">
-      .coverage-summary .sorter {
-        background-image: url(../../../sort-arrow-sprite.png);
-      }
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
     </style>
-  </head>
-
-  <body>
-    <div class="wrapper">
-      <div class="pad1">
-        <h1>
-          <a href="../../../index.html">All files</a> /
-          <a href="index.html">src/components/dashboard</a> useDashboard.ts
-        </h1>
-        <div class="clearfix">
-          <div class="fl pad1y space-right2">
-            <span class="strong">0% </span>
-            <span class="quiet">Statements</span>
-            <span class="fraction">0/220</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">0% </span>
-            <span class="quiet">Branches</span>
-            <span class="fraction">0/1</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">0% </span>
-            <span class="quiet">Functions</span>
-            <span class="fraction">0/1</span>
-          </div>
-
-          <div class="fl pad1y space-right2">
-            <span class="strong">0% </span>
-            <span class="quiet">Lines</span>
-            <span class="fraction">0/220</span>
-          </div>
+</head>
+    
+<body>
+<div class='wrapper'>
+    <div class='pad1'>
+        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/components/dashboard</a> useDashboard.ts</h1>
+        <div class='clearfix'>
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Statements</span>
+                <span class='fraction'>0/224</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Branches</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Functions</span>
+                <span class='fraction'>0/1</span>
+            </div>
+        
+            
+            <div class='fl pad1y space-right2'>
+                <span class="strong">0% </span>
+                <span class="quiet">Lines</span>
+                <span class='fraction'>0/224</span>
+            </div>
+        
+            
         </div>
         <p class="quiet">
-          Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the
-          previous block.
+            Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
         <template id="filterTemplate">
-          <div class="quiet">
-            Filter:
-            <input type="search" id="fileSearch" />
-          </div>
+            <div class="quiet">
+                Filter:
+                <input type="search" id="fileSearch">
+            </div>
         </template>
-      </div>
-      <div class="status-line low"></div>
-      <pre><table class="coverage">
+    </div>
+    <div class='status-line low'></div>
+    <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
 <a name='L3'></a><a href='#L3'>3</a>
@@ -279,7 +283,15 @@
 <a name='L218'></a><a href='#L218'>218</a>
 <a name='L219'></a><a href='#L219'>219</a>
 <a name='L220'></a><a href='#L220'>220</a>
-<a name='L221'></a><a href='#L221'>221</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a>
+<a name='L224'></a><a href='#L224'>224</a>
+<a name='L225'></a><a href='#L225'>225</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -514,18 +526,21 @@
 <span class="cstat-no" title="statement not covered" >export function useDashboard() {</span>
 <span class="cstat-no" title="statement not covered" >  const [isMounted, setIsMounted] = useState(false);</span>
 <span class="cstat-no" title="statement not covered" >  const globalErrorContext = useGlobalError();</span>
-<span class="cstat-no" title="statement not covered" >  </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // Wait for component to mount before using context to avoid hydration issues</span>
 <span class="cstat-no" title="statement not covered" >  useEffect(() =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    setIsMounted(true);</span>
 <span class="cstat-no" title="statement not covered" >  }, []);</span>
-<span class="cstat-no" title="statement not covered" >  </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // Use setGlobalError only after component has mounted</span>
-<span class="cstat-no" title="statement not covered" >  const setGlobalError = useCallback((error: ApiError | null) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    if (isMounted) {</span>
-<span class="cstat-no" title="statement not covered" >      globalErrorContext.setError(error);</span>
-<span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  }, [isMounted, globalErrorContext.setError]);</span>
+<span class="cstat-no" title="statement not covered" >  const setGlobalError = useCallback(</span>
+<span class="cstat-no" title="statement not covered" >    (error: ApiError | null) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      if (isMounted) {</span>
+<span class="cstat-no" title="statement not covered" >        globalErrorContext.setError(error);</span>
+<span class="cstat-no" title="statement not covered" >      }</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
+<span class="cstat-no" title="statement not covered" >    [isMounted, globalErrorContext]</span>
+<span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >  const [state, setState] = useState&lt;DashboardState&gt;({</span>
 <span class="cstat-no" title="statement not covered" >    metrics: null,</span>
 <span class="cstat-no" title="statement not covered" >    aiHint: null,</span>
@@ -533,13 +548,8 @@
 <span class="cstat-no" title="statement not covered" >    error: null,</span>
 <span class="cstat-no" title="statement not covered" >  });</span>
 <span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  // Load metrics on mount</span>
-<span class="cstat-no" title="statement not covered" >  useEffect(() =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    loadMetrics();</span>
-<span class="cstat-no" title="statement not covered" >    // eslint-disable-next-line react-hooks/exhaustive-deps</span>
-<span class="cstat-no" title="statement not covered" >  }, []);</span>
-<span class="cstat-no" title="statement not covered" ></span>
-<span class="cstat-no" title="statement not covered" >  const loadMetrics = async () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >  // Owinąć loadMetrics w useCallback z odpowiednimi zależnościami</span>
+<span class="cstat-no" title="statement not covered" >  const loadMetrics = useCallback(async () =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    setState((prev) =&gt; ({ ...prev, isLoading: true, error: null }));</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >    try {</span>
@@ -591,7 +601,7 @@
 <span class="cstat-no" title="statement not covered" >        }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        const error: ApiError = await metricsResponse.json();</span>
-<span class="cstat-no" title="statement not covered" >        </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        // Handle auth errors (401/403) - but don't set global error immediately</span>
 <span class="cstat-no" title="statement not covered" >        // Middleware already verified auth, so 401 might be a timing/sync issue</span>
 <span class="cstat-no" title="statement not covered" >        // Only set global error if it's a persistent auth problem</span>
@@ -611,19 +621,19 @@
 <span class="cstat-no" title="statement not covered" >          }));</span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        // Handle other global errors (5xx/429)</span>
 <span class="cstat-no" title="statement not covered" >        if (shouldHandleGlobally(error)) {</span>
 <span class="cstat-no" title="statement not covered" >          setGlobalError(error);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        throw new Error(error.error?.message || "Błąd pobierania metryk");</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >      // Handle AI hint response</span>
 <span class="cstat-no" title="statement not covered" >      if (!aiHintResponse.ok) {</span>
 <span class="cstat-no" title="statement not covered" >        const error: ApiError = await aiHintResponse.json();</span>
-<span class="cstat-no" title="statement not covered" >        </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        // For AI hint, auth errors are less critical - just show error, don't redirect</span>
 <span class="cstat-no" title="statement not covered" >        if (aiHintResponse.status === 401 || aiHintResponse.status === 403) {</span>
 <span class="cstat-no" title="statement not covered" >          // Set error but don't redirect - metrics might still be available</span>
@@ -640,12 +650,12 @@
 <span class="cstat-no" title="statement not covered" >          }));</span>
 <span class="cstat-no" title="statement not covered" >          return;</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        // Handle other global errors (5xx/429)</span>
 <span class="cstat-no" title="statement not covered" >        if (shouldHandleGlobally(error)) {</span>
 <span class="cstat-no" title="statement not covered" >          setGlobalError(error);</span>
 <span class="cstat-no" title="statement not covered" >        }</span>
-<span class="cstat-no" title="statement not covered" >        </span>
+<span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >        throw new Error(error.error?.message || "Błąd pobierania AI hint");</span>
 <span class="cstat-no" title="statement not covered" >      }</span>
 <span class="cstat-no" title="statement not covered" ></span>
@@ -694,22 +704,28 @@
 <span class="cstat-no" title="statement not covered" >      setState((prev) =&gt; ({</span>
 <span class="cstat-no" title="statement not covered" >        ...prev,</span>
 <span class="cstat-no" title="statement not covered" >        isLoading: false,</span>
-<span class="cstat-no" title="statement not covered" >        error: error instanceof Error</span>
-<span class="cstat-no" title="statement not covered" >          ? {</span>
-<span class="cstat-no" title="statement not covered" >              error: {</span>
-<span class="cstat-no" title="statement not covered" >                code: "internal",</span>
-<span class="cstat-no" title="statement not covered" >                message: error.message,</span>
+<span class="cstat-no" title="statement not covered" >        error:</span>
+<span class="cstat-no" title="statement not covered" >          error instanceof Error</span>
+<span class="cstat-no" title="statement not covered" >            ? {</span>
+<span class="cstat-no" title="statement not covered" >                error: {</span>
+<span class="cstat-no" title="statement not covered" >                  code: "internal",</span>
+<span class="cstat-no" title="statement not covered" >                  message: error.message,</span>
+<span class="cstat-no" title="statement not covered" >                },</span>
+<span class="cstat-no" title="statement not covered" >              }</span>
+<span class="cstat-no" title="statement not covered" >            : {</span>
+<span class="cstat-no" title="statement not covered" >                error: {</span>
+<span class="cstat-no" title="statement not covered" >                  code: "internal",</span>
+<span class="cstat-no" title="statement not covered" >                  message: "Wystąpił nieoczekiwany błąd",</span>
+<span class="cstat-no" title="statement not covered" >                },</span>
 <span class="cstat-no" title="statement not covered" >              },</span>
-<span class="cstat-no" title="statement not covered" >            }</span>
-<span class="cstat-no" title="statement not covered" >          : {</span>
-<span class="cstat-no" title="statement not covered" >              error: {</span>
-<span class="cstat-no" title="statement not covered" >                code: "internal",</span>
-<span class="cstat-no" title="statement not covered" >                message: "Wystąpił nieoczekiwany błąd",</span>
-<span class="cstat-no" title="statement not covered" >              },</span>
-<span class="cstat-no" title="statement not covered" >            },</span>
 <span class="cstat-no" title="statement not covered" >      }));</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
-<span class="cstat-no" title="statement not covered" >  };</span>
+<span class="cstat-no" title="statement not covered" >  }, [setGlobalError]);</span>
+<span class="cstat-no" title="statement not covered" ></span>
+<span class="cstat-no" title="statement not covered" >  // Load metrics on mount</span>
+<span class="cstat-no" title="statement not covered" >  useEffect(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    loadMetrics();</span>
+<span class="cstat-no" title="statement not covered" >  }, [loadMetrics]);</span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >  // recalculateMetrics is an alias for loadMetrics</span>
 <span class="cstat-no" title="statement not covered" >  const recalculateMetrics = loadMetrics;</span>
@@ -721,22 +737,21 @@
 <span class="cstat-no" title="statement not covered" >}</span>
 &nbsp;</pre></td></tr></table></pre>
 
-      <div class="push"></div>
-      <!-- for sticky footer -->
-    </div>
-    <!-- /wrapper -->
-    <div class="footer quiet pad2 space-top1 center small">
-      Code coverage generated by
-      <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-      at 2025-11-20T15:56:44.605Z
-    </div>
-    <script src="../../../prettify.js"></script>
-    <script>
-      window.onload = function () {
-        prettyPrint();
-      };
-    </script>
-    <script src="../../../sorter.js"></script>
-    <script src="../../../block-navigation.js"></script>
-  </body>
+                <div class='push'></div><!-- for sticky footer -->
+            </div><!-- /wrapper -->
+            <div class='footer quiet pad2 space-top1 center small'>
+                Code coverage generated by
+                <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
+                at 2025-11-20T18:34:52.369Z
+            </div>
+        <script src="../../../prettify.js"></script>
+        <script>
+            window.onload = function () {
+                prettyPrint();
+            };
+        </script>
+        <script src="../../../sorter.js"></script>
+        <script src="../../../block-navigation.js"></script>
+    </body>
 </html>
+    

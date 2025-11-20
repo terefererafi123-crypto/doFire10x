@@ -58,13 +58,16 @@ export const onRequest = defineMiddleware(
         headers: request.headers,
       });
 
-      // IMPORTANT: Always get user session first before any other operations
-      // This verifies the JWT token and retrieves user data
-      // Use getUser() as it works better with cookies in SSR
+      // IMPORTANT: Use getSession() instead of getUser() to avoid async cookie setting
+      // getSession() doesn't trigger automatic token refresh, preventing ResponseSentError
+      // session.user contains all necessary user data for middleware checks
       const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
+        data: { session },
+        error: sessionError,
+      } = await supabase.auth.getSession();
+
+      // Extract user from session (no additional API call needed)
+      const user = session?.user ?? null;
 
       if (user) {
         // User is authenticated - set user data in locals for use in pages
@@ -83,7 +86,7 @@ export const onRequest = defineMiddleware(
             hasCookies: cookies.getAll().length > 0,
             cookieNames: cookies.getAll().map(c => c.name),
             cookieHeader: cookieHeader.substring(0, 200), // First 200 chars
-            userError: userError?.message,
+            sessionError: sessionError?.message,
             requestMethod: request.method,
             requestUrl: url.pathname,
           });

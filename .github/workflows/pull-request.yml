@@ -1,0 +1,115 @@
+name: Pull Request Checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  lint:
+    name: Lintowanie kodu
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout kodu
+        uses: actions/checkout@v4
+
+      - name: Instalacja Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Instalacja zależności
+        run: npm ci
+
+      - name: Lintowanie kodu
+        run: npm run lint
+
+  test:
+    name: Testy jednostkowe z coverage
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - name: Checkout kodu
+        uses: actions/checkout@v4
+
+      - name: Instalacja Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      - name: Instalacja zależności
+        run: npm ci
+
+      - name: Uruchomienie testów z coverage
+        run: npm run test:coverage
+
+      - name: Przesłanie raportu coverage
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+  status-comment:
+    name: Komentarz statusu do PR
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    if: success()
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Pobranie raportu coverage
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+
+      - name: Generowanie podsumowania coverage
+        id: coverage-summary
+        run: |
+          if [ -f "coverage/coverage-summary.json" ]; then
+            COVERAGE=$(node -e "try { const data = require('./coverage/coverage-summary.json'); console.log(data.total?.lines?.pct?.toFixed(2) || 'N/A'); } catch(e) { console.log('N/A'); }")
+            echo "coverage=$COVERAGE" >> $GITHUB_ENV
+            echo "coverage_found=true" >> $GITHUB_ENV
+          else
+            echo "coverage=N/A" >> $GITHUB_ENV
+            echo "coverage_found=false" >> $GITHUB_ENV
+          fi
+
+      - name: Generowanie treści komentarza
+        env:
+          COVERAGE_FOUND: ${{ env.coverage_found }}
+          COVERAGE: ${{ env.coverage }}
+          COMMIT_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          if [ "$COVERAGE_FOUND" == "true" ]; then
+            COVERAGE_LINE="- **Pokrycie kodu**: ${COVERAGE}%"
+          else
+            COVERAGE_LINE="- **Pokrycie kodu**: N/A"
+          fi
+          
+          cat > comment-body.md << 'COMMENT_EOF'
+          ## ✅ Status workflow Pull Request
+
+          Wszystkie kontrole przeszły pomyślnie!
+
+          ### 📊 Podsumowanie:
+          - **Lintowanie kodu**: ✅ Przeszło
+          - **Testy jednostkowe**: ✅ Przeszły
+          COMMENT_EOF
+          echo "${COVERAGE_LINE}" >> comment-body.md
+          cat >> comment-body.md << EOF
+
+          ---
+          *Workflow wykonany dla commit: \`${COMMIT_SHA}\`*
+          EOF
+
+      - name: Dodanie komentarza do PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          message-path: comment-body.md
+          recreate: true
+

@@ -214,11 +214,7 @@ export function useDashboard() {
     loadMetrics();
   }, [loadMetrics]);
 
-  // recalculateMetrics is an alias for loadMetrics
-  const recalculateMetrics = loadMetrics;
-
   return {
     ...state,
-    recalculateMetrics,
   };
 }

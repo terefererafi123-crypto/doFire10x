@@ -44,12 +44,9 @@ class DashboardErrorBoundary extends Component<{ children: ReactNode }, ErrorBou
 }
 
 function DashboardContentInner() {
-  const { metrics, aiHint, isLoading, error, recalculateMetrics } = useDashboard();
+  const { metrics, aiHint, isLoading, error } = useDashboard();
 
   const shares = aiHint?.shares ?? null;
-  // Disable button if no metrics, or if there are no investments (invested_total is 0 or null)
-  const hasInvestments = metrics?.inputs.invested_total && metrics.inputs.invested_total > 0;
-  const isRecalculateDisabled = !metrics || !hasInvestments || isLoading;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -64,14 +61,7 @@ function DashboardContentInner() {
       {isLoading ? (
         <LoadingSkeleton />
       ) : (
-        <DashboardGrid
-          metrics={metrics}
-          isLoading={isLoading}
-          aiHint={aiHint}
-          shares={shares}
-          onRecalculate={recalculateMetrics}
-          isRecalculateDisabled={isRecalculateDisabled}
-        />
+        <DashboardGrid metrics={metrics} isLoading={isLoading} aiHint={aiHint} shares={shares} />
       )}
     </div>
   );

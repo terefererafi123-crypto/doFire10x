@@ -55,6 +55,10 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
             {!birth_date && (
               <p className="mt-2 text-sm text-muted-foreground">Uzupełnij datę urodzenia, aby zobaczyć wiek FIRE</p>
             )}
+            <p className="mt-2 text-xs text-muted-foreground">
+              Obliczenia zakładają, że nie dokonujesz nowych wpłat – portfel rośnie tylko dzięki oczekiwanej stopie
+              zwrotu.
+            </p>
           </CardContent>
         </Card>
       );
@@ -70,6 +74,10 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
           {!birth_date && (
             <p className="mt-2 text-sm text-muted-foreground">Uzupełnij datę urodzenia, aby zobaczyć wiek FIRE</p>
           )}
+          <p className="mt-2 text-xs text-muted-foreground">
+            Obliczenia zakładają, że nie dokonujesz nowych wpłat – portfel rośnie tylko dzięki oczekiwanej stopie
+            zwrotu.
+          </p>
         </CardContent>
       </Card>
     );
@@ -92,6 +100,10 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
               Osiągnąłeś FIRE w wieku {formatYearsAndMonths(fire_age)}
             </p>
           )}
+          <p className="mt-2 text-xs text-muted-foreground">
+            Obliczenia zakładają, że nie dokonujesz nowych wpłat – portfel rośnie tylko dzięki oczekiwanej stopie
+            zwrotu.
+          </p>
         </CardContent>
       </Card>
     );
@@ -105,6 +117,10 @@ export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
       <CardContent>
         <p className="text-2xl font-bold">Osiągniesz FIRE w wieku {formatYearsAndMonths(fire_age)}</p>
         <p className="mt-2 text-sm text-muted-foreground">Za {formatYearsAndMonths(years_to_fire)}</p>
+        <p className="mt-2 text-xs text-muted-foreground">
+          Obliczenia zakładają, że nie dokonujesz nowych wpłat – portfel rośnie tylko dzięki oczekiwanej stopie
+          zwrotu.
+        </p>
       </CardContent>
     </Card>
   );

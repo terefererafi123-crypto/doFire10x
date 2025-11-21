@@ -576,3 +576,4 @@ GET /v1/me/ai-hint
 - Reguły są łatwe do dodania - wystarczy dodać nową regułę do tablicy w kolejności priorytetowej
 - Lokalizacje są łatwe do rozszerzenia - dodaj nowy język do mapy lokalizacji
 - Struktura odpowiedzi jest zgodna z typem `AiHintDto` z `src/types.ts`
+

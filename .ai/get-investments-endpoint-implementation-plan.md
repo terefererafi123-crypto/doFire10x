@@ -741,3 +741,4 @@ Filtry `acquired_at_from` i `acquired_at_to` są włączne (inclusive):
 - `acquired_at_to`: `acquired_at <= $date`
 
 Oznacza to, że inwestycja z datą dokładnie równą `acquired_at_from` lub `acquired_at_to` będzie uwzględniona w wynikach.
+

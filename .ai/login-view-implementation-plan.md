@@ -667,3 +667,4 @@ if (response.ok) {
 10. **Dokumentacja (opcjonalnie)**
     - Dodanie komentarzy w kodzie dla złożonych fragmentów
     - Aktualizacja dokumentacji projektu (jeśli istnieje)
+

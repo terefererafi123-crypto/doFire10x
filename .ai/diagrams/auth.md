@@ -361,3 +361,4 @@ Diagram pokazuje interakcje między czterema głównymi aktorami:
 - **Supabase Auth** - serwis autentykacji zarządzający tokenami i sesjami
 
 Wszystkie przepływy uwzględniają obsługę błędów, walidację danych i zgodność z wymaganiami US-001 i US-007 z dokumentu PRD.
+

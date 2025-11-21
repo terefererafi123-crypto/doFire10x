@@ -47,3 +47,4 @@ export function errorResponse(error: ApiError["error"], status: number): Respons
     headers: { "Content-Type": "application/json" },
   });
 }
+

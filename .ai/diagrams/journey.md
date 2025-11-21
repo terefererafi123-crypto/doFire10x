@@ -343,3 +343,4 @@ Diagram jest w pełni zgodny z:
 - Wszystkie scenariusze użytkownika z auth-spec.md
 
 Diagram skupia się na ścieżkach biznesowych i doświadczeniu użytkownika, a nie na szczegółach technicznych implementacji.
+

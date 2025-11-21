@@ -597,3 +597,4 @@ curl -X GET http://localhost:4321/api/v1/me/portfolio-agg \
 **Data utworzenia planu:** 2025-01-15  
 **Wersja:** 1.0  
 **Status:** Gotowy do implementacji
+

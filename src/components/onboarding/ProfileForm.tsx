@@ -105,7 +105,11 @@ export function ProfileForm({ data, errors, onChange, onBlur }: ProfileFormProps
             {errors.withdrawal_rate_pct}
           </p>
         )}
-        <p className="text-xs text-muted-foreground">Zalecana wartość: 4% (reguła 4%)</p>
+        <p className="text-xs text-muted-foreground">
+          Zalecana wartość: 4% (reguła 4%). Roczny procent portfela, który planujesz wypłacać po osiągnięciu FIRE
+          (realnie, w dzisiejszych złotówkach). Niższa stopa wypłat (np. 3%) = większe bezpieczeństwo, ale wyższa
+          liczba FIRE.
+        </p>
       </div>
 
       <div className="space-y-2">
@@ -137,7 +141,9 @@ export function ProfileForm({ data, errors, onChange, onBlur }: ProfileFormProps
             {errors.expected_return_pct}
           </p>
         )}
-        <p className="text-xs text-muted-foreground">Zalecana wartość: 7% (średni zwrot z portfela akcji)</p>
+        <p className="text-xs text-muted-foreground">
+          Średni roczny zwrot portfela przed inflacją, w długim terminie (np. 7% dla globalnych ETF-ów akcji).
+        </p>
       </div>
 
       <div className="space-y-2">

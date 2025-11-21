@@ -1,0 +1,768 @@
+[33mcommit 76e2ef8a2f16477f5ea511c4db338218dcda9741[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mtest-workflow[m[33m)[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Fri Nov 21 10:57:51 2025 +0100
+
+    fix: remove button because calculations are automatic
+
+[33mcommit 7071dd3347edfad249b33b96798e891cbbc8ffba[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Fri Nov 21 10:52:25 2025 +0100
+
+    fix: add description to calculation
+
+[33mcommit ac1b469fd5516c3f0b667c45635773912b2dd892[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Fri Nov 21 10:48:58 2025 +0100
+
+    fix: validation
+
+[33mcommit 2a10eac27212c5bc6076df6114aac97c5da46277[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Fri Nov 21 10:45:56 2025 +0100
+
+    fix: change desceription under the fields
+
+[33mcommit 0ba25f64ff00289a824dd4c6938159ab61af6243[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Fri Nov 21 10:33:44 2025 +0100
+
+    fix: time validation and description
+
+[33mcommit abc8555afad3cb26414cf1ae52326efb850930e0[m[33m ([m[1;31morigin/test-workflow[m[33m)[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Fri Nov 21 10:23:45 2025 +0100
+
+    fix: lint and tests
+
+[33mcommit 81c0d459a85e32f4b06b08dc5bd188dd073c160c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 19:48:20 2025 +0100
+
+    fix: message path
+
+[33mcommit 1c518c270cad9facc0cf20198f479e76362d44b9[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 19:45:18 2025 +0100
+
+    fix: dashboard rendering
+
+[33mcommit 806ab1d632e34b7db379d37f7d9ae4480efb3752[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 19:38:27 2025 +0100
+
+    fix: change metrics
+
+[33mcommit a914227f6e2ec8b2cc62d1c4f31b2ce2957ba62b[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 19:30:47 2025 +0100
+
+    fix: lint
+
+[33mcommit bf8df2c767e457b8109c2931a03fd4ac09a1f335[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 19:26:18 2025 +0100
+
+    fix: lint
+
+[33mcommit e28c7e1af8c0176eae302333214777f897d5ed2c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 19:08:47 2025 +0100
+
+    fix: lint
+
+[33mcommit 800ef5eaea00076692f8d945c9a00afc4bfa84a3[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 18:59:50 2025 +0100
+
+    Fix linting errors from GitHub Actions
+
+[33mcommit 92ae82bf9eab01ed9b533a3c312190dc86e17b0b[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 18:54:31 2025 +0100
+
+    Fix all linting errors from GitHub Actions
+
+[33mcommit 2a2c424326b7d632d6ab17affd0151a3018568d8[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 17:11:48 2025 +0100
+
+    Fix linting errors
+
+[33mcommit d24e73a8d5f48ec2ded096d9908739b14a57a192[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 17:03:01 2025 +0100
+
+    Test workflow
+
+[33mcommit b5ee0937ce8abe6d868232a3522c1c909d6c0464[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 16:59:06 2025 +0100
+
+    chore: pull request action workflow fix
+
+[33mcommit eafdc8d5007f98486bf86ca85c9a25f2e7b87a72[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 16:57:15 2025 +0100
+
+    chore: coverage
+
+[33mcommit 5dbf52edaa15af8df9b202027fbaf73ea764b964[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 16:32:46 2025 +0100
+
+    github actions
+
+[33mcommit 3083949fd46ec61c9bb371334d3a61185f1e3d2c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 15:17:28 2025 +0100
+
+    fix: improve login form and forgot password form
+
+[33mcommit 824a2d78a9bac62882ed8f0e457b3fdf4720dbcf[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 14:54:29 2025 +0100
+
+    feat: react refactor
+
+[33mcommit f9f75d7a73ee3c703e29f830b710e48da81302df[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 14:46:22 2025 +0100
+
+    chore: src/react-refactor plan
+
+[33mcommit e668dfc6983373b478f100fc82d740e5a61d1228[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 14:31:12 2025 +0100
+
+    fix: big refactor of registration and forgot password
+
+[33mcommit 430562573ed8f81ec76813d275b3b2d97960be35[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 14:23:47 2025 +0100
+
+    fix: refactor registerform
+
+[33mcommit 3273bd6a68638360e1f1e30128f5fce28e383254[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 14:16:56 2025 +0100
+
+    refactor loginform
+
+[33mcommit 6c75245c9d5369ed4505515843e70179fab3c4a7[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 14:08:04 2025 +0100
+
+    fix: refactor
+
+[33mcommit aee558d1c7a02122d5574d2995f6874978956edb[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 14:00:58 2025 +0100
+
+    chore: refactor analyzis
+
+[33mcommit 74ec8ada59bf6540bb73ec696d7fd6a29d124417[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 13:54:25 2025 +0100
+
+    chore playwright rules
+
+[33mcommit 58e0f30b8f2927296ce4ed512475a51652ea70a3[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 13:27:45 2025 +0100
+
+    fix: typo
+
+[33mcommit 22bc25978a94e531dcfe46c4567b287e5c37aee2[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 13:27:31 2025 +0100
+
+    chore: new commend to run test env
+
+[33mcommit 5dc98061a0ce20cca9751622c78e7eb41c600a90[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 13:11:28 2025 +0100
+
+    update gitignore
+
+[33mcommit 897d6f66207444d78202f2fbe3efb0ad06d2bc4c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 13:03:10 2025 +0100
+
+    fix: fix validation so unit test can work
+
+[33mcommit 104d7ca90702f4ee2b3343bea27434775b6e65fd[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 12:59:21 2025 +0100
+
+    fix:index
+
+[33mcommit 0e7c16e67243422e1777e66312d18822848dd201[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 12:57:30 2025 +0100
+
+    fix: fix validation and remove banner tests, add more proper casese to the project
+
+[33mcommit 5209e3fba865d68688abd0bbd975c55ea71e1e27[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 12:35:51 2025 +0100
+
+    fix: fix error message tests
+
+[33mcommit b4ae9c90ea8f17507935036027e159ff635bda2a[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 12:13:24 2025 +0100
+
+    feat: unit tests
+
+[33mcommit 45310ddbd41af8fe9336a1f0a141700c922f45f9[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 11:43:57 2025 +0100
+
+    feat:vitest config
+
+[33mcommit 9a0546e47c9bde9cc6980581ca806a70c6e69bb4[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 11:19:43 2025 +0100
+
+    chore: unit testing recommendations
+
+[33mcommit bbdb0d67883a71ac1db0b03f4009c5dc36f8d1a4[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 11:18:55 2025 +0100
+
+    chore:vitest unit testing md
+
+[33mcommit e000cdbfc39395549bbc08f88b28ecb44efd0f65[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 11:15:15 2025 +0100
+
+    chore: file structure
+
+[33mcommit 53ccdc1a5721000b1edc40baaecf8c690940ac72[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 11:07:18 2025 +0100
+
+    chore: update docs
+
+[33mcommit 5b69be93db825cacfdceb5eadcbcbd935ccb8179[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 11:06:28 2025 +0100
+
+    chore: test plan
+
+[33mcommit 508c8378f1483187d17d8ed602ff1751afc8eebd[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 01:05:10 2025 +0100
+
+    feat: change onboarding for logged in user
+
+[33mcommit 1e5240d72be90816fbba7de4b7841d38e924923c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:57:54 2025 +0100
+
+    fix: fix profile redirection
+
+[33mcommit f8381b19d0a64c08c3498aa472aeeb15889c8463[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:42:32 2025 +0100
+
+    feat: profil is available
+
+[33mcommit 048f4457d3058d0bace494b2baf7478f80404636[m
+Merge: 6cb38de b5c4cc2
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:39:15 2025 +0100
+
+    fix:components
+
+[33mcommit 6cb38ded55641f980bb1551afdfedca6aa2833b8[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:37:01 2025 +0100
+
+    fix: fix last commits
+
+[33mcommit 4d3f4256d26fe77fdde91bee585bbc96a0e70f60[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:36:37 2025 +0100
+
+    fix: fix last commits
+
+[33mcommit b5c4cc2b830f5ed6df585ab4de3649fee3271f63[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:08:47 2025 +0100
+
+    fix: validation
+
+[33mcommit 1121a6e4bee4442d7191a74184fafe0b776639ba[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:05:35 2025 +0100
+
+    fix: present better calculations
+
+[33mcommit d3f5601507b819c40228780ed7498c8b016aa1cd[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Thu Nov 20 00:01:52 2025 +0100
+
+    fix: update time
+
+[33mcommit 080d18b9632ec8e1ee60561e3f5fc7ca963eec48[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 23:55:15 2025 +0100
+
+    fix: investment edition
+
+[33mcommit d9ed2b8e7103fcc05bee9847bb70b9d00dd64788[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 23:45:47 2025 +0100
+
+    fix: navigation when no product
+
+[33mcommit 796f8d64551b063904301db785c866364f69dd1d[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 22:48:53 2025 +0100
+
+    feat: remove double nav bar
+
+[33mcommit c0da010faf62d690a876607ae31689ceeb442d4c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 22:44:14 2025 +0100
+
+    feat: navigation
+
+[33mcommit e6ca11fb27f38e9013c3c3aee8b3f849bff6075c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 21:57:07 2025 +0100
+
+    fix: server error during onboarding
+
+[33mcommit f5bc87560345e811eb716f1253b1e4ee420d507b[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 21:32:43 2025 +0100
+
+    fix: final fix for null session
+
+[33mcommit 797de29b4378764a83fb75c25db15014f8d84ee4[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 21:10:38 2025 +0100
+
+    fix: getsession null
+
+[33mcommit b88ae02ab4ae2e9031277484d54c10345e4da4d9[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 20:44:14 2025 +0100
+
+    fix: session
+
+[33mcommit 130ac524dc95572bd0c955048f2ac61c55b787fb[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 19:39:09 2025 +0100
+
+    fix: flow analyzis
+
+[33mcommit 9faac96b72f7688f0a15ae2ed923a8c01f7fd233[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 19:07:09 2025 +0100
+
+    fix: bad routing
+
+[33mcommit f9a8803392d6d322a7a8f813a1236f4350aeaf55[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 18:53:28 2025 +0100
+
+    fix: login issue fix
+
+[33mcommit 9660447bb7260d7ab88ebf6254ccea013a67f78e[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 15:52:30 2025 +0100
+
+    fix global problem and authorization problem
+
+[33mcommit 23f65895d94fdb8102932c012f33382a944f54a5[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 15:45:50 2025 +0100
+
+    fix middleware problem, incorrect reference to the env
+
+[33mcommit 8672de317963a28782a555ebc001fe60d5762528[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 15:30:23 2025 +0100
+
+    backend pages
+
+[33mcommit 8f24a3692e1af3d609cee6e74c0250d2fb6d509e[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 15:25:08 2025 +0100
+
+    feat: routing protection
+
+[33mcommit bb2bba1e7e62f7e23de549e8ac4b3369bdceece9[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 15:15:22 2025 +0100
+
+    feat: sign out
+
+[33mcommit d589470e32991057bd4dd5c92d4bee9f12eb98be[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 15:12:54 2025 +0100
+
+    feat: backend integration plan
+
+[33mcommit 3b6c841d10c9398036a54a88a0eb43d40125efbf[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 14:46:25 2025 +0100
+
+    chore: supabase auth md
+
+[33mcommit 8c81816c04496d1272e9c712ffa5f66998e731de[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 14:44:16 2025 +0100
+
+    feat:implementacja ui autentykacji
+
+[33mcommit 755d20f096ff443fc9cc1e77e2742cacceed0db6[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 14:21:00 2025 +0100
+
+    feat: supabase auth
+
+[33mcommit 5ac70b1f45b1606e07b758cfb8ded71aa3ffd373[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 13:33:24 2025 +0100
+
+    chore: .ai/diagrams
+
+[33mcommit b95b2320efaea7ff7660bf80aa4c5a86c0a4b0ea[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 13:02:57 2025 +0100
+
+    chore: change of US for auth
+
+[33mcommit 6e1b0bab8b3960b5606dffb0ad796ae733a1944e[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 12:43:22 2025 +0100
+
+    feat: auth helpers
+
+[33mcommit ccb2adf2c0c234fc6a616710bda017a01159133c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 12:42:26 2025 +0100
+
+    update migration policy
+
+[33mcommit 1b4f8c9832e077e008c7fd842f313089540dda7d[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 19 12:21:00 2025 +0100
+
+    chore: update authorization prd and authorization plan
+
+[33mcommit 014ad88568b79086910ab6ecf348ae26636ab049[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Tue Nov 18 19:02:02 2025 +0100
+
+    feat: openrouterimplementation
+
+[33mcommit ff741684060429c5535585fbe3b6de16fc6a3b71[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Tue Nov 18 18:47:21 2025 +0100
+
+    chore: openrouter plan
+
+[33mcommit e02d430682f7416dc00e91ef6fe555e4f571fe38[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Tue Nov 18 15:19:45 2025 +0100
+
+    chore: update user stories - i added information about loggin
+
+[33mcommit 8360a47dcb829b97671c1717da54bea7c0268bfe[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Tue Nov 18 12:45:54 2025 +0100
+
+    fix: redirection to login
+
+[33mcommit 8c50aeb7c5ac7c109130ba81aca04e4008c0e97c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Tue Nov 18 12:12:07 2025 +0100
+
+    fix: use index as a default
+
+[33mcommit 359f5b9b4ca353f3acd58b9153f0bd4749977947[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Tue Nov 18 11:57:27 2025 +0100
+
+    fix: supabase key variable is correct now
+
+[33mcommit 6a007220a1e8494f0aba026b513f952183b574cb[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Tue Nov 18 10:59:14 2025 +0100
+
+    feat: update
+
+[33mcommit 8337693dc442286853c0dfafb7c0317c670ddd91[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 22:38:19 2025 +0100
+
+    feat: integration and wrappers
+
+[33mcommit 3adf51275e2da1b535b3d36c509a41f4a84ad7a0[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 21:42:18 2025 +0100
+
+    feat: onboarding.astro
+
+[33mcommit 8d24eda11a0c808bf34aace42f46a295787785ca[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 21:39:14 2025 +0100
+
+    chore package.json
+
+[33mcommit f51409def90efc57ac6eea06e0e095578586bd03[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 21:21:16 2025 +0100
+
+    dashboard.astro
+
+[33mcommit 4f10cb871d26d1cb957d55afe3ed34168e2f95fb[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 21:13:26 2025 +0100
+
+    feat: login.astro
+
+[33mcommit 0f2fc5067b00d5d5f8f2292f10f0658c14572abd[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 21:02:58 2025 +0100
+
+    feat: login astro
+
+[33mcommit a35819759248ab13bd88fe932144b0cbf2c11d96[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 20:46:53 2025 +0100
+
+    feat: dashboard, onboarding and validation
+
+[33mcommit cd3d6d7a39df95238027a3a5c7d63d15d9583205[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 19:16:08 2025 +0100
+
+    feat: login view implementation
+
+[33mcommit 9f0567aa9590e38c115306dc5711db8afb8354c7[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 18:36:52 2025 +0100
+
+    chore: ui plan md
+
+[33mcommit 5b1b2a4b7274a597fbcca7827095cc92180c987e[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 15:25:39 2025 +0100
+
+    chore: shadcn ui conf
+
+[33mcommit 735a75daf8d5a94bf558377232fa7db7f4c7b251[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 15:19:04 2025 +0100
+
+    feat:profile service finald endpoint
+
+[33mcommit bffc45dfb85aa6264c9275f1cacb1213e80bab6c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 15:13:15 2025 +0100
+
+    feat: investments
+
+[33mcommit aa702cf275af5da739178fc343a63f439e06d814[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 15:05:15 2025 +0100
+
+    feat: patch profile
+
+[33mcommit 3d90261fc3f178111aafc7c9186584ca8e59e4fa[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 15:02:32 2025 +0100
+
+    investment id
+
+[33mcommit 4fa216c62f4aac93bb31f531331658ef441edff6[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 14:55:46 2025 +0100
+
+    feat: middleware
+
+[33mcommit 2a304980e697591067af7c3f87e3c1f37b50ac6c[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 14:50:56 2025 +0100
+
+    feat: portfolio aggregation endpoint
+
+[33mcommit 7deebe3d4dd20fe14447b1031d15802364b3ebe6[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 14:33:43 2025 +0100
+
+    feat: investment services
+
+[33mcommit 3b1686dc023d4c806932aae2197d070017847e0b[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 14:24:04 2025 +0100
+
+    feat: investment service
+
+[33mcommit d19f343189dc006f60ae524d6e8494a491cc2ce3[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 14:12:24 2025 +0100
+
+    feat:investment service
+
+[33mcommit fa83361b70928efa37044b6758bd45136c88ae29[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 13:57:59 2025 +0100
+
+    feat: auth session and health check endpoint
+
+[33mcommit febe2b269f89573ec741cae8c464e4454c0801a0[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 13:38:17 2025 +0100
+
+    ai hint endpoint
+
+[33mcommit 823499f418e349a495b6220252e8771fdb8e5ce5[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 13:23:01 2025 +0100
+
+    get investments endpoint
+
+[33mcommit 74d58c3b48fe1a4ff7e8bb56529679c9744b4fe0[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 13:11:39 2025 +0100
+
+    fix: fix paths
+
+[33mcommit 36e1a060b13b3199c1b611f65149a9b83b1a3a47[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 13:08:36 2025 +0100
+
+    feat: delete investment endpoint
+
+[33mcommit 679531654d62c487f6a686f0a77a6ab6ec0322d6[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 12:44:50 2025 +0100
+
+    chore: endpoints plan
+
+[33mcommit 77254b1a3af0342c208f2bf15558dd5337c5744a[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 17 12:43:21 2025 +0100
+
+    chore: supabase migration disable all policies
+
+[33mcommit eb4dd01590dfb8252d6aac92eb54886c5312ed2a[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 12 14:59:52 2025 +0100
+
+    feat: 4 endpoints implementation get post patch profiles and post investments
+
+[33mcommit 9664f070170932d5484846f58dad854fd1837406[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Wed Nov 12 14:58:51 2025 +0100
+
+    chore: disable rls polices
+
+[33mcommit c5d32a3fe7e04bcfcd89eed0494671a1dee2abed[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 21:21:49 2025 +0100
+
+    fix: fix incorrect import referation to the db
+
+[33mcommit 4ec805bdbd7a2d387112c4381397e1913eaba354[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 21:18:11 2025 +0100
+
+    feat: dto and command models in types.ts
+
+[33mcommit cd72960322fbafebca169672cc26526c34b3cc1a[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 21:14:37 2025 +0100
+
+    chore: disable database policies
+
+[33mcommit 01ffc29e44c51706e51dd0438ef023ff29ee6dc4[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 21:13:22 2025 +0100
+
+    docs: api plan
+
+[33mcommit 804fccd556c31909c1152bc6b8f41f693dbe0ca4[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 21:12:52 2025 +0100
+
+    docs: data base plan
+
+[33mcommit 3ca54cf9fe1bb7e13e885d82b132192e7c0c8311[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 11:28:03 2025 +0100
+
+    feat:supabase Astro Initialization
+
+[33mcommit fa76ef2ba9de531a13c808717d40937150345f78[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 10:53:41 2025 +0100
+
+    chore(deps): update dependencies - typescript 5.x
+
+[33mcommit c4205fcd917c88491390219c25109b7e4d06fcc1[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 10:42:20 2025 +0100
+
+    chore(deps): update dependencies
+
+[33mcommit 63e081f70664a1b3f7a549fc00a323b51fc6eddd[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 10:40:37 2025 +0100
+
+    chore(db): add generated Supabase types for database schema
+
+[33mcommit a4185c8048bbd0877e9cc3dbd5847558230c538f[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Mon Nov 10 10:40:10 2025 +0100
+
+    chore(db): temporarily disable all RLS policies for development
+
+[33mcommit 8c7574b07ebbff72d252031eac1c69bd42fd06b4[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Sun Nov 9 19:52:09 2025 +0100
+
+    feat(db): add new Supabase migrations for tables and relations
+
+[33mcommit 01b8aa836b5f70e54871c601878a3798e0b73c2a[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Sun Nov 9 19:36:47 2025 +0100
+
+    docs(db): add database design plan
+
+[33mcommit b5c5e2527234b05b629717f4200d352366174728[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Sun Nov 9 19:32:43 2025 +0100
+
+    chore(db): add initial Supabase setup
+
+[33mcommit 49ccf209955d3ca4f0f1eb575d6c8a4a4ef245d3[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Sun Nov 9 19:32:27 2025 +0100
+
+    chore(db): add initial Supabase setup
+
+[33mcommit fbd95e37d8a5a4793e91bbce45f6c82ebe5bd0c1[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Sat Nov 8 22:47:58 2025 +0100
+
+    chore: update dependencies
+
+[33mcommit 6d9d53ba684f016d7984f1a5c3f71687e02efe59[m
+Author: terefere <terefererafi123@gmail.com>
+Date:   Sat Nov 8 22:47:22 2025 +0100
+
+    docs: update documentation and add markdown rules for PRD
+
+[33mcommit 753c20b02cf4c8e0f5fa433394010b14d97c9709[m
+Author: terefererafi123-crypto <terefererafi123@gmail.com>
+Date:   Tue Oct 28 19:23:13 2025 +0100
+
+    Initial commit

@@ -99,6 +99,7 @@ export async function deleteInvestmentById(
   const { error, count } = await supabase.from("investments").delete({ count: "exact" }).eq("id", investmentId);
 
   if (error) {
+    // eslint-disable-next-line no-console
     console.error("Database error deleting investment:", error);
     return { success: false, error: "Database error" };
   }

@@ -56,6 +56,7 @@ export const createSupabaseServerInstance = (context: { headers: Headers; cookie
             }
           } catch (error) {
             // AstroCookies.getAll() not available or failed, use parsed cookies
+            // eslint-disable-next-line no-console
             console.warn("AstroCookies.getAll() failed, using Cookie header:", error);
           }
 
@@ -71,6 +72,7 @@ export const createSupabaseServerInstance = (context: { headers: Headers; cookie
     return supabase;
   } catch (error) {
     // Log the error for debugging
+    // eslint-disable-next-line no-console
     console.error("Error creating Supabase server instance:", error);
     throw error;
   }

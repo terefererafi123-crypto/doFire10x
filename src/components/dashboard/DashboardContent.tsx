@@ -22,6 +22,7 @@ class DashboardErrorBoundary extends Component<{ children: ReactNode }, ErrorBou
   }
 
   componentDidCatch(error: Error, errorInfo: unknown) {
+    // eslint-disable-next-line no-console
     console.error("Dashboard error:", error, errorInfo);
   }
 

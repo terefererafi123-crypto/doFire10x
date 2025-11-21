@@ -78,6 +78,7 @@ export async function checkDatabaseConnectivity(supabase: SupabaseClient<Databas
     // Timeout or any other error occurred
     // Log error only in development (as per plan: minimal logging)
     if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
       console.error("Health check database connectivity error:", error);
     }
     return "down";

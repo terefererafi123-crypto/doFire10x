@@ -176,6 +176,7 @@ export function EditInvestmentModal({ investment, open, onOpenChange, onSuccess 
 
       if (!response.ok) {
         const error: ApiError = await response.json();
+        // eslint-disable-next-line no-console
         console.error("EditInvestmentModal: API error:", error);
 
         // Handle field-specific validation errors
@@ -195,7 +196,6 @@ export function EditInvestmentModal({ investment, open, onOpenChange, onSuccess 
 
       // Parse response to verify success
       const updatedInvestment: InvestmentDto = await response.json();
-      console.log("EditInvestmentModal: Investment updated successfully:", updatedInvestment);
 
       // Success - close modal first, then refresh list
       // Closing modal immediately provides better UX

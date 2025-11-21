@@ -97,6 +97,7 @@ function OnboardingContainerInner() {
       } catch (error) {
         // If error is 401/403, GlobalErrorBanner will handle it
         // For other errors, just log and continue (user can still create profile)
+        // eslint-disable-next-line no-console
         console.error("Error loading existing profile:", error);
       }
     };

@@ -107,8 +107,8 @@ export function ProfileForm({ data, errors, onChange, onBlur }: ProfileFormProps
         )}
         <p className="text-xs text-muted-foreground">
           Zalecana wartość: 4% (reguła 4%). Roczny procent portfela, który planujesz wypłacać po osiągnięciu FIRE
-          (realnie, w dzisiejszych złotówkach). Niższa stopa wypłat (np. 3%) = większe bezpieczeństwo, ale wyższa
-          liczba FIRE.
+          (realnie, w dzisiejszych złotówkach). Niższa stopa wypłat (np. 3%) = większe bezpieczeństwo, ale wyższa liczba
+          FIRE.
         </p>
       </div>
 

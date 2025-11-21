@@ -34,7 +34,7 @@ export function useOnboardingApi() {
         globalErrorContext.setError(error);
       }
     },
-    [isMounted, globalErrorContext.setError]
+    [isMounted, globalErrorContext]
   );
   const createProfile = useCallback(
     async (data: CreateProfileCommand): Promise<ProfileDto> => {

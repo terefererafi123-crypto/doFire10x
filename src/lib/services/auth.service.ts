@@ -134,6 +134,7 @@ export class AuthService {
       };
     } catch (error) {
       // Network error - default to onboarding
+      // eslint-disable-next-line no-console
       console.error("Error checking profile:", error);
       return {
         hasProfile: false,

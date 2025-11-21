@@ -95,6 +95,7 @@ export function InvestmentForm({ data, errors, onChange, onBlur, showErrorSummar
           max={maxDate}
         />
       </FormField>
+      <p className="text-xs text-muted-foreground">Data nabycia – pole informacyjne, nie wpływa na obliczenia.</p>
 
       <FormField label="Notatki" name="notes" error={errors.notes} helperText="Maksymalnie 1000 znaków">
         <Textarea

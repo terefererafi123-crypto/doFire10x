@@ -37,6 +37,31 @@ interface FireMetricsInputs {
  * ```
  */
 export function calculateFireMetrics(inputs: FireMetricsInputs): MetricsDto {
+  // Validate: if return rate <= withdrawal rate, FIRE cannot be achieved
+  if (inputs.expected_return_pct <= inputs.withdrawal_rate_pct) {
+    const result: MetricsDto = {
+      inputs: {
+        monthly_expense: inputs.monthly_expense,
+        withdrawal_rate_pct: inputs.withdrawal_rate_pct,
+        expected_return_pct: inputs.expected_return_pct,
+        invested_total: inputs.invested_total,
+      },
+      derived: {
+        annual_expense: inputs.monthly_expense * 12,
+        fire_target: (inputs.monthly_expense * 12) / (inputs.withdrawal_rate_pct / 100),
+        fire_progress: inputs.invested_total / ((inputs.monthly_expense * 12) / (inputs.withdrawal_rate_pct / 100)),
+      },
+      time_to_fire: {
+        years_to_fire: null,
+        birth_date: inputs.birth_date,
+        current_age: inputs.birth_date ? calculateAge(inputs.birth_date) : null,
+        fire_age: null,
+      },
+      note: "return_rate_too_low",
+    };
+    return result;
+  }
+
   // Calculate derived metrics
   const annual_expense = inputs.monthly_expense * 12;
   const fire_target = annual_expense / (inputs.withdrawal_rate_pct / 100);

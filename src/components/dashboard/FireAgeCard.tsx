@@ -5,6 +5,24 @@ import type { FireAgeCardProps } from "./types";
 export function FireAgeCard({ timeToFire, note }: FireAgeCardProps) {
   const { years_to_fire, fire_age, birth_date, current_age } = timeToFire;
 
+  // Check if return rate is too low (cannot achieve FIRE)
+  if (note === "return_rate_too_low") {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Wiek FIRE</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">
+            Przy takiej stopie zwrotu i stopie wypłat portfel nie osiągnie wartości FIRE.
+            <br />
+            Zwiększ stopę zwrotu, zmniejsz wydatki albo stopę wypłat.
+          </p>
+        </CardContent>
+      </Card>
+    );
+  }
+
   // If years_to_fire is null, show note message
   if (years_to_fire === null) {
     return (

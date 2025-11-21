@@ -3,6 +3,7 @@
 // PATCH /v1/investments/{id} - Update investment endpoint
 // DELETE /v1/investments/{id} - Delete investment endpoint
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import {
   getInvestmentById,

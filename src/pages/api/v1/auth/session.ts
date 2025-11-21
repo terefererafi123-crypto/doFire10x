@@ -1,6 +1,7 @@
 // src/pages/api/v1/auth/session.ts
 // GET /v1/auth/session - Session verification endpoint
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "../../../../db/database.types.ts";

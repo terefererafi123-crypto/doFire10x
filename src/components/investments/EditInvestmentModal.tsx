@@ -195,7 +195,7 @@ export function EditInvestmentModal({ investment, open, onOpenChange, onSuccess 
       }
 
       // Parse response to verify success
-      const updatedInvestment: InvestmentDto = await response.json();
+      await response.json();
 
       // Success - close modal first, then refresh list
       // Closing modal immediately provides better UX

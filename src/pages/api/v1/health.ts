@@ -1,6 +1,7 @@
 // src/pages/api/v1/health.ts
 // GET /v1/health - Health check endpoint (liveness probe)
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import { checkDatabaseConnectivity } from "../../../lib/services/health.service.ts";
 import { jsonResponse, errorResponse } from "../../../lib/api/response.ts";

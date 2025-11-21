@@ -60,7 +60,7 @@ const reactConfig = tseslint.config({
 export default tseslint.config(
   includeIgnoreFile(gitignorePath),
   {
-    ignores: [".ai/**", "**/.ai/**"],
+    ignores: [".ai/**", "**/.ai/**", "coverage/**"],
   },
   baseConfig,
   jsxA11yConfig,

@@ -1,6 +1,7 @@
 // src/pages/api/v1/me/ai-hint.ts
 // GET /v1/me/ai-hint - AI Hint endpoint
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import { getAuthenticatedUser } from "../../../../lib/auth/helpers.ts";
 import { getPortfolioAggByUserId } from "../../../../lib/services/portfolio.service.ts";

@@ -1,6 +1,7 @@
 // src/pages/api/v1/test/openrouter.ts
 // POST /v1/test/openrouter - Test endpoint for OpenRouter service
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import { getOpenRouterService } from "../../../../lib/services/openrouter.client.ts";
 import { OpenRouterApiError } from "../../../../lib/services/openrouter.errors.ts";

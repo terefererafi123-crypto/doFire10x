@@ -1,6 +1,7 @@
 // src/pages/api/v1/me/metrics.ts
 // GET /v1/me/metrics - Calculate FIRE metrics endpoint
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import { getAuthenticatedUser } from "../../../../lib/auth/helpers.ts";
 import { getProfileByUserId } from "../../../../lib/services/profile.service.ts";

@@ -1,6 +1,7 @@
 // src/pages/api/v1/investments/index.ts
 // GET /v1/investments - Get investments list endpoint
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import {
   getInvestments,

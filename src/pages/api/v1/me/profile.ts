@@ -3,6 +3,7 @@
 // POST /v1/me/profile - Create user profile endpoint
 // PATCH /v1/me/profile - Update user profile endpoint
 
+/* eslint-disable no-console */
 import type { APIRoute } from "astro";
 import { getAuthenticatedUser } from "../../../../lib/auth/helpers.ts";
 import {

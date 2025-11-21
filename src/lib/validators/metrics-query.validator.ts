@@ -37,4 +37,3 @@ export const metricsQuerySchema = z.object({
  * Represents the validated query parameters for GET /v1/me/metrics.
  */
 export type MetricsQueryInput = z.infer<typeof metricsQuerySchema>;
-

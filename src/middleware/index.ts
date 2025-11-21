@@ -81,6 +81,7 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
       // Log for debugging (especially for onboarding redirects after login)
       if (url.pathname === "/onboarding") {
         const cookieHeader = request.headers.get("Cookie") || "";
+        // eslint-disable-next-line no-console
         console.log("Middleware: No user found for /onboarding (allowing access - session may be in localStorage)", {
           hasCookies: cookies.getAll().length > 0,
           cookieNames: cookies.getAll().map((c) => c.name),
@@ -112,6 +113,7 @@ export const onRequest = defineMiddleware(async ({ locals, cookies, url, request
     return next();
   } catch (error) {
     // Handle errors in middleware (e.g., missing environment variables)
+    // eslint-disable-next-line no-console
     console.error("Middleware error:", error);
 
     // If it's a configuration error, allow public paths to continue
